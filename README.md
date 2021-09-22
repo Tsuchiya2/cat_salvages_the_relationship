@@ -121,3 +121,6 @@ LINE Bot、Webサービスがあったら、
 「一方的に送信だけしてくるBot」とユーザーに認知された方が、
 グループ内にLINE Botを置いておくことに、
 ユーザーは抵抗が低くなるのではないかとの仮説に起因しています。
+
+## 画面遷移図
+https://www.figma.com/file/55rQT5iIsh08xfmdOYU5zN/cat?node-id=0%3A1
