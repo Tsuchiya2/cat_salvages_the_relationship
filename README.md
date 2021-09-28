@@ -124,3 +124,6 @@ LINE Bot、Webサービスがあったら、
 
 ## 画面遷移図
 https://www.figma.com/file/55rQT5iIsh08xfmdOYU5zN/cat?node-id=0%3A1
+
+## ER図
+https://drive.google.com/file/d/1SFzGCYKXmp4vqvAsIFesPzOD87LfL_sn/view
