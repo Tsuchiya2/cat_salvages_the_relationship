@@ -1,0 +1,64 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
+# Exlucdeに設定したファイルはチェックの対象外になります。
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'node_modules/**/*'
+    - 'Gemfile'
+    - 'tmp/**/*'
+
+Rails:
+  Enabled: true
+
+# 日本語のコメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+# モジュール名::クラス名の定義を許可
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# app/controllers以下のメソッドのprefixに「set_」「get_」を許可
+Naming/AccessorMethodName:
+  Exclude:
+    - "app/controllers/**/*"
+
+# クラスにコメントを残すのを許可
+Style/Documentation:
+  Enabled: false
+
+# 以下、初期状態でRubocopに引っかかる項目をスキップさせています。
+# 初期設定で引っかかっている項目
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/environments/*'
+
+Style/GlobalStdStream:
+  Exclude:
+    - 'config/environments/*'
+
+Rails/FilePath:
+  Exclude:
+    - 'config/environments/*'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/BlockComments:
+  Exclude:
+    - 'spec/spec_helper.rb'
+
+Style/RedundantFetchBlock:
+  Exclude:
+    - 'config/puma.rb'
+
+Style/SymbolArray:
+  Exclude:
+    - 'config/initializers/filter_parameter_logging.rb'
