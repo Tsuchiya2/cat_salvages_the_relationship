@@ -1,4 +1,4 @@
 class AlarmContentCategory < ApplicationRecord
-  has_many :alarm_contents
-  validates :name, presence: true, length: { maximum: 255 }
+  has_many :alarm_contents,   dependent: :destroy
+  validates :name,            presence: true, length: { maximum: 255 }
 end

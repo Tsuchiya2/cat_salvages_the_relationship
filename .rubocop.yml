@@ -62,3 +62,7 @@ Style/RedundantFetchBlock:
 Style/SymbolArray:
   Exclude:
     - 'config/initializers/filter_parameter_logging.rb'
+
+Layout/CommentIndentation:
+  Exclude:
+    - 'config/environments/development.rb'
