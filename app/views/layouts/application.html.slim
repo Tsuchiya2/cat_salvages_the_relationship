@@ -9,5 +9,14 @@ html
     = stylesheet_link_tag 'application', media: 'all'
     = javascript_pack_tag 'application'
   body
+    nav.navbar.navbar-expand-md.navbar-dark.bg-success.fixed-top
+      = link_to 'タイトル(仮)', root_path, class: 'navbar-brand ps-3'
+      button.navbar-toggler.me-3 data-bs-toggle='collapse' data-bs-target="#navbarSupportedContent" aria-label="Toggle navigation"
+        span.navbar-toggler-icon
+      .collapse.navbar-collapse id='navbarSupportedContent'
+        ul.navbar-nav.ps-3
+          li.nav-item
+            = link_to root_path, class: 'nav-link' do
+              | ホーム
     = yield
     = any_login_here if defined?(AnyLogin)
