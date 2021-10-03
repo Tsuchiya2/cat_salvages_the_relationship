@@ -16,7 +16,28 @@ html
       .collapse.navbar-collapse id='navbarSupportedContent'
         ul.navbar-nav.ps-3
           li.nav-item
-            = link_to root_path, class: 'nav-link' do
-              | ホーム
+            = link_to root_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+              icon.fas.fa-home.me-2
+              .guide-text
+                | ホーム
+          li.nav-item
+            = link_to '#', class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+              icon.fas.fa-mobile-alt.me-2
+              .guide-text
+                | 使い方
+          li.nav-item
+            = link_to '#', class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+              icon.far.fa-file.me-2
+              .guide-text
+                | 利用規約
+          li.nav-item
+            = link_to '#', class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+              icon.fas.fa-lock.me-2
+              .guide-text
+                | プライバシーポリシー
+          li.nav-item
+            = link_to '#', class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+              icon.far.fa-comment.me-2
+              .guide-text
+                | フィードバック
     = yield
-    = any_login_here if defined?(AnyLogin)
