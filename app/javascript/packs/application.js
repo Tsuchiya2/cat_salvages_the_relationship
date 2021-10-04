@@ -9,3 +9,6 @@ import "channels"
 
 Rails.start()
 ActiveStorage.start()
+
+import "../stylesheets/application"
+import "../javascript/bootstrap.js"
