@@ -1,0 +1,15 @@
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      | Title
+    .main_character.text-center.my-2
+      = image_tag 'cat.png', alt: 'cat-image', class: 'img-fluid'
+    .add_firend_button.text-center.my-2
+      = link_to 'https://lin.ee/Pllww8S' do
+        = image_tag 'https://scdn.line-apps.com/n/line_add_friends/btn/ja.png', alt: '友だち追加', height: '36', border: '0'
+    .usage.text-center.my-3
+      = link_to '#', alt: '使い方', class: 'link-dark text-decoration-none' do
+        icon.fas.fa-mobile-alt.me-2
+        | 使い方
+    .special_thanks.text-center.my-2
+      | 猫のイラスト協力：Sapico様
