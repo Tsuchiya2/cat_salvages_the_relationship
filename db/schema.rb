@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_02_021440) do
+ActiveRecord::Schema.define(version: 2021_10_04_073250) do
 
   create_table "alarm_content_categories", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
