@@ -1,0 +1,10 @@
+ja:
+  activerecord:
+    models:
+      operator: 'オペレーター'
+    attributes:
+      operator:
+        id: 'ID'
+        name: '名前'
+        email: 'メールアドレス'
+        password: 'パスワード'

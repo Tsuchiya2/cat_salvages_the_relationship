@@ -5,3 +5,10 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+# 仮seedデータ
+Operator.create(name: 'guest',
+                email: 'guest@example.com',
+                password: 'password',
+                password_confirmation: 'password',
+                role: 1) unless Operator.find_by(email: 'guest@example.com')
