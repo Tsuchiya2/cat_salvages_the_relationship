@@ -66,3 +66,7 @@ Style/SymbolArray:
 Layout/CommentIndentation:
   Exclude:
     - 'config/environments/development.rb'
+
+Layout/LineLength:
+  Exclude:
+    - 'config/initializers/sorcery.rb'
