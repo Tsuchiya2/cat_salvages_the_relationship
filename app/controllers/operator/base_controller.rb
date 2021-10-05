@@ -5,6 +5,6 @@ class Operator::BaseController < ApplicationController
   private
 
   def not_authenticated
-    redirect_to operator_login_path, alert: 'Please login first'
+    redirect_to operator_cat_in_path, alert: 'Please login first'
   end
 end
