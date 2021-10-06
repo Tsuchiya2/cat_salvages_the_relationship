@@ -7,8 +7,7 @@ class Operator::OperatorSessionsController < Operator::BaseController
     @operator = login(params[:email], params[:password])
 
     if @operator
-      # ログイン後の遷移先が作成された際にリダイレクト先を修正します。
-      redirect_to operator_cat_in_path
+      redirect_to operator_boards_path, success: 'キャットインしました。'
     else
       render :new
     end
@@ -16,6 +15,6 @@ class Operator::OperatorSessionsController < Operator::BaseController
 
   def destroy
     logout
-    redirect_to operator_cat_in_path
+    redirect_to operator_cat_in_path, success: 'キャットアウトしました。'
   end
 end
