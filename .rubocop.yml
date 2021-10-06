@@ -70,3 +70,6 @@ Layout/CommentIndentation:
 Layout/LineLength:
   Exclude:
     - 'config/initializers/sorcery.rb'
+
+RSpec/ContextWording:
+  Enabled: false

@@ -1,5 +1,27 @@
 ja:
   activerecord:
+    errors:
+      messages:
+        record_invalid: 'バリデーションに失敗しました: %{errors}'
+      models:
+        operator:
+          attributes:
+            name:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
+            email:
+              blank: 'が空白です'
+              invalid: 'が正しくありません'
+            password:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+            password_confirmation:
+              blank: 'が空白です'
+              confirmation: 'が正しくありません'
+            role:
+              blank: 'が空白です'
+
     models:
       operator: 'オペレーター'
     attributes:
@@ -8,4 +30,11 @@ ja:
         name: '名前'
         email: 'メールアドレス'
         password: 'パスワード'
+        password_confirmation: 'パスワード(確認)'
         role: '役割'
+
+  enums:
+    operator:
+      role:
+        operator: '管理運営'
+        guest: 'ゲスト'
