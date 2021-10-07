@@ -21,9 +21,16 @@ ja:
               confirmation: 'が正しくありません'
             role:
               blank: 'が空白です'
+        content_category:
+          attributes:
+            name:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
 
     models:
       operator: 'オペレーター'
+      content_category: 'カテゴリー'
     attributes:
       operator:
         id: 'ID'
@@ -32,6 +39,9 @@ ja:
         password: 'パスワード'
         password_confirmation: 'パスワード(確認)'
         role: '役割'
+      content_category:
+        id: 'ID'
+        name: 'カテゴリー名'
 
   enums:
     operator:

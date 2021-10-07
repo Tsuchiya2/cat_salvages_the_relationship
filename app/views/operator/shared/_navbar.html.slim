@@ -1,5 +1,5 @@
 nav.navbar.navbar-expand-md.navbar-dark.bg-secondary.fixed-top
-  = link_to 'Title', root_path, class: 'navbar-brand ps-3'
+  = link_to 'Title', operator_boards_path, class: 'navbar-brand ps-3'
   button.navbar-toggler.me-3 data-bs-toggle='collapse' data-bs-target="#navbarSupportedContent" aria-label="Toggle navigation"
     span.navbar-toggler-icon
   .collapse.navbar-collapse id='navbarSupportedContent'
@@ -10,6 +10,11 @@ nav.navbar.navbar-expand-md.navbar-dark.bg-secondary.fixed-top
             icon.fas.fa-paw.me-2
             .guide-text
               | トップページ
+        li.nav-item
+          = link_to operator_content_categories_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+            icon.fas.fa-tag.me-2
+            .guide-text
+              | カテゴリー
         li.nav-item
           = link_to operator_cat_out_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center', method: :delete do
             icon.fas.fa-user-alt.me-2

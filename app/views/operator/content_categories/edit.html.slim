@@ -1,0 +1,5 @@
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      | カテゴリー編集
+    = render 'operator/content_categories/form', { content_category: @content_category, url: operator_content_category_path(@content_category) }

@@ -1,0 +1,8 @@
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      = @content_category.name
+    .mt-5.text-center
+      = link_to '🐾 編集 🐾', edit_operator_content_category_path(@content_category), class: 'btn btn-secondary rounded-pill font-monospace'
+    .my-5.text-center
+      = link_to '- 削除 -', operator_content_category_path(@content_category), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '関連のコンテンツも消えてしまいますが、本当に削除しますか？' }
