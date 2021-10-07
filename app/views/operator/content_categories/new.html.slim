@@ -1,2 +1,5 @@
-h1
-  | NEW
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      | 新規カテゴリー作成
+    = render 'operator/content_categories/form', { content_category: @content_category, url: operator_content_categories_path }

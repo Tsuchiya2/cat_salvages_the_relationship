@@ -24,6 +24,7 @@ ja:
 
     models:
       operator: 'オペレーター'
+      content_category: 'カテゴリー'
     attributes:
       operator:
         id: 'ID'
@@ -32,6 +33,9 @@ ja:
         password: 'パスワード'
         password_confirmation: 'パスワード(確認)'
         role: '役割'
+      content_category:
+        id: 'ID'
+        name: 'カテゴリー名'
 
   enums:
     operator:
