@@ -1,2 +1,8 @@
-h1
-  | Content
+tr
+  td.text-center
+    = content.id
+  td
+    = link_to operator_content_path(content), class: 'link-dark text-decoration-none' do
+      = content.body
+  td
+    = content.content_category.name

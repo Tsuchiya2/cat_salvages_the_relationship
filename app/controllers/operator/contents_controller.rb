@@ -40,12 +40,10 @@ class Operator::ContentsController < Operator::BaseController
   private
 
   def set_content
-    # N+1問題が発生したら「.includes(:content_category)」を追加予定です。
     @content = Content.find(params[:id])
   end
 
   def content_params
-    # content_category_idの記述を追加する必要があります。
-    params.require(:content).permit(:body)
+    params.require(:content).permit(:body, :content_category_id)
   end
 end

@@ -31,6 +31,7 @@ ja:
     models:
       operator: 'オペレーター'
       content_category: 'カテゴリー'
+      content: 'コンテンツ'
     attributes:
       operator:
         id: 'ID'
@@ -42,6 +43,10 @@ ja:
       content_category:
         id: 'ID'
         name: 'カテゴリー名'
+      content:
+        id: 'ID'
+        body: '内容'
+        content_category_id: 'カテゴリー'
 
   enums:
     operator:
