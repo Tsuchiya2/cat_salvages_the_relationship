@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     delete 'cat_out', to: 'operator_sessions#destroy'
     resources :boards, only: %i[index]
     resources :content_categories
+    resources :contents
   end
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end
