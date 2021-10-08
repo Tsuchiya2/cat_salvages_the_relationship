@@ -2,4 +2,4 @@
   .row
     h1.mt-5.text-center
       | アラームコンテンツ編集
-    = render 'operator/alarm_contents/form', { content: @alarm_content, url: operator_alarm_content_path(@alarm_content) }
+    = render 'operator/alarm_contents/form', { alarm_content: @alarm_content, url: operator_alarm_content_path(@alarm_content) }
