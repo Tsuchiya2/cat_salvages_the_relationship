@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :boards, only: %i[index]
     resources :content_categories
     resources :contents
+    resources :alarm_content_categories
   end
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end
