@@ -1,0 +1,8 @@
+tr
+  td.text-center
+    = alarm_content.id
+  td
+    = link_to operator_alarm_content_path(alarm_content), class: 'link-dark text-decoration-none' do
+      = alarm_content.body
+  td
+    = alarm_content.alarm_content_category.name

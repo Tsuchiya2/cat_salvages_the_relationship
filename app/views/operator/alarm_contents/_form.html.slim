@@ -1,0 +1,9 @@
+= form_with model: alarm_content, url: url, local: true do |f|
+  .form-group.my-5.offset-2.col-8
+    = f.label :body, AlarmContent.human_attribute_name(:body)
+    = f.text_field :body, class: 'form-control rounded-pill'
+  .form-group.my-5.offset-2.col-8
+    = f.label :alarm_content_category_id, AlarmContent.human_attribute_name(:alarm_content_category_id)
+    = f.select :alarm_content_category_id, AlarmContentCategory.all.map{|alarm_category| [alarm_category.name, alarm_category.id]}, {}, class: 'form-control rounded-pill'
+  .form-group.my-5.text-center
+    = f.submit '🐾 送信 🐾', class: 'btn btn-secondary rounded-pill font-monospace'
