@@ -27,6 +27,15 @@ ja:
               blank: 'が空白です'
               too_short: 'が短すぎです'
               too_long: 'が長すぎです'
+        content:
+          attributes:
+            body:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
+            content_category_id:
+              blank: 'が空白です'
+
 
     models:
       operator: 'オペレーター'
