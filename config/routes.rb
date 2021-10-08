@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :content_categories
     resources :contents
     resources :alarm_content_categories
+    resources :alarm_contents
   end
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end

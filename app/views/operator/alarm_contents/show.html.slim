@@ -1,0 +1,11 @@
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      = @alarm_content.body
+    h3.mt-5.text-center
+      | アラームカテゴリー：
+      = @alarm_content.alarm_content_category.name
+    .mt-5.text-center
+      = link_to '🐾 編集 🐾', edit_operator_alarm_content_path(@alarm_content), class: 'btn btn-secondary rounded-pill font-monospace'
+    .my-5.text-center
+      = link_to '- 削除 -', operator_alarm_content_path(@alarm_content), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
