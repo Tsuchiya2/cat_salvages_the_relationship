@@ -35,7 +35,12 @@ ja:
               too_long: 'が長すぎです'
             content_category_id:
               blank: 'が空白です'
-
+        alarm_content_category:
+          attributes:
+            name:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
 
     models:
       operator: 'オペレーター'
@@ -56,6 +61,9 @@ ja:
         id: 'ID'
         body: '内容'
         content_category_id: 'カテゴリー'
+      alarm_content_category:
+        id: 'ID'
+        name: 'アラームカテゴリー名'
 
   enums:
     operator:
