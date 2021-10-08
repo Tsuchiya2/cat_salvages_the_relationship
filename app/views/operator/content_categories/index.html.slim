@@ -11,7 +11,7 @@
             th.col-4
               | カテゴリー名
         tbody
-          = render @content_categories
+          = render @content_categories if @content_categories
 
     .my-5.text-center
       = link_to '新規作成', new_operator_content_category_path, class: 'btn btn-secondary rounded-pill font-monospace'

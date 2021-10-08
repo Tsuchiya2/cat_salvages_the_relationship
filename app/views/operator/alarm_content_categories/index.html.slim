@@ -1,0 +1,17 @@
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      | アラームカテゴリー一覧
+    .table-responsive.my-5
+      table.table.table-striped.table-hover.text-nowrap
+        thead.px-5
+          tr
+            th.col-1.text-center
+              | ID
+            th.col-4
+              | アラームカテゴリー名
+        tbody
+          = render @alram_content_categories if @alram_content_categories
+
+    .my-5.text-center
+      = link_to '新規作成', new_operator_alarm_content_category_path, class: 'btn btn-secondary rounded-pill font-monospace'

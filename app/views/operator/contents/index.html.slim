@@ -13,7 +13,7 @@
             th.col-2
               | カテゴリー
         tbody
-          = render @contents
+          = render @contents if @contents
 
     .my-5.text-center
       = link_to '新規作成', new_operator_content_path, class: 'btn btn-secondary rounded-pill font-monospace'
