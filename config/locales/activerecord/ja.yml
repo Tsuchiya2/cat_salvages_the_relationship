@@ -27,10 +27,20 @@ ja:
               blank: 'が空白です'
               too_short: 'が短すぎです'
               too_long: 'が長すぎです'
+        content:
+          attributes:
+            body:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
+            content_category_id:
+              blank: 'が空白です'
+
 
     models:
       operator: 'オペレーター'
       content_category: 'カテゴリー'
+      content: 'コンテンツ'
     attributes:
       operator:
         id: 'ID'
@@ -42,6 +52,10 @@ ja:
       content_category:
         id: 'ID'
         name: 'カテゴリー名'
+      content:
+        id: 'ID'
+        body: '内容'
+        content_category_id: 'カテゴリー'
 
   enums:
     operator:
