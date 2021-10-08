@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :operator do
-    name { 'operator' }
-    email { 'operator@exampl.com' }
+    sequence(:name) { |n| "operator_#{n}" }
+    sequence(:email) { |n| "operator#{n}@exampl.com" }
     password { 'password' }
     password_confirmation { 'password' }
     role { :operator }

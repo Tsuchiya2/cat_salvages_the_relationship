@@ -29,7 +29,7 @@ RSpec.describe '[SystemTest] ContentCategories', type: :system do
     it 'カテゴリー一覧から編集・更新を行い、カテゴリー一覧に戻ってくる' do
       content_category
       visit operator_content_categories_path
-      click_on 'Category'
+      click_on "#{content_category.name}"
       click_on '🐾 編集 🐾'
       fill_in 'content_category[name]', with: 'Update_Category'
       click_on '🐾 送信 🐾'
