@@ -21,7 +21,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       visit operator_contents_path
       click_on '新規作成'
       fill_in 'content[body]', with: 'New_Content'
-      select content.content_category.name.to_s, from: 'カテゴリー'
+      select '呼びかけ', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('コンテンツ一覧')
       expect(page).to have_content('New_Content')

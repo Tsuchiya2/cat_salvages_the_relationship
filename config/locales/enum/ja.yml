@@ -1,0 +1,16 @@
+ja:
+  enums:
+    operator:
+      role:
+        operator: '管理運営'
+        guest: 'ゲスト'
+    content:
+      category:
+        call: '呼びかけ'
+        movie: '動画'
+        text: 'テキスト'
+    alarm_content:
+      category:
+        call: '呼びかけ'
+        movie: '動画'
+        text: 'テキスト'

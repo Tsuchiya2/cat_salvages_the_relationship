@@ -1,9 +1,11 @@
 class CreateAlarmContents < ActiveRecord::Migration[6.1]
   def change
     create_table :alarm_contents do |t|
-      t.text :body,                           null: false
-      t.references :alarm_content_category,   foreign_key: true
+      t.string :body,         null: false
+      t.integer :category,  null: false, default: 0
       t.timestamps
     end
+
+    add_index :alarm_contents, :body, unique: true
   end
 end

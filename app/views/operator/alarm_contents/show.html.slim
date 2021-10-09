@@ -4,7 +4,7 @@
       = @alarm_content.body
     h3.mt-5.text-center
       | アラームカテゴリー：
-      = @alarm_content.alarm_content_category.name
+      = @alarm_content.category
     .mt-5.text-center
       = link_to '🐾 編集 🐾', edit_operator_alarm_content_path(@alarm_content), class: 'btn btn-secondary rounded-pill font-monospace'
     .my-5.text-center

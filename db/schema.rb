@@ -12,32 +12,20 @@
 
 ActiveRecord::Schema.define(version: 2021_10_04_073250) do
 
-  create_table "alarm_content_categories", charset: "utf8mb4", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "alarm_contents", charset: "utf8mb4", force: :cascade do |t|
-    t.text "body", null: false
-    t.bigint "alarm_content_category_id"
+    t.string "body", null: false
+    t.integer "category", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["alarm_content_category_id"], name: "index_alarm_contents_on_alarm_content_category_id"
-  end
-
-  create_table "content_categories", charset: "utf8mb4", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.index ["body"], name: "index_alarm_contents_on_body", unique: true
   end
 
   create_table "contents", charset: "utf8mb4", force: :cascade do |t|
-    t.text "body", null: false
-    t.bigint "content_category_id"
+    t.string "body", null: false
+    t.integer "category", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["content_category_id"], name: "index_contents_on_content_category_id"
+    t.index ["body"], name: "index_contents_on_body", unique: true
   end
 
   create_table "line_groups", charset: "utf8mb4", force: :cascade do |t|
@@ -60,6 +48,4 @@ ActiveRecord::Schema.define(version: 2021_10_04_073250) do
     t.index ["email"], name: "index_operators_on_email", unique: true
   end
 
-  add_foreign_key "alarm_contents", "alarm_content_categories"
-  add_foreign_key "contents", "content_categories"
 end

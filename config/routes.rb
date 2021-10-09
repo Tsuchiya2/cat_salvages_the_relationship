@@ -6,9 +6,7 @@ Rails.application.routes.draw do
     post   'cat_in',  to: 'operator_sessions#create'
     delete 'cat_out', to: 'operator_sessions#destroy'
     resources :boards, only: %i[index]
-    resources :content_categories
     resources :contents
-    resources :alarm_content_categories
     resources :alarm_contents
   end
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?

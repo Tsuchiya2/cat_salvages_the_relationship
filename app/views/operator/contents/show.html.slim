@@ -4,7 +4,7 @@
       = @content.body
     h3.mt-5.text-center
       | カテゴリー：
-      = @content.content_category.name
+      = @content.category
     .mt-5.text-center
       = link_to '🐾 編集 🐾', edit_operator_content_path(@content), class: 'btn btn-secondary rounded-pill font-monospace'
     .my-5.text-center

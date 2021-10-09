@@ -2,7 +2,7 @@ class Operator::AlarmContentsController < Operator::BaseController
   before_action :set_alarm_content, only: %i[show edit update destroy]
 
   def index
-    @alarm_contents = AlarmContent.all.includes(:alarm_content_category)
+    @alarm_contents = AlarmContent.all
   end
 
   def show; end
@@ -44,6 +44,6 @@ class Operator::AlarmContentsController < Operator::BaseController
   end
 
   def alarm_content_params
-    params.require(:alarm_content).permit(:body, :alarm_content_category_id)
+    params.require(:alarm_content).permit(:body, :category)
   end
 end
