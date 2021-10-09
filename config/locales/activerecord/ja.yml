@@ -12,6 +12,7 @@ ja:
               too_long: 'が長すぎです'
             email:
               blank: 'が空白です'
+              taken: 'が重複しています'
               invalid: 'が正しくありません'
             password:
               blank: 'が空白です'
@@ -49,6 +50,16 @@ ja:
               too_long: 'が長すぎです'
             alarm_content_category_id:
               blank: 'が空白です'
+        line_group:
+          attributes:
+            line_group_id:
+              blank: 'が空白です'
+              taken: 'が重複しています'
+              too_long: 'が長すぎです'
+            remind_at:
+              blank: 'が空白です'
+            status:
+              blank: 'が空白です'
 
     models:
       operator: 'オペレーター'
@@ -76,6 +87,12 @@ ja:
         id: 'ID'
         body: '内容'
         alarm_content_category_id: 'アラームカテゴリー'
+      line_group:
+        id: 'ID'
+        line_group_id: 'グループID'
+        remind_at: 'リマインド'
+        status: '状態'
+
 
   enums:
     operator:

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Operator, type: :model do
   let(:operator) { build(:operator) }
+  let(:created_operator) { create(:operator) }
 
   describe '正常系テスト' do
     context '全て有効な場合' do
@@ -75,6 +76,12 @@ RSpec.describe Operator, type: :model do
         operator = build(:operator, email: nil)
         operator.valid?
         expect(operator.errors.full_messages).to include('メールアドレス が空白です')
+      end
+
+      it '一意な値ではない場合、保存できない。' do
+        new_operator = build(:operator, email: created_operator.email)
+        new_operator.valid?
+        expect(new_operator.errors.full_messages).to include('メールアドレス が重複しています')
       end
 
       it '@マークを含まない文字列が入力された場合、保存できない。' do
