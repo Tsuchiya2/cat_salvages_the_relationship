@@ -2,7 +2,7 @@ class Operator::ContentsController < Operator::BaseController
   before_action :set_content, only: %i[show edit update destroy]
 
   def index
-    @contents = Content.all.includes(:content_category)
+    @contents = Content.all
   end
 
   def show; end
@@ -44,6 +44,6 @@ class Operator::ContentsController < Operator::BaseController
   end
 
   def content_params
-    params.require(:content).permit(:body, :content_category_id)
+    params.require(:content).permit(:body, :category)
   end
 end

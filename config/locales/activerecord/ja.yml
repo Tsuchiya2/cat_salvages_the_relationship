@@ -22,33 +22,21 @@ ja:
               confirmation: 'が正しくありません'
             role:
               blank: 'が空白です'
-        content_category:
-          attributes:
-            name:
-              blank: 'が空白です'
-              too_short: 'が短すぎです'
-              too_long: 'が長すぎです'
         content:
           attributes:
             body:
               blank: 'が空白です'
               too_short: 'が短すぎです'
               too_long: 'が長すぎです'
-            content_category_id:
+            category:
               blank: 'が空白です'
-        alarm_content_category:
-          attributes:
-            name:
-              blank: 'が空白です'
-              too_short: 'が短すぎです'
-              too_long: 'が長すぎです'
         alarm_content:
           attributes:
             body:
               blank: 'が空白です'
               too_short: 'が短すぎです'
               too_long: 'が長すぎです'
-            alarm_content_category_id:
+            category:
               blank: 'が空白です'
         line_group:
           attributes:
@@ -73,20 +61,14 @@ ja:
         password: 'パスワード'
         password_confirmation: 'パスワード(確認)'
         role: '役割'
-      content_category:
-        id: 'ID'
-        name: 'カテゴリー名'
       content:
         id: 'ID'
         body: '内容'
-        content_category_id: 'カテゴリー'
-      alarm_content_category:
-        id: 'ID'
-        name: 'アラームカテゴリー名'
+        category: 'カテゴリー'
       alarm_content:
         id: 'ID'
         body: '内容'
-        alarm_content_category_id: 'アラームカテゴリー'
+        category: 'カテゴリー'
       line_group:
         id: 'ID'
         line_group_id: 'グループID'

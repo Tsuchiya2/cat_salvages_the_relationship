@@ -3,7 +3,7 @@
     = f.label :body, Content.human_attribute_name(:body)
     = f.text_field :body, class: 'form-control rounded-pill'
   .form-group.my-5.offset-2.col-8
-    = f.label :content_category_id, Content.human_attribute_name(:content_category_id)
-    = f.select :content_category_id, ContentCategory.all.map{|category| [category.name, category.id]}, {}, class: 'form-control rounded-pill'
+    = f.label :category, Content.human_attribute_name(:category)
+    = f.select :category, Content.categories.invert, {}, class: 'form-control rounded-pill'
   .form-group.my-5.text-center
     = f.submit '🐾 送信 🐾', class: 'btn btn-secondary rounded-pill font-monospace'
