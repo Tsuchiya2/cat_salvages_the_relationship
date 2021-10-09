@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Content, type: :model do
-  let(:content) { create(:content) }
+  let(:content) { build(:content) }
 
   describe '正常系テスト' do
     context '全て有効な場合' do
@@ -16,8 +16,8 @@ RSpec.describe Content, type: :model do
         expect(content).to be_valid
       end
 
-      it '文字列が65_535以下の場合、保存できる。' do
-        content[:body] = 'a' * 65_535
+      it '文字列が255以下の場合、保存できる。' do
+        content[:body] = 'a' * 255
         expect(content).to be_valid
       end
     end
@@ -37,16 +37,16 @@ RSpec.describe Content, type: :model do
         expect(content.errors.full_messages).to include('内容 が短すぎです')
       end
 
-      it '65_536以上の文字列が入力された場合、保存できない。' do
-        content[:body] = 'a' * 65_536
+      it '256以上の文字列が入力された場合、保存できない。' do
+        content[:body] = 'a' * 256
         content.valid?
         expect(content.errors.full_messages).to include('内容 が長すぎです')
       end
     end
 
-    context 'content_category_id' do
+    context 'category' do
       it '空の状態だと、保存できない。' do
-        content[:content_category_id] = nil
+        content[:category] = nil
         content.valid?
         expect(content.errors.full_messages).to include('カテゴリー が空白です')
       end

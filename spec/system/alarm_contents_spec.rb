@@ -21,7 +21,7 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
       visit operator_alarm_contents_path
       click_on '新規作成'
       fill_in 'alarm_content[body]', with: 'New_AralmContent'
-      select alarm_content.alarm_content_category.name.to_s, from: 'アラームカテゴリー'
+      select '呼びかけ', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ一覧')
       expect(page).to have_content('New_AralmContent')

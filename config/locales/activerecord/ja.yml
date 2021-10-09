@@ -74,10 +74,3 @@ ja:
         line_group_id: 'グループID'
         remind_at: 'リマインド'
         status: '状態'
-
-
-  enums:
-    operator:
-      role:
-        operator: '管理運営'
-        guest: 'ゲスト'

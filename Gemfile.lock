@@ -89,6 +89,8 @@ GEM
     concurrent-ruby (1.1.9)
     crass (1.0.6)
     diff-lcs (1.4.4)
+    enum_help (0.0.17)
+      activesupport (>= 3.0.0)
     erubi (1.10.0)
     factory_bot (6.2.0)
       activesupport (>= 5.0.0)
@@ -331,6 +333,7 @@ DEPENDENCIES
   bullet
   byebug
   capybara
+  enum_help
   factory_bot_rails
   faker
   font-awesome-sass
