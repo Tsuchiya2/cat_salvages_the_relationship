@@ -2,9 +2,7 @@ class Operator::CatchEventsController < Operator::BaseController
   skip_before_action :require_login, only: %i[callback]
   protect_from_forgery with: :null_session, only: %i[callback]
 
-  require './app/line_bot_class/client'
-  require './app/line_bot_class/request'
-  require './app/line_bot_class/event'
+  require './app/line_bot_classes/manifest'
 
   def callback
     client = Client.set_line_bot_client
