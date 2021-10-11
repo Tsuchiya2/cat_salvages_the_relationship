@@ -11,7 +11,11 @@ class Operator::CatchEventsController < Operator::BaseController
 
     events = client.parse_events_from(body)
     events.each do |event|
-      Event.event_routes(event, client)
+      begin
+        Event.event_routes(event, client)
+      rescue
+        # メイラーで管理運営者に通知が行くようにする予定です。
+      end
       head :ok
     end
   end
