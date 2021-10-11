@@ -5,18 +5,14 @@ class Operator::CatchEventsController < Operator::BaseController
   require './app/line_bot_classes/manifest'
 
   def callback
+    # === リクエストがLINEプラットフォームから送信されたものかを確認します ====
     client = Client.set_line_bot_client
     body = Request.request_body_read(request)
     Request.judge_bad_request(request, body, client)
 
+    # === 以下イベント毎の処理になります ===
     events = client.parse_events_from(body)
-    events.each do |event|
-      begin
-        Event.event_routes(event, client)
-      rescue
-        # メイラーで管理運営者に通知が行くようにする予定です。
-      end
-      head :ok
-    end
+    Event.events_processes(events, client)
+    head :ok
   end
 end
