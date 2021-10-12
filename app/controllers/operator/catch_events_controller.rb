@@ -6,7 +6,7 @@ class Operator::CatchEventsController < Operator::BaseController
 
   def callback
     # === リクエストがLINEプラットフォームから送信されたものかを確認します ====
-    client = Client.set_line_bot_client
+    client = ClientConfig.set_line_bot_client
     body = Request.request_body_read(request)
     Request.judge_bad_request(request, body, client)
 
