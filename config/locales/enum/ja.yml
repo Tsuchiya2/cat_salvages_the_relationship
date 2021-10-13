@@ -7,10 +7,10 @@ ja:
     content:
       category:
         call: '呼びかけ'
-        movie: '動画'
-        text: 'テキスト'
+        movie: '動画(URL)'
+        text: '本文'
     alarm_content:
       category:
         call: '呼びかけ'
-        movie: '動画'
-        text: 'テキスト'
+        movie: '動画(URL)'
+        text: '本文'
