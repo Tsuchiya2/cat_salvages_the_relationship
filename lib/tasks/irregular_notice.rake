@@ -11,11 +11,14 @@ namespace :irregular_notice do
 
     remaind_groups = LineGroup.remind_today
     remaind_groups.find_each do |group|
-      client.push_message(group.line_group_id, call_message)
-      client.push_message(group.line_group_id, movie_message)
-      client.push_message(group.line_group_id, body_message)
-      group.remind_at = Date.current.since((2..5).to_a.sample.days)
-      group.call!
+      LineGroup.transaction do
+        # === 現状だと送信が上手くいかなかった際にtransactionは機能していません ===
+        client.push_message(group.line_group_id, call_message)
+        client.push_message(group.line_group_id, movie_message)
+        client.push_message(group.line_group_id, body_message)
+        group.remind_at = Date.current.since((2..5).to_a.sample.days)
+        group.call!
+      end
     end
   end
 end
