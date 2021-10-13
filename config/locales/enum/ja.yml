@@ -8,9 +8,9 @@ ja:
       category:
         call: '呼びかけ'
         movie: '動画(URL)'
-        body: '本文'
+        text: '本文'
     alarm_content:
       category:
         call: '呼びかけ'
         movie: '動画(URL)'
-        body: '本文'
+        text: '本文'
