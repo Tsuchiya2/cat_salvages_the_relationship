@@ -8,9 +8,11 @@ ja:
       category:
         call: '呼びかけ'
         movie: '動画(URL)'
-        text: '本文'
+        free: '自由記載'
     alarm_content:
       category:
-        call: '呼びかけ'
-        movie: '動画(URL)'
-        text: '本文'
+        contact: 'コンタクト'
+        proposal: '提案'
+        url: 'URL'
+        naive: 'ナイーブ'
+        free: '自由記載'
