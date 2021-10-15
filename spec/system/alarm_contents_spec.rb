@@ -9,14 +9,14 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     alarm_content
   end
 
-  context 'アラームコンテンツ一覧' do
+  describe 'アラームコンテンツ一覧' do
     it 'ログイン後、ナビバーの「アラームコンテンツ」からアラームコンテンツ一覧画面に遷移する。' do
       click_on 'アラームコンテンツ'
       expect(page).to have_content('アラームコンテンツ一覧')
     end
   end
 
-  context '新規アラームコンテンツ作成' do
+  describe '新規アラームコンテンツ作成' do
     it 'アラームコンテンツ一覧から新規作成を行い、アラームコンテンツ一覧に戻っってくる。その際、新規作成したアラームコンテンツが存在する。' do
       visit operator_alarm_contents_path
       click_on '新規作成'
@@ -28,7 +28,7 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     end
   end
 
-  context 'アラームコンテンツ編集・更新' do
+  describe 'アラームコンテンツ編集・更新' do
     it 'アラームコンテンツ一覧から編集・更新を行い、アラームコンテンツ一覧に戻ってくる。その際、更新したアラームコンテンツが存在する。' do
       visit operator_alarm_contents_path
       click_on alarm_content.body.to_s
