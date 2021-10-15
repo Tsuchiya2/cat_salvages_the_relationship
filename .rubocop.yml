@@ -41,6 +41,10 @@ RSpec/MultipleExpectations:
 RSpec/ExampleLength:
   Enabled: false
 
+# RspecのsystemテストでHTTP Status CodeよりSymbolを優先する規約を解除(Codeの方が共有しやすいとの判断から)
+RSpec/Rails/HttpStatus:
+  Enabled: false
+
 # 以下、初期状態でRubocopに引っかかる項目をスキップさせています。
 # 初期設定で引っかかっている項目
 Metrics/BlockLength:

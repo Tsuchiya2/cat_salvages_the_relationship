@@ -15,5 +15,6 @@
         tbody
           = render @contents if @contents
 
-    .my-5.text-center
-      = link_to '新規作成', new_operator_content_path, class: 'btn btn-secondary rounded-pill font-monospace'
+    - if current_user.operator?
+      .my-5.text-center
+        = link_to '新規作成', new_operator_content_path, class: 'btn btn-secondary rounded-pill font-monospace'

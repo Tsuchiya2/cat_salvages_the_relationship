@@ -2,7 +2,10 @@ tr
   td.text-center
     = content.id
   td
-    = link_to operator_content_path(content), class: 'link-dark text-decoration-none' do
+    - if current_user.operator?
+      = link_to operator_content_path(content), class: 'link-dark text-decoration-none' do
+        = content.body
+    - else
       = content.body
   td
     = content.category_i18n
