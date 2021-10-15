@@ -45,6 +45,8 @@ class Operator::ContentsController < Operator::BaseController
   end
 
   def destroy
+    authorize(@content)
+
     @content.destroy!
     redirect_to operator_contents_path, success: 'コンテンツを削除しました。'
   end
