@@ -2,16 +2,24 @@ class Operator::ContentsController < Operator::BaseController
   before_action :set_content, only: %i[show edit update destroy]
 
   def index
+    authorize(Content)
+
     @contents = Content.all
   end
 
-  def show; end
+  def show
+    authorize(@content)
+  end
 
   def new
+    authorize(Content)
+
     @content = Content.new
   end
 
   def create
+    authorize(Content)
+
     @content = Content.new(content_params)
     if @content.save
       redirect_to operator_contents_path, success: '新しくコンテンツを作成しました。'
@@ -21,9 +29,13 @@ class Operator::ContentsController < Operator::BaseController
     end
   end
 
-  def edit; end
+  def edit
+    authorize(@content)
+  end
 
   def update
+    authorize(@content)
+
     if @content.update(content_params)
       redirect_to operator_contents_path, success: 'コンテンツを更新しました。'
     else
