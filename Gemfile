@@ -5,8 +5,6 @@ ruby '3.0.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
-# Use mysql as the database for Active Record
-gem 'mysql2', '~> 0.5'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
@@ -33,7 +31,13 @@ gem 'enum_help'
 gem 'line-bot-api'
 gem 'pundit'
 
+group :production do
+  gem 'pg'
+end
+
 group :development, :test do
+  # Use mysql as the database for Active Record
+  gem 'mysql2', '~> 0.5'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails'
