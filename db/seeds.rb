@@ -13,6 +13,11 @@ Operator.create(name: 'guest',
                 password_confirmation: Rails.application.credentials.guest[:password],
                 role: 1) unless Operator.find_by(email: Rails.application.credentials.guest[:email])
 
+Operator.create(name: 'operator',
+                email: Rails.application.credentials.operator[:email],
+                password: Rails.application.credentials.operator[:password],
+                password_confirmation: Rails.application.credentials.operator[:password],
+                role: 0) unless Operator.find_by(email: Rails.application.credentials.operator[:email])
 
 unless Content.find_by(body: Rails.application.credentials.content[:movie])
   Content.transaction do

@@ -50,6 +50,6 @@ test:
 #
 production:
   <<: *default
-  database: reline_production
-  username: reline
-  password: <%= ENV['RELINE_DATABASE_PASSWORD'] %>
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
