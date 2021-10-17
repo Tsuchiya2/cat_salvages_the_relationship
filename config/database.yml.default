@@ -19,14 +19,14 @@ default: &default
 
 development:
   <<: *default
-  database: cat_salvages_the_relationship_development
+  database: reline_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: cat_salvages_the_relationship_test
+  database: reline_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -50,6 +50,6 @@ test:
 #
 production:
   <<: *default
-  database: cat_salvages_the_relationship_production
-  username: cat_salvages_the_relationship
-  password: <%= ENV['CAT_SALVAGES_THE_RELATIONSHIP_DATABASE_PASSWORD'] %>
+  database: reline_production
+  username: reline
+  password: <%= ENV['RELINE_DATABASE_PASSWORD'] %>
