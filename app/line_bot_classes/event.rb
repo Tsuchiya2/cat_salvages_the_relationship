@@ -61,7 +61,7 @@ class Event
     if LineGroup.find_by(line_group_id: group_id).nil? && count_menbers['count'].to_i > 1
       LineGroup.create!(line_group_id: group_id, remind_at: Date.current.since(3.days), status: :call)
     end
-    message = { type: 'text', text: '〇〇ニャ🐾よろしくニャ🐱🐾' }
+    message = { type: 'text', text: 'よろしくニャ🐱🐾' }
     client.push_message(group_id, message)
   end
   # ***** ↑↑↑ メンバー or LINE_Bot が入室した際、人数によっては LineGroup を作成します ↑↑↑ *****
@@ -100,13 +100,4 @@ class Event
       client.get_room_members_count(event['source']['roomId'])
     end
   end
-
-  # 機能確認用のオウム返し用コード - 最終的には削除する予定です。
-  # def self.return_text(event, client)
-  #   group_id = Event.judge_group_or_room(event)
-  #   return if group_id.blank?
-
-  #   message = { type: 'text', text: event.message['text'] }
-  #   client.reply_message(event['replyToken'], message)
-  # end
 end
