@@ -4,7 +4,7 @@ namespace :call_notice do
   task call_reminds: :environment do
     client = ClientConfig.set_line_bot_client
 
-    messages = [{ type: 'text', text: Alarmcontent.contact.sample.body },
+    messages = [{ type: 'text', text: AlarmContent.contact.sample.body },
                 { type: 'text', text: AlarmContent.proposal.sample.body },
                 { type: 'text', text: AlarmContent.url.sample.body },
                 { type: 'text', text: AlarmContent.naive.sample.body },
