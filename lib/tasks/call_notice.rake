@@ -15,7 +15,6 @@ namespace :call_notice do
       response = ''
       messages.each do |message|
         response = client.push_message(group.line_group_id, message) if response.blank? || response.code == '200'
-        logger.info response.code
       end
       group.remind_at = Date.current.since((7..12).to_a.sample.days)
       group.save! if response.code == '200'
