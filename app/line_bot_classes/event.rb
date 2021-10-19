@@ -24,7 +24,7 @@ class Event
     group_id = Event.judge_group_or_room(event)
     return if group_id.blank?
 
-    Event.cat_go_away(event, group_id, client) if event.message['text'].match?('I Love Cat.')
+    Event.cat_go_away(event, group_id, client) if event.message['text'].match?('Cat sleeping on our Memory.')
   end
 
   def self.cat_go_away(event, group_id, client)
