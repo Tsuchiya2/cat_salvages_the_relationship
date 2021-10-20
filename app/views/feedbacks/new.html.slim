@@ -1,0 +1,10 @@
+.container-fluid.mx-auto
+  .row
+    h1.mt-5.text-center
+      | フィードバック
+    = form_with model: @feedback, local: true do |f|
+      .form-group.my-5.offset-2.col-8
+        = f.label :text, Feedback.human_attribute_name(:text)
+        = f.text_area :text, maxlength: 300, placeholder: '100〜300文字でお願いします🐾', class: 'form-control rounded-3 py-2 px-2 mt-3 feedback-input'
+      .form-group.my-5.text-center
+        = f.submit '🐾 送信 🐾', class: 'btn btn-secondary rounded-pill font-monospace'
