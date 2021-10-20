@@ -38,6 +38,12 @@ ja:
               too_long: 'が長すぎです'
             category:
               blank: 'が空白です'
+        feedback:
+          attributes:
+            text:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
         line_group:
           attributes:
             line_group_id:
