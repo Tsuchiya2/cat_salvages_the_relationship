@@ -38,6 +38,12 @@ ja:
               too_long: 'が長すぎです'
             category:
               blank: 'が空白です'
+        feedback:
+          attributes:
+            text:
+              blank: 'が空白です'
+              too_short: 'が短すぎです'
+              too_long: 'が長すぎです'
         line_group:
           attributes:
             line_group_id:
@@ -51,8 +57,10 @@ ja:
 
     models:
       operator: 'オペレーター'
-      content_category: 'カテゴリー'
       content: 'コンテンツ'
+      alarm_content: 'アラームコンテンツ'
+      feedback: 'フィードバック'
+      line_group: 'LINEグループ'
     attributes:
       operator:
         id: 'ID'
@@ -69,6 +77,9 @@ ja:
         id: 'ID'
         body: '内容'
         category: 'カテゴリー'
+      feedback:
+        id: 'ID'
+        text: '内容'
       line_group:
         id: 'ID'
         line_group_id: 'グループID'
