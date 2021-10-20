@@ -2,7 +2,7 @@ class Operator < ApplicationRecord
   authenticates_with_sorcery!
   enum role: { operator: 0, guest: 1 }
 
-  validates :name,                    presence: true, length: { minimum: 2, maximum: 255 }
+  validates :name,                    presence: true, length: { in: 2..255 }
   validates :email,                   presence: true, uniqueness: true
   validates :email,                   format: { with: /\A[a-z0-9_-]+@[a-z0-9_-]+[\\.][a-z0-9_-]+/ }
   validates :password,                presence: true

@@ -1,5 +1,4 @@
 class Operator::BaseController < ApplicationController
-  add_flash_types :success, :info, :warning, :danger
   layout 'operator/layouts/application'
   before_action :require_login
 
