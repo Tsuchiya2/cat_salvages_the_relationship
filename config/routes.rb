@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   root 'customers#top'
   get 'usage', to: 'customers#usage'
-  resources :feedbacks, only: %i[new create]
   namespace :operator do
     get    'cat_in',  to: 'operator_sessions#new'
     post   'cat_in',  to: 'operator_sessions#create'
