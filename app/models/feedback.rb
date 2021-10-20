@@ -1,3 +1,3 @@
 class Feedback < ApplicationRecord
-  validates :text, presence: true, length: { minimum: 100, maximum: 300 }
+  validates :text, presence: true, length: { in: 100..300 }
 end
