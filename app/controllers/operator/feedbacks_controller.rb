@@ -15,7 +15,7 @@ class Operator::FeedbacksController < Operator::BaseController
     authorize(@feedback)
 
     @feedback.destroy!
-    redirect_to operator_check_feedbacks_path, success: 'コンテンツを削除しました。'
+    redirect_to operator_feedbacks_path, success: 'コンテンツを削除しました。'
   end
 
   private
