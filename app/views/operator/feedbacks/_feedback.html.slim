@@ -1,0 +1,11 @@
+tr
+  td.text-center
+    = feedback.id
+  td.text-center
+    - if current_user.operator?
+      = link_to operator_feedback_path(feedback), class: 'link-dark text-decoration-none' do
+        = feedback.text.truncate(10)
+    - else
+      = feedback.text.truncate(10)
+  td.text-center
+    = l(feedback.created_at)

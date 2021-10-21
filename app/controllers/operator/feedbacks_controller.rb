@@ -1,4 +1,4 @@
-class Operator::CheckFeedbacksController < Operator::BaseController
+class Operator::FeedbacksController < Operator::BaseController
   before_action :set_feedback, only: %i[show destroy]
 
   def index
@@ -15,12 +15,12 @@ class Operator::CheckFeedbacksController < Operator::BaseController
     authorize(@feedback)
 
     @feedback.destroy!
-    redirect_to operator_check_feedbacks_path, success: 'フィードバックを削除しました。'
+    redirect_to operator_check_feedbacks_path, success: 'コンテンツを削除しました。'
   end
 
   private
 
-  def set_content
+  def set_feedback
     @feedback = Feedback.find(params[:id])
   end
 end
