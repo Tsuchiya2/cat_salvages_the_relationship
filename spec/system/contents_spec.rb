@@ -24,19 +24,30 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       select '呼びかけ', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('コンテンツ一覧')
-      expect(page).to have_content('New_Content')
+      expect(page).to have_content('New_Content'.truncate(10))
     end
   end
 
   describe 'コンテンツ編集・更新' do
     it 'コンテンツ一覧から編集・更新を行い、コンテンツ一覧に戻ってくる。その際、更新したコンテンツが存在する。' do
       visit operator_contents_path
-      click_on content.body.to_s
+      click_on content.body.truncate(10)
       click_on '🐾 編集 🐾'
       fill_in 'content[body]', with: 'Update_Content'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('コンテンツ一覧')
-      expect(page).to have_content('Update_Content')
+      expect(page).to have_content('Update_Content'.truncate(10))
+    end
+  end
+
+  describe 'コンテンツ削除' do
+    it 'コンテンツ一覧から詳細→削除を行い、コンテンツ一覧に戻ってくる。その際、削除したコンテンツは存在しない。' do
+      visit operator_contents_path
+      click_on content.body.truncate(10)
+      click_on '- 削除 -'
+      page.driver.browser.switch_to.alert.accept
+      expect(page).to have_content('コンテンツ一覧')
+      expect(page).not_to have_content(content.body.truncate(10))
     end
   end
 end

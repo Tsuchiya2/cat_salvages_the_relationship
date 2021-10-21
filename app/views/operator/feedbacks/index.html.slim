@@ -1,7 +1,7 @@
 .container-fluid.mx-auto
   .row
     h1.mt-5.text-center
-      | アラームコンテンツ一覧
+      | フィードバック一覧
     .table-responsive.my-5
       table.table.table-striped.table-hover.text-nowrap
         thead.px-5
@@ -11,10 +11,6 @@
             th.col-4.text-center
               | 内容
             th.col-2.text-center
-              | カテゴリー
+              | 投稿日時
         tbody
-          = render @alarm_contents if @alarm_contents
-
-    - if current_user.operator?
-      .my-5.text-center
-        = link_to '新規作成', new_operator_alarm_content_path, class: 'btn btn-secondary rounded-pill font-monospace'
+          = render @feedbacks if @feedbacks

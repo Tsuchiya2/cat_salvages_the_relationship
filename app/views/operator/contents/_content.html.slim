@@ -1,11 +1,11 @@
 tr
   td.text-center
     = content.id
-  td
+  td.text-center
     - if current_user.operator?
       = link_to operator_content_path(content), class: 'link-dark text-decoration-none' do
-        = content.body
+        = content.body.truncate(10)
     - else
-      = content.body
-  td
+      = content.body.truncate(10)
+  td.text-center
     = content.category_i18n
