@@ -24,19 +24,30 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
       select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ一覧')
-      expect(page).to have_content('New_AralmContent')
+      expect(page).to have_content('New_AralmContent'.truncate(10))
     end
   end
 
   describe 'アラームコンテンツ編集・更新' do
     it 'アラームコンテンツ一覧から編集・更新を行い、アラームコンテンツ一覧に戻ってくる。その際、更新したアラームコンテンツが存在する。' do
       visit operator_alarm_contents_path
-      click_on alarm_content.body.to_s
+      click_on alarm_content.body.truncate(10)
       click_on '🐾 編集 🐾'
       fill_in 'alarm_content[body]', with: 'Update_AlarmContent'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ一覧')
-      expect(page).to have_content('Update_AlarmContent')
+      expect(page).to have_content('Update_AlarmContent'.truncate(10))
+    end
+  end
+
+  describe 'アラームコンテンツ削除' do
+    it 'アラームコンテンツ一覧から詳細→削除を行い、アラームコンテンツ一覧に戻ってくる。その際、削除したアラームコンテンツは存在しない。' do
+      visit operator_alarm_contents_path
+      click_on alarm_content.body.truncate(10)
+      click_on '- 削除 -'
+      page.driver.browser.switch_to.alert.accept
+      expect(page).to have_content('アラームコンテンツ一覧')
+      expect(page).not_to have_content(alarm_content.body.truncate(10))
     end
   end
 end
