@@ -2,14 +2,36 @@
   .row
     h1.mt-5.text-center
       | ReLINE
-    .main_character.text-center.my-2
+    .main_character.text-center.my-3
       = image_tag 'cat.png', alt: 'cat-image', class: 'img-fluid'
-    .add_firend_button.text-center.my-2
+    .add_firend_button.text-center.my-3
       = link_to 'https://lin.ee/Pllww8S' do
         = image_tag 'https://scdn.line-apps.com/n/line_add_friends/btn/ja.png', alt: '友だち追加', height: '36', border: '0'
-    .usage.text-center.my-3
-      = link_to usage_path, alt: '使い方', class: 'link-dark text-decoration-none' do
-        icon.fas.fa-mobile-alt.me-2
-        | 使い方
-    .special_thanks.text-center.my-2
+    .special_thanks.text-center.mt-2.mb-5
       | 猫さんのイラスト協力：Sapico様
+
+    / 以下,usageページから切り取り
+    .h4.mt-5.text-center.animation
+      | あの日を最後に<br>連絡が途切れた人はいませんか？
+    .usage-images.my-5
+      = image_tag 'undraw_true_friends_c94g.png', class: 'img-fluid'
+    .h4.mt-5.text-center
+      | 猫さんが<br>間を取り持つ手助けをします。
+    .usage-images.my-5
+      = image_tag 'undraw_connection_b38q.png', class: 'img-fluid'
+    .h4.mt-5.text-center
+      | 具体的な操作は2つだけ
+    .h4.mt-5.text-center
+      | 1.猫さんをLINEの友だちに追加
+    .usage-images.my-5
+      = image_tag 'undraw_add_friends_re_3xte.png', class: 'img-fluid'
+    h4.mt-5.text-center
+      | 2.猫さんをグループに加える
+    .usage-images.my-5
+      = image_tag 'undraw_Chatting_re_j55r.png', class: 'img-fluid'
+    .h4.mt-5.text-center
+      | "2"まで完了すると…
+    .h4.mt-5.text-center
+      | 猫さんが不定期に<br>グループに働きかけます。
+    .usage-images.my-5
+      = image_tag 'undraw_Online_messaging_re_qft3.png', class: 'img-fluid'
