@@ -1,5 +1,3 @@
-.container-fluid.mx-auto
-  .row
-    h1.mt-5.text-center
-      | 新規アラームコンテンツ作成
-    = render 'operator/alarm_contents/form', { alarm_content: @alarm_content, url: operator_alarm_contents_path }
+h1.mt-5.text-center
+  | 新規アラームコンテンツ作成
+= render 'operator/alarm_contents/form', { alarm_content: @alarm_content, url: operator_alarm_contents_path }

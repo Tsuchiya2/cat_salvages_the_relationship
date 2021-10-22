@@ -1,12 +1,10 @@
-.container-fluid.mx-auto
-  .row
-    h1.mt-5.text-center
-      = @content.body
-    h3.mt-5.text-center
-      | カテゴリー：
-      = @content.category
-    - if current_user.operator?
-      .mt-5.text-center
-        = link_to '🐾 編集 🐾', edit_operator_content_path(@content), class: 'btn btn-secondary rounded-pill font-monospace'
-      .my-5.text-center
-        = link_to '- 削除 -', operator_content_path(@content), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
+h1.mt-5.text-center
+  = @content.body
+h3.mt-5.text-center
+  | カテゴリー：
+  = @content.category
+- if current_user.operator?
+  .mt-5.text-center
+    = link_to '🐾 編集 🐾', edit_operator_content_path(@content), class: 'btn btn-secondary rounded-pill font-monospace'
+  .my-5.text-center
+    = link_to '- 削除 -', operator_content_path(@content), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
