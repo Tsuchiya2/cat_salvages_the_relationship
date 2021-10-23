@@ -12,4 +12,6 @@ html
   body.web-font
     = render 'shared/navbar'
     = render 'shared/flash_message'
-    = yield
+    .container-fluid.mx-auto
+      .row
+        = yield

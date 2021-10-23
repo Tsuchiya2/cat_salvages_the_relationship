@@ -11,3 +11,4 @@ Rails.start()
 ActiveStorage.start()
 
 import "../javascript/bootstrap.js"
+import "../javascript/scroll.js"

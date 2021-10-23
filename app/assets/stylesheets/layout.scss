@@ -10,3 +10,18 @@ body {
   resize: none;
   height: 280px;
 }
+
+.fade-in {
+  opacity: 0;
+  transition-duration: 1000ms;
+  transition-property: opacity, transform;
+}
+
+.fade-in-up {
+  transform: translate(0, 50px);
+}
+
+.scroll-in {
+  opacity: 1;
+  transform: translate(0, 0);
+}

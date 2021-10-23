@@ -1,20 +1,18 @@
-.container-fluid.mx-auto
-  .row
-    h1.mt-5.text-center
-      | コンテンツ一覧
-    .table-responsive.my-5
-      table.table.table-striped.table-hover.text-nowrap
-        thead.px-5
-          tr
-            th.col-1.text-center
-              | ID
-            th.col-4.text-center
-              | コンテンツ内容
-            th.col-2.text-center
-              | カテゴリー
-        tbody
-          = render @contents if @contents
+h1.mt-5.text-center
+  | コンテンツ一覧
+.table-responsive.my-5
+  table.table.table-striped.table-hover.text-nowrap
+    thead.px-5
+      tr
+        th.col-1.text-center
+          | ID
+        th.col-4.text-center
+          | コンテンツ内容
+        th.col-2.text-center
+          | カテゴリー
+    tbody
+      = render @contents if @contents
 
-    - if current_user.operator?
-      .my-5.text-center
-        = link_to '新規作成', new_operator_content_path, class: 'btn btn-secondary rounded-pill font-monospace'
+- if current_user.operator?
+  .my-5.text-center
+    = link_to '新規作成', new_operator_content_path, class: 'btn btn-secondary rounded-pill font-monospace'
