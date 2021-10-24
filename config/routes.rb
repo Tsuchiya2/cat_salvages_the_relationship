@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root 'customers#top'
+  get 'privacy_policy', to: 'customers#privacy_policy'
   resources :feedbacks, only: %i[new create]
   namespace :operator do
     get    'cat_in',  to: 'operator_sessions#new'
