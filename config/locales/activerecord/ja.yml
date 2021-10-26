@@ -54,6 +54,11 @@ ja:
               blank: 'が空白です'
             status:
               blank: 'が空白です'
+            post_count:
+              blank: 'が空白です'
+              greater_than_or_equal_to: 'が0より小さい値です'
+              less_than_or_equal_to: 'が100_000_000より大きい値です'
+              not_a_number: 'が数値ではありません'
 
     models:
       operator: 'オペレーター'
@@ -85,3 +90,4 @@ ja:
         line_group_id: 'グループID'
         remind_at: 'リマインド'
         status: '状態'
+        post_count: '投稿数'
