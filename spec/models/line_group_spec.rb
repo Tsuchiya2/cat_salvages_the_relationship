@@ -93,4 +93,13 @@ RSpec.describe LineGroup, type: :model do
       end
     end
   end
+
+  describe 'インスタンスメソッド' do
+    it 'change_status_to_wait' do
+      line_group.change_status_to_wait
+      expect(line_group.status).to eq 'wait'
+      expect(line_group.remind_at).not_to eq Time.current.since(21.days)
+      expect(line_group.post_count).to be 1
+    end
+  end
 end
