@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root 'customers#top'
+  get 'terms', to: 'customers#terms'
   get 'privacy_policy', to: 'customers#privacy_policy'
   resources :feedbacks, only: %i[new create]
   namespace :operator do
