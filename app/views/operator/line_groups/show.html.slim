@@ -1,0 +1,25 @@
+h1.mt-5.text-center
+  | グループ詳細
+h3.mt-5.text-center
+  | LINE_Group_ID：
+  = @line_group.line_group_id
+h3.mt-5.text-center
+  | 次の働きかけ日：
+  = @line_group.remind_at
+h3.mt-5.text-center
+  | 状態：
+  = @line_group.status
+h3.mt-5.text-center
+  | 交流数：
+  = @line_group.post_count
+h3.mt-5.text-center
+  | 作成日：
+  = l(@line_group.created_at, format: :long)
+h3.mt-5.text-center
+  | 更新日：
+  = l(@line_group.updated_at, format: :long)
+- if current_user.operator?
+  .mt-5.text-center
+    = link_to '🐾 編集 🐾', edit_operator_line_group_path(@line_group), class: 'btn btn-secondary rounded-pill font-monospace'
+  .my-5.text-center
+    = link_to '- 削除 -', operator_line_group_path(@line_group), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
