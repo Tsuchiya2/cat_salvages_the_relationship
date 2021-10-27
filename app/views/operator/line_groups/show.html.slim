@@ -13,6 +13,9 @@ h3.mt-5.text-center
   | 交流数：
   = @line_group.post_count
 h3.mt-5.text-center
+  | 利用者数：
+  = @line_group.member_count
+h3.mt-5.text-center
   | 作成日：
   = l(@line_group.created_at, format: :long)
 h3.mt-5.text-center

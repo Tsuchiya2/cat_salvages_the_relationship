@@ -59,6 +59,11 @@ ja:
               greater_than_or_equal_to: 'が0より小さい値です'
               less_than_or_equal_to: 'が100_000_000より大きい値です'
               not_a_number: 'が数値ではありません'
+            member_count:
+              blank: 'が空白です'
+              greater_than_or_equal_to: 'が0より小さい値です'
+              less_than_or_equal_to: 'が50より大きい値です'
+              not_a_number: 'が数値ではありません'
 
     models:
       operator: 'オペレーター'
@@ -91,3 +96,4 @@ ja:
         remind_at: 'リマインド'
         status: '状態'
         post_count: '投稿数'
+        member_count: '利用者数'

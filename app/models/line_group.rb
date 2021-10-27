@@ -7,12 +7,18 @@ class LineGroup < ApplicationRecord
   validates :post_count,    presence: true, numericality: { only_integer: true,
                                                             greater_than_or_equal_to: 0,
                                                             less_than_or_equal_to: 1_000_000_000 }
+  validates :member_count,  presence: true, numericality: { only_integer: true,
+                                                            greater_than_or_equal_to: 0,
+                                                            less_than_or_equal_to: 50 }
 
   scope :remind_wait, -> { wait.where('remind_at <= ?', Date.current) }
   scope :remind_call, -> { call.where('remind_at <= ?', Date.current) }
 
-  def change_status_to_wait
+  def change_status_to_wait(count_menbers)
     random_number = (23..60).to_a.sample
-    update!(remind_at: Date.current.since(random_number.days), status: :wait, post_count: post_count + 1)
+    update!(remind_at: Date.current.since(random_number.days),
+            status: :wait,
+            post_count: post_count + 1,
+            member_count: count_menbers)
   end
 end

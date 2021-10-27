@@ -46,7 +46,7 @@ class Event
     return if count_menbers['count'].to_i < 2
 
     line_group = LineGroup.find_by(line_group_id: group_id)
-    line_group.change_status_to_wait
+    line_group.change_status_to_wait(count_menbers['count'].to_i)
   end
   # ===== ↑↑↑ メンバーがテキスト・スタンプetcを送信した際、remind_at, status を更新します ↑↑↑ =====
 
@@ -58,7 +58,8 @@ class Event
     json_data = Event.members_count(event, client)
     count_menbers = JSON.parse(json_data.body)
     if LineGroup.find_by(line_group_id: group_id).nil? && count_menbers['count'].to_i > 1
-      LineGroup.create!(line_group_id: group_id, remind_at: Date.current.since(3.days), status: :call)
+      LineGroup.save!(line_group_id: group_id, remind_at: Date.current.since(3.days),
+                      status: :call, member_count: count_menbers['count'].to_i)
     end
     message = { type: 'text', text: 'よろしくニャ🐱🐾' }
     client.push_message(group_id, message)

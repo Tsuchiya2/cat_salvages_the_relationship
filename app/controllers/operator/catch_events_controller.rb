@@ -2,7 +2,7 @@ class Operator::CatchEventsController < Operator::BaseController
   skip_before_action :require_login, only: %i[callback]
   protect_from_forgery with: :null_session, only: %i[callback]
 
-  require './app/line_bot_classes/manifest'
+  require './app/lines/manifest'
 
   def callback
     # === リクエストがLINEプラットフォームから送信されたものかを確認します ====

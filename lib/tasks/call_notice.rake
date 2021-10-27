@@ -1,5 +1,5 @@
 namespace :call_notice do
-  require './app/line_bot_classes/manifest'
+  require './app/lines/manifest'
   desc '短いスパンでの働きかけを行う'
   task call_reminds: :environment do
     client = ClientConfig.set_line_bot_client

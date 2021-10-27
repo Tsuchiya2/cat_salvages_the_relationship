@@ -1,5 +1,5 @@
 namespace :wait_notice do
-  require './app/line_bot_classes/manifest'
+  require './app/lines/manifest'
   desc '不定期な働きかけを行う'
   task wait_reminds: :environment do
     client = ClientConfig.set_line_bot_client
