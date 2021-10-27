@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] Contents', type: :system do
-  let(:operator) { create :operator }
-  let(:content) { create :content }
+  let(:operator)  { create :operator }
+  let(:content)   { create :content }
 
   before do
     login(operator)

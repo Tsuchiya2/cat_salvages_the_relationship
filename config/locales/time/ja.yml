@@ -2,3 +2,8 @@ ja:
   time:
     formats:
       default: "%Y/%m/%d"
+      long: "%Y/%m/%d %H:%M"
+      shot: "%m/%d"
+  date:
+    formats:
+      shot: "%m/%d"

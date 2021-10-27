@@ -1,0 +1,15 @@
+h1.mt-5.text-center
+  | グループの編集
+- if current_user.operator?
+  = form_with model: @line_group, url: operator_line_group_path(@line_group), local: true do |f|
+    .form-group.my-5.offset-2.col-8
+      = f.label :remind_at
+      = f.text_field :remind_at, class: 'form-control rounded-pill'
+    .form-group.my-5.offset-2.col-8
+      = f.label :status
+      = f.select :status, LineGroup.statuses_i18n.invert, {}, class: 'form-control rounded-pill'
+    .form-group.my-5.offset-2.col-8
+      = f.label :post_count
+      = f.number_field :post_count, min: 0, max: 100_000_000, class: 'form-control rounded-pill'
+    .form-group.my-5.text-center
+      = f.submit '🐾 送信 🐾', class: 'btn btn-secondary rounded-pill font-monospace'

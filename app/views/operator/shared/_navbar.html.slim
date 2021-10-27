@@ -1,4 +1,4 @@
-nav.navbar.navbar-expand-md.navbar-dark.bg-secondary.fixed-top
+nav.navbar.navbar-expand-xl.navbar-dark.bg-secondary.fixed-top
   = link_to 'ReLINE', operator_boards_path, class: 'navbar-brand ps-3'
   button.navbar-toggler.me-3 data-bs-toggle='collapse' data-bs-target="#navbarSupportedContent" aria-label="Toggle navigation"
     span.navbar-toggler-icon
@@ -15,6 +15,11 @@ nav.navbar.navbar-expand-md.navbar-dark.bg-secondary.fixed-top
             icon.fas.fa-comments.me-2
             .guide-text
               | フィードバック
+        li.nav-item
+          = link_to operator_line_groups_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+            icon.fas.fa-info-circle.me-2
+            .guide-text
+              | グループ状態
         li.nav-item
           = link_to operator_contents_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
             icon.fas.fa-file-alt.me-2
