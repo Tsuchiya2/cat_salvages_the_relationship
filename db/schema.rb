@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_26_085118) do
+ActiveRecord::Schema.define(version: 2021_10_27_112535) do
 
   create_table "alarm_contents", charset: "utf8mb4", force: :cascade do |t|
     t.string "body", null: false
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2021_10_26_085118) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "post_count", default: 0, null: false
+    t.integer "member_count", default: 0, null: false
     t.index ["line_group_id"], name: "index_line_groups_on_line_group_id", unique: true
   end
 
