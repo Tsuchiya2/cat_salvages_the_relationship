@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] GuestAccesses', type: :system do
-  let(:guest) { create :operator, :guest }
-  let(:content) { create :content }
+  let(:guest)         { create :operator, :guest }
+  let(:content)       { create :content }
   let(:alarm_content) { create :alarm_content }
-  let(:feedback) { create :feedback }
+  let(:feedback)      { create :feedback }
+  let(:line_group)    { create :line_group }
 
   before do
     driven_by(:rack_test)
@@ -130,6 +131,42 @@ RSpec.describe '[SystemTest] GuestAccesses', type: :system do
         visit operator_feedback_path(feedback)
         expect(page).to have_http_status(403)
         expect(page).not_to have_content(feedback.text)
+      end
+    end
+  end
+
+  describe 'LineGroup関連へのアクセス' do
+    before do
+      line_group
+    end
+
+    context 'indexアクション' do
+      it 'ゲストログイン後、indexへのアクセスが成功して、グループ一覧とグループの中身(一部)が表示される' do
+        visit operator_line_groups_path
+        expect(page).to have_content('グループ一覧')
+        expect(page).to have_content(line_group.status)
+        expect(page).not_to have_content(line_group.line_group_id)
+      end
+
+      it 'ゲストログイン後、indexへのアクセスは成功するが、Feedbackの詳細(show)へのリンクは表示されない' do
+        visit operator_line_groups_path
+        expect(page).not_to have_link(line_group.status)
+      end
+    end
+
+    context 'showアクション' do
+      it 'アクセスに失敗して、403ページが表示される' do
+        visit operator_line_group_path(line_group)
+        expect(page).to have_http_status(403)
+        expect(page).not_to have_content(line_group.status)
+      end
+    end
+
+    context 'editアクション' do
+      it 'アクセスに失敗して、403ページが表示される' do
+        visit edit_operator_line_group_path(line_group)
+        expect(page).to have_http_status(403)
+        expect(page).not_to have_content(line_group.status)
       end
     end
   end

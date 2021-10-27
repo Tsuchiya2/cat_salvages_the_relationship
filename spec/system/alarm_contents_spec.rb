@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] AlarmContents', type: :system do
-  let(:operator) { create :operator }
+  let(:operator)      { create :operator }
   let(:alarm_content) { create :alarm_content }
 
   before do
