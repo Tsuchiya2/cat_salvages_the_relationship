@@ -23,8 +23,8 @@ RSpec.describe LineGroup, type: :model do
         expect(line_group).to be_valid
       end
 
-      it '数値が100_000_000以下の場合、保存できる。' do
-        line_group[:post_count] = 100_000_000
+      it '数値が1_000_000_000以下の場合、保存できる。' do
+        line_group[:post_count] = 1_000_000_000
         expect(line_group).to be_valid
       end
     end
@@ -80,8 +80,8 @@ RSpec.describe LineGroup, type: :model do
         expect(line_group.errors.full_messages).to include('投稿数 が0より小さい値です')
       end
 
-      it '数値が100_000_001以上の場合、保存できない。' do
-        line_group[:post_count] = 100_000_001
+      it '数値が1_000_000_001以上の場合、保存できない。' do
+        line_group[:post_count] = 1_000_000_001
         line_group.valid?
         expect(line_group.errors.full_messages).to include('投稿数 が100_000_000より大きい値です')
       end

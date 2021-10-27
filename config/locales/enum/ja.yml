@@ -16,3 +16,7 @@ ja:
         url: 'URL'
         naive: 'ナイーブ'
         free: '自由記載'
+    line_group:
+      status:
+        wait: '呼びかけ前'
+        call: '呼びかけ実施中'

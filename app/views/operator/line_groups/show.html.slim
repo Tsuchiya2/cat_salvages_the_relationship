@@ -1,7 +1,7 @@
 h1.mt-5.text-center
   | グループ詳細
 h3.mt-5.text-center
-  | LINE_Group_ID：
+  | - LINE_Group_ID -<br>
   = @line_group.line_group_id
 h3.mt-5.text-center
   | 次の働きかけ日：
@@ -22,4 +22,4 @@ h3.mt-5.text-center
   .mt-5.text-center
     = link_to '🐾 編集 🐾', edit_operator_line_group_path(@line_group), class: 'btn btn-secondary rounded-pill font-monospace'
   .my-5.text-center
-    = link_to '- 削除 -', operator_line_group_path(@line_group), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
+    = link_to '- 削除 -', operator_line_group_path(@line_group), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '"おまじない"を使ってユーザーに削除をお願いするのが基本線ですが、本当に削除しますか？ ' }
