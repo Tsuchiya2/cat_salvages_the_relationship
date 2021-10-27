@@ -46,7 +46,7 @@ class Event
     return if count_menbers['count'].to_i < 2
 
     line_group = LineGroup.find_by(line_group_id: group_id)
-    line_group.change_status_to_wait
+    line_group.change_status_to_wait(count_menbers['count'].to_i)
   end
   # ===== ↑↑↑ メンバーがテキスト・スタンプetcを送信した際、remind_at, status を更新します ↑↑↑ =====
 

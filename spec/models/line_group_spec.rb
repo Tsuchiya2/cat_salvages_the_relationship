@@ -134,10 +134,11 @@ RSpec.describe LineGroup, type: :model do
 
   describe 'インスタンスメソッド' do
     it 'change_status_to_wait' do
-      line_group.change_status_to_wait
+      line_group.change_status_to_wait(5)
       expect(line_group.status).to eq 'wait'
       expect(line_group.remind_at).not_to eq Time.current.since(21.days)
       expect(line_group.post_count).to be 1
+      expect(line_group.member_count).to be 5
     end
   end
 end
