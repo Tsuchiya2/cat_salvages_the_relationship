@@ -28,6 +28,18 @@ RSpec.describe LineGroup, type: :model do
         expect(line_group).to be_valid
       end
     end
+
+    context 'member_count' do
+      it '数値が0以上の場合、保存できる。' do
+        line_group[:member_count] = 0
+        expect(line_group).to be_valid
+      end
+
+      it '数値が50以下の場合、保存できる。' do
+        line_group[:member_count] = 50
+        expect(line_group).to be_valid
+      end
+    end
   end
 
   describe '異常系テスト' do
@@ -90,6 +102,32 @@ RSpec.describe LineGroup, type: :model do
         line_group[:post_count] = 'abc'
         line_group.valid?
         expect(line_group.errors.full_messages).to include('投稿数 が数値ではありません')
+      end
+    end
+
+    context 'member_count' do
+      it '空の状態だと、保存できない。' do
+        line_group[:member_count] = nil
+        line_group.valid?
+        expect(line_group.errors.full_messages).to include('利用者数 が空白です')
+      end
+
+      it '数値が0未満の場合、保存できない。' do
+        line_group[:member_count] = -1
+        line_group.valid?
+        expect(line_group.errors.full_messages).to include('利用者数 が0より小さい値です')
+      end
+
+      it '数値が51以上の場合、保存できない。' do
+        line_group[:member_count] = 51
+        line_group.valid?
+        expect(line_group.errors.full_messages).to include('利用者数 が50より大きい値です')
+      end
+
+      it '文字列"abc"が入力された場合、保存できない。' do
+        line_group[:member_count] = 'abc'
+        line_group.valid?
+        expect(line_group.errors.full_messages).to include('利用者数 が数値ではありません')
       end
     end
   end

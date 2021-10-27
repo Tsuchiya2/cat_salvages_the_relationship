@@ -4,8 +4,9 @@ class Operator::LineGroupsController < Operator::BaseController
   def index
     authorize(LineGroup)
 
-    @line_groups = LineGroup.all
-    @all_post_count = @line_groups.sum(:post_count)
+    @line_groups      = LineGroup.all
+    @sum_post_count   = @line_groups.sum(:post_count)
+    @sum_member_count = @line_groups.sum(:member_count)
   end
 
   def show

@@ -2,7 +2,10 @@ h1.mt-5.text-center
   | グループ一覧
 h3.mt-5.text-center
   | 総交流数：
-  = @all_post_count
+  = @sum_post_count
+h3.mt-5.text-center
+  | 総利用者数：
+  = @sum_member_count
 .table-responsive.my-5
   table.table.table-striped.table-hover.text-nowrap
     thead.px-5
@@ -14,7 +17,9 @@ h3.mt-5.text-center
         th.col-1.text-center
           | 状態
         th.col-2.text-center
-          | 交流数
+          | 交流
+        th.col-2.text-center
+          | 利用者
         th.col-1.text-center
           | 更新日
     tbody

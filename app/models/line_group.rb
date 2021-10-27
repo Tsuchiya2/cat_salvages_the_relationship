@@ -7,6 +7,9 @@ class LineGroup < ApplicationRecord
   validates :post_count,    presence: true, numericality: { only_integer: true,
                                                             greater_than_or_equal_to: 0,
                                                             less_than_or_equal_to: 1_000_000_000 }
+  validates :member_count,  presence: true, numericality: { only_integer: true,
+                                                            greater_than_or_equal_to: 0,
+                                                            less_than_or_equal_to: 50 }
 
   scope :remind_wait, -> { wait.where('remind_at <= ?', Date.current) }
   scope :remind_call, -> { call.where('remind_at <= ?', Date.current) }
