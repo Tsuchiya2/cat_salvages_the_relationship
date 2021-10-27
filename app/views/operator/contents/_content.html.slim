@@ -3,8 +3,7 @@ tr
     = content.id
   td.text-center
     - if current_user.operator?
-      = link_to operator_content_path(content), class: 'link-dark text-decoration-none' do
-        = content.body.truncate(10)
+      = link_to content.body.truncate(10), operator_content_path(content), class: 'link-dark text-decoration-none'
     - else
       = content.body.truncate(10)
   td.text-center

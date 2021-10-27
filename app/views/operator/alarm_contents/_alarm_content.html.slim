@@ -3,8 +3,7 @@ tr
     = alarm_content.id
   td.text-center
     - if current_user.operator?
-      = link_to operator_alarm_content_path(alarm_content), class: 'link-dark text-decoration-none' do
-        = alarm_content.body.truncate(10)
+      = link_to alarm_content.body.truncate(10), operator_alarm_content_path(alarm_content), class: 'link-dark text-decoration-none'
     - else
       = alarm_content.body.truncate(10)
   td.text-center
