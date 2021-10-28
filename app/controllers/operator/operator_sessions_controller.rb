@@ -7,7 +7,7 @@ class Operator::OperatorSessionsController < Operator::BaseController
     @operator = login(params[:email], params[:password])
 
     if @operator
-      redirect_to operator_boards_path, success: 'キャットインしました。'
+      redirect_to operator_operates_path, success: 'キャットインしました。'
     else
       render :new
     end

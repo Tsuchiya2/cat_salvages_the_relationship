@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     get    'cat_in',        to: 'operator_sessions#new'
     post   'cat_in',        to: 'operator_sessions#create'
     delete 'cat_out',       to: 'operator_sessions#destroy'
-    resources :boards,      only: %i[index]
+    resources :operates,    only: %i[index]
     resources :contents
     resources :alarm_contents
     resources :feedbacks,   only: %i[index show destroy]

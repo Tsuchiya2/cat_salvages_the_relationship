@@ -1,12 +1,12 @@
 nav.navbar.navbar-expand-xl.navbar-dark.bg-secondary.fixed-top
-  = link_to 'ReLINE', operator_boards_path, class: 'navbar-brand ps-3'
+  = link_to 'ReLINE', operator_operates_path, class: 'navbar-brand ps-3'
   button.navbar-toggler.me-3 data-bs-toggle='collapse' data-bs-target="#navbarSupportedContent" aria-label="Toggle navigation"
     span.navbar-toggler-icon
   .collapse.navbar-collapse id='navbarSupportedContent'
     ul.navbar-nav.ps-3
       - if logged_in?
         li.nav-item
-          = link_to operator_boards_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
+          = link_to operator_operates_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
             icon.fas.fa-paw.me-2
             .guide-text
               | トップページ
