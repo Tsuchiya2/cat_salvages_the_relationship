@@ -3,6 +3,10 @@ class ContentPolicy < ApplicationPolicy
     user.operator? || user.guest?
   end
 
+  def new?
+    user.operator?
+  end
+
   def show?
     user.operator?
   end

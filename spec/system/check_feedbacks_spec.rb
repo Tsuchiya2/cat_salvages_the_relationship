@@ -5,7 +5,6 @@ RSpec.describe '[SystemTest] CheckFeedbacks', type: :system do
   let(:feedback) { create :feedback }
 
   before do
-    # driven_by(:rack_test)
     login(operator)
     feedback
   end
