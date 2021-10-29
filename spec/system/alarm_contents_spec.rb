@@ -26,6 +26,16 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
       expect(page).to have_content('アラームコンテンツ一覧')
       expect(page).to have_content('New_AralmContent'.truncate(10))
     end
+
+    it 'アラームコンテンツ一覧から新規作成を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
+      visit operator_alarm_contents_path
+      click_on '新規作成'
+      fill_in 'alarm_content[body]', with: nil
+      select 'コンタクト', from: 'カテゴリー'
+      click_on '🐾 送信 🐾'
+      expect(page).to have_content('新規アラームコンテンツ作成')
+      expect(page).to have_content('入力に不備がありました。')
+    end
   end
 
   describe 'アラームコンテンツ編集・更新' do
@@ -37,6 +47,16 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ一覧')
       expect(page).to have_content('Update_AlarmContent'.truncate(10))
+    end
+
+    it 'アラームコンテンツ一覧から編集・更新を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
+      visit operator_alarm_contents_path
+      click_on alarm_content.body.truncate(10)
+      click_on '🐾 編集 🐾'
+      fill_in 'alarm_content[body]', with: nil
+      click_on '🐾 送信 🐾'
+      expect(page).to have_content('アラームコンテンツ編集')
+      expect(page).to have_content('入力に不備がありました。')
     end
   end
 

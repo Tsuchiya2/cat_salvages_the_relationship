@@ -7,10 +7,6 @@ class FeedbackPolicy < ApplicationPolicy
     user.operator?
   end
 
-  def create?
-    false
-  end
-
   def destroy?
     user.operator?
   end
