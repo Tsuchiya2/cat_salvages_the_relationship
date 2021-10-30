@@ -2,8 +2,10 @@ class Event
   def self.events_processes(events, client)
     events.each do |event|
       Event.event_branches(event, client)
-    rescue StandardError
-      # メイラーで管理運営者に通知が行くようにする予定です。
+    rescue StandardError => e
+      group_id = Event.judge_group_or_room(event)
+      error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}"
+      LineMailer.error_email(group_id, error_message).deliver_later
     end
   end
 

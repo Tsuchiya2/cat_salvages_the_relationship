@@ -12,12 +12,15 @@ namespace :call_notice do
 
     remaind_groups = LineGroup.remind_call
     remaind_groups.find_each do |group|
-      response = ''
-      messages.each do |message|
-        response = client.push_message(group.line_group_id, message) if response.blank? || response.code == '200'
+      messages.each_with_index do |message, index|
+        response = client.push_message(group.line_group_id, message)
+        raise "働きかけ#{index + 1}つ目でエラー発生。#{message}" if response.code == '400'
       end
       group.remind_at = Date.current.since((7..12).to_a.sample.days)
-      group.save! if response.code == '200'
+      group.save!
+    rescue StandardError => e
+      error_message = "<CallNotice> 例外:#{e.class}, メッセージ:#{e.message}"
+      LineMailer.error_email(group.line_group_id, error_message).deliver_later
     end
   end
 end
