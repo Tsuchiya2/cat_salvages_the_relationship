@@ -4,8 +4,8 @@ class Event
       Event.event_branches(event, client)
     rescue StandardError => e
       group_id = Event.judge_group_or_room(event)
-      error = "例外:#{e.class}, メッセージ:#{e.message}"
-      LineMailer.event_error_email(group_id, error).deliver_later
+      error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}"
+      LineMailer.error_email(group_id, error_message).deliver_later
     end
   end
 

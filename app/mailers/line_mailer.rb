@@ -1,7 +1,7 @@
 class LineMailer < ApplicationMailer
-  def event_error_email(group_id, error)
-    @group_id = group_id
-    @error = error
-    mail(to: 'operator@example.com', subject: '[Error通知]LINEイベント')
+  def error_email(group_id, error_message)
+    @group_id       = group_id
+    @error_message  = error_message
+    mail(subject: '【Error通知】LINEとの通信において')
   end
 end
