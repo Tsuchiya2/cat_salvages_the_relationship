@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>【Warning】ロック状態のアカウントにアクセスがありました</h1>
+    <p>以下のアカウントがロック状態にも関わらず、ログインを試みた模様です。確認と対策をお願いします。</p>
+    <p>アカウント名：<%= @operator.name %></p>
+    <p>ロック解除時間：<%= l(@operator.lock_expires_at, format: :long) %></p>
+    <p>アクセス先のIP：<%= @access_ip %></p>
+  </body>
+</html>

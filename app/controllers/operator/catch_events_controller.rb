@@ -13,6 +13,6 @@ class Operator::CatchEventsController < Operator::BaseController
     # === 以下イベント毎の処理になります ===
     events = client.parse_events_from(body)
     Event.events_processes(events, client)
-    head :ok
+    'OK'
   end
 end

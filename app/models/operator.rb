@@ -10,4 +10,8 @@ class Operator < ApplicationRecord
   validates :password,                confirmation: true, if: -> { new_record? || changes[:crypted_password] }
   validates :password_confirmation,   presence: true, if: -> { new_record? || changes[:crypted_password] }
   validates :role,                    presence: true
+
+  def mail_notice(access_ip)
+    SessionMailer.notice(self, access_ip).deliver_later if lock_expires_at.present?
+  end
 end
