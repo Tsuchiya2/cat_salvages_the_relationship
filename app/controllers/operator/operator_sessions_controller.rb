@@ -10,6 +10,8 @@ class Operator::OperatorSessionsController < Operator::BaseController
       redirect_to operator_operates_path, success: 'キャットインしました。'
     else
       render :new
+      accessed_acount = Operator.find_by(email: params[:email])
+      accessed_acount&.mail_notice(request.remote_ip)
     end
   end
 

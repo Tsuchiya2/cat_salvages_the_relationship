@@ -483,7 +483,7 @@ Rails.application.config.sorcery.configure do |config|
     # How long the user should be banned, in seconds. 0 for permanent.
     # Default: `60 * 60`
     #
-    user.login_lock_time_period = (60 * 30)
+    user.login_lock_time_period = (60 * 45)
 
     # Unlock token attribute name
     # Default: `:unlock_token`
