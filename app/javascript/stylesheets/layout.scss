@@ -2,10 +2,6 @@ body {
   padding-top: 3.5rem;
 }
 
-.web-font {
-  font-family: 'Hachi Maru Pop', cursive;
-}
-
 .feedback-input {
   resize: none;
   height: 280px;
@@ -24,6 +20,11 @@ body {
 .scroll-in {
   opacity: 1;
   transform: translate(0, 0);
+}
+
+// === フォント関連 ===
+.web-font {
+  font-family: 'Hachi Maru Pop', cursive;
 }
 
 .meiryo-font {
