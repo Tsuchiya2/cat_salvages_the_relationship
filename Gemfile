@@ -29,7 +29,6 @@ gem 'sorcery'
 gem 'enum_help'
 gem 'line-bot-api'
 gem 'pundit'
-gem 'bootstrap', '~> 5.1.0'
 
 group :production do
   gem 'pg'

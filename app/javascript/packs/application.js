@@ -10,5 +10,7 @@ import "channels"
 Rails.start()
 ActiveStorage.start()
 
-import "../javascript/bootstrap.js"
+const images = require.context('../images', true)
+import 'bootstrap'
 import "../javascript/scroll.js"
+import "./application.scss"

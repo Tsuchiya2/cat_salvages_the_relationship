@@ -1,1 +1,1 @@
-window.bootstrap = require("bootstrap");
+// window.bootstrap = require("bootstrap");
