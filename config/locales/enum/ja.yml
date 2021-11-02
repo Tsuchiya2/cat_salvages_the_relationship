@@ -6,16 +6,16 @@ ja:
         guest: 'ゲスト'
     content:
       category:
-        call: '呼びかけ'
-        movie: '動画(URL)'
-        free: '自由記載'
+        contact: 'コンタクト'
+        free: '自由記述'
+        text: 'テキスト'
     alarm_content:
       category:
         contact: 'コンタクト'
-        proposal: '提案'
-        url: 'URL'
-        naive: 'ナイーブ'
-        free: '自由記載'
+        free_one: '自由記述１'
+        free_two: '自由記述２'
+        free_three: '自由期日２'
+        text: 'テキスト'
     line_group:
       status:
         wait: '呼びかけ前'
