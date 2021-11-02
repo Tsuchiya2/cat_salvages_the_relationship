@@ -1,27 +1,27 @@
 h1.mt-5.text-center
   | グループ詳細
-h3.mt-5.text-center
-  | - LINE_Group_ID -<br>
-  = @line_group.line_group_id
-h3.mt-5.text-center
-  | 次の働きかけ日：
-  = @line_group.remind_at
-h3.mt-5.text-center
-  | 状態：
-  = @line_group.status
-h3.mt-5.text-center
-  | 交流数：
-  = @line_group.post_count
-h3.mt-5.text-center
-  | 利用者数：
-  = @line_group.member_count
-h3.mt-5.text-center
-  | 作成日：
-  = l(@line_group.created_at, format: :long)
-h3.mt-5.text-center
-  | 更新日：
-  = l(@line_group.updated_at, format: :long)
 - if current_user.operator?
+  h3.mt-5.text-center.text-break
+    | - LINE_Group_ID -
+    = @line_group.line_group_id
+  h3.mt-5.text-center
+    | 次の働きかけ日：
+    = @line_group.remind_at
+  h3.mt-5.text-center
+    | 状態：
+    = @line_group.status
+  h3.mt-5.text-center
+    | 交流数：
+    = @line_group.post_count
+  h3.mt-5.text-center
+    | 利用者数：
+    = @line_group.member_count
+  h3.mt-5.text-center
+    | 作成日：
+    = l(@line_group.created_at, format: :long)
+  h3.mt-5.text-center
+    | 更新日：
+    = l(@line_group.updated_at, format: :long)
   .mt-5.text-center
     = link_to '🐾 編集 🐾', edit_operator_line_group_path(@line_group), class: 'btn btn-secondary rounded-pill font-monospace'
   .my-5.text-center
