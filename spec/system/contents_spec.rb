@@ -21,7 +21,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       visit operator_contents_path
       click_on '新規作成'
       fill_in 'content[body]', with: 'New_Content'
-      select '呼びかけ', from: 'カテゴリー'
+      select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('コンテンツ一覧')
       expect(page).to have_content('New_Content'.truncate(10))
@@ -31,7 +31,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       visit operator_contents_path
       click_on '新規作成'
       fill_in 'content[body]', with: nil
-      select '呼びかけ', from: 'カテゴリー'
+      select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('新規コンテンツ作成')
       expect(page).to have_content('入力に不備がありました。')

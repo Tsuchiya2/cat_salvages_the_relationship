@@ -5,10 +5,10 @@ namespace :call_notice do
     client = ClientConfig.set_line_bot_client
 
     messages = [{ type: 'text', text: AlarmContent.contact.sample.body },
-                { type: 'text', text: AlarmContent.proposal.sample.body },
-                { type: 'text', text: AlarmContent.url.sample.body },
-                { type: 'text', text: AlarmContent.naive.sample.body },
-                { type: 'text', text: AlarmContent.free.sample.body }]
+                { type: 'text', text: AlarmContent.free_one.sample.body },
+                { type: 'text', text: AlarmContent.free_two.sample.body },
+                { type: 'text', text: AlarmContent.free_three.sample.body },
+                { type: 'text', text: AlarmContent.text.sample.body }]
 
     remaind_groups = LineGroup.remind_call
     remaind_groups.find_each do |group|

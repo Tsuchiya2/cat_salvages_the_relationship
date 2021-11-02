@@ -4,9 +4,9 @@ namespace :wait_notice do
   task wait_reminds: :environment do
     client = ClientConfig.set_line_bot_client
 
-    messages = [{ type: 'text', text: Content.call.sample.body },
-                { type: 'text', text: Content.movie.sample.body },
-                { type: 'text', text: Content.free.sample.body }]
+    messages = [{ type: 'text', text: Content.contact.sample.body },
+                { type: 'text', text: Content.free.sample.body },
+                { type: 'text', text: Content.text.sample.body }]
 
     remaind_groups = LineGroup.remind_wait
     remaind_groups.find_each do |group|
