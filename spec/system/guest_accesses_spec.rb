@@ -141,14 +141,14 @@ RSpec.describe '[SystemTest] GuestAccesses', type: :system do
     end
 
     context 'indexアクション' do
-      it 'ゲストログイン後、indexへのアクセスが成功して、グループ一覧とグループの中身(一部)が表示される' do
+      it 'ゲストログイン後、indexへのアクセスは失敗し、グループ一覧とグループの中身(一部)も表示されない' do
         visit operator_line_groups_path
-        expect(page).to have_content('グループ一覧')
-        expect(page).to have_content(line_group.status)
+        expect(page).not_to have_content('グループ一覧')
+        expect(page).not_to have_content(line_group.status)
         expect(page).not_to have_content(line_group.line_group_id)
       end
 
-      it 'ゲストログイン後、indexへのアクセスは成功するが、Feedbackの詳細(show)へのリンクは表示されない' do
+      it 'ゲストログイン後、indexへのアクセスは失敗し、line_groupの詳細(show)へのリンクも表示されない' do
         visit operator_line_groups_path
         expect(page).not_to have_link(line_group.status)
       end

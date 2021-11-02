@@ -1,6 +1,6 @@
 class LineGroupPolicy < ApplicationPolicy
   def index?
-    user.operator? || user.guest?
+    user.operator?
   end
 
   def show?

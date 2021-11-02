@@ -4,10 +4,7 @@ tr
   td.text-center
     = l(line_group.remind_at, format: :shot)
   td.text-center
-    - if current_user.operator?
-      = link_to line_group.status, operator_line_group_path(line_group), class: 'link-dark text-decoration-none'
-    - else
-      = line_group.status
+    = link_to line_group.status, operator_line_group_path(line_group), class: 'link-dark text-decoration-none'
   td.text-center
     = line_group.post_count
   td.text-center
