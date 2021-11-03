@@ -4,7 +4,7 @@ class Operator::ContentsController < Operator::BaseController
   def index
     authorize(Content)
 
-    @contents = Content.all
+    @contents = Content.order(id: :asc)
   end
 
   def show
