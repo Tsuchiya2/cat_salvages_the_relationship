@@ -4,7 +4,7 @@ class Operator::AlarmContentsController < Operator::BaseController
   def index
     authorize(AlarmContent)
 
-    @alarm_contents = AlarmContent.all
+    @alarm_contents = AlarmContent.order(id: :asc)
   end
 
   def show

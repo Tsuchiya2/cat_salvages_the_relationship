@@ -4,7 +4,7 @@ class Operator::FeedbacksController < Operator::BaseController
   def index
     authorize(Feedback)
 
-    @feedbacks = Feedback.all
+    @feedbacks = Feedback.order(created_at: :desc)
   end
 
   def show
