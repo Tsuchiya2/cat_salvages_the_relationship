@@ -1,16 +1,14 @@
-.container-fluid.mx-auto
-  .row
-    h1.mt-5.text-center
-      | フィードバック一覧
-    .table-responsive.my-5
-      table.table.table-striped.table-hover.text-nowrap
-        thead.px-5
-          tr
-            th.col-1.text-center
-              | ID
-            th.col-4.text-center
-              | 内容
-            th.col-2.text-center
-              | 投稿日時
-        tbody
-          = render @feedbacks if @feedbacks
+h1.mt-5
+  | フィードバック一覧
+.table-responsive.my-5
+  table.table.table-striped.table-hover.text-nowrap
+    thead.px-5
+      tr
+        th.col-1
+          | ID
+        th.col-4
+          | 内容
+        th.col-2
+          | 投稿日時
+    tbody
+      = render @feedbacks if @feedbacks

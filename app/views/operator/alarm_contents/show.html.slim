@@ -1,10 +1,10 @@
-h1.mt-5.text-center
+h1.mt-5.text-break
   = @alarm_content.body
-h3.mt-5.text-center
+h3.mt-5
   | アラームカテゴリー：
   = @alarm_content.category_i18n
 - if current_user.operator?
-  .mt-5.text-center
+  .mt-5
     = link_to '🐾 編集 🐾', edit_operator_alarm_content_path(@alarm_content), class: 'btn btn-secondary rounded-pill font-monospace'
-  .my-5.text-center
+  .my-5
     = link_to '- 削除 -', operator_alarm_content_path(@alarm_content), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }

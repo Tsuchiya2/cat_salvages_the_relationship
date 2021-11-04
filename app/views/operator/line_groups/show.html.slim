@@ -1,28 +1,28 @@
-h1.mt-5.text-center
+h1.mt-5
   | グループ詳細
 - if current_user.operator?
-  h3.mt-5.text-center.text-break
+  h3.mt-5.text-break
     | - LINE_Group_ID -
     = @line_group.line_group_id
-  h3.mt-5.text-center
+  h3.mt-5
     | 次の働きかけ日：
     = @line_group.remind_at
-  h3.mt-5.text-center
+  h3.mt-5
     | 状態：
     = @line_group.status
-  h3.mt-5.text-center
+  h3.mt-5
     | 交流数：
     = @line_group.post_count
-  h3.mt-5.text-center
+  h3.mt-5
     | 利用者数：
     = @line_group.member_count
-  h3.mt-5.text-center
+  h3.mt-5
     | 作成日：
     = l(@line_group.created_at, format: :long)
-  h3.mt-5.text-center
+  h3.mt-5
     | 更新日：
     = l(@line_group.updated_at, format: :long)
-  .mt-5.text-center
+  .mt-5
     = link_to '🐾 編集 🐾', edit_operator_line_group_path(@line_group), class: 'btn btn-secondary rounded-pill font-monospace'
-  .my-5.text-center
+  .my-5
     = link_to '- 削除 -', operator_line_group_path(@line_group), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '"おまじない"を使ってユーザーに削除をお願いするのが基本線ですが、本当に削除しますか？ ' }
