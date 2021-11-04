@@ -1,18 +1,18 @@
-h1.mt-5.text-center
+h1.mt-5
   | アラームコンテンツ一覧
 .table-responsive.my-5
   table.table.table-striped.table-hover.text-nowrap
     thead.px-5
       tr
-        th.col-1.text-center
+        th.col-1
           | ID
-        th.col-4.text-center
+        th.col-4
           | 内容
-        th.col-2.text-center
+        th.col-2
           | カテゴリー
     tbody
       = render @alarm_contents if @alarm_contents
 
 - if current_user.operator?
-  .my-5.text-center
+  .my-5
     = link_to '新規作成', new_operator_alarm_content_path, class: 'btn btn-secondary rounded-pill font-monospace'

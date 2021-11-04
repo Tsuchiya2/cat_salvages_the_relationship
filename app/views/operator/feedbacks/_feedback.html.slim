@@ -1,10 +1,10 @@
 tr
-  td.text-center
+  td
     = feedback.id
-  td.text-center
+  td
     - if current_user.operator?
       = link_to feedback.text.truncate(10), operator_feedback_path(feedback), class: 'link-dark text-decoration-none'
     - else
       = feedback.text.truncate(10)
-  td.text-center
+  td
     = l(feedback.created_at)

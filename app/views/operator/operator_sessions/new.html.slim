@@ -1,13 +1,11 @@
-.container-fluid.mx-auto
-  .row
-    h1.my-5.text-center
-      | ReLINE
-    = form_with url: operator_cat_in_path, local: true do |f|
-      .form-group.my-5.offset-2.col-8
-        = f.label :email, Operator.human_attribute_name(:email)
-        = f.text_field :email, class: 'form-control rounded-pill'
-      .form-group.my-5.offset-2.col-8
-        = f.label :password, Operator.human_attribute_name(:password)
-        = f.password_field :password, class: 'form-control rounded-pill'
-      .form-group.my-5.text-center
-        = f.submit '🐾 キャットイン 🐾', class: 'btn btn-secondary rounded-pill font-monospace'
+h1.my-5
+  | ReLINE
+= form_with url: operator_cat_in_path, local: true do |f|
+  .form-group.my-5.offset-2.col-8
+    = f.label :email, Operator.human_attribute_name(:email)
+    = f.text_field :email, class: 'form-control rounded-pill'
+  .form-group.my-5.offset-2.col-8
+    = f.label :password, Operator.human_attribute_name(:password)
+    = f.password_field :password, class: 'form-control rounded-pill'
+  .form-group.my-5
+    = f.submit '🐾 キャットイン 🐾', class: 'btn btn-secondary rounded-pill font-monospace'

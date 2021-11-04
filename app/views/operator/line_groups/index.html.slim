@@ -1,27 +1,27 @@
-h1.mt-5.text-center
+h1.mt-5
   | グループ一覧
 - if current_user.operator?
-  h3.mt-5.text-center
+  h3.mt-5
     | 総交流数：
     = @sum_post_count
-  h3.mt-5.text-center
+  h3.mt-5
     | 総利用者数：
     = @sum_member_count
   .table-responsive.my-5
     table.table.table-striped.table-hover.text-nowrap
       thead.px-5
         tr
-          th.col-1.text-center
+          th.col-1
             | ID
-          th.col-1.text-center
+          th.col-1
             | Day
-          th.col-1.text-center
+          th.col-1
             | 状態
-          th.col-2.text-center
+          th.col-2
             | 交流
-          th.col-2.text-center
+          th.col-2
             | 利用者
-          th.col-1.text-center
+          th.col-1
             | 更新日
       tbody
         = render @line_groups if @line_groups

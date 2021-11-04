@@ -6,5 +6,5 @@
     .form-group.my-5.offset-2.col-8
       = f.label :category, Content.human_attribute_name(:category)
       = f.select :category, Content.categories_i18n.invert, {}, class: 'form-control rounded-pill'
-    .form-group.my-5.text-center
+    .form-group.my-5
       = f.submit '🐾 送信 🐾', class: 'btn btn-secondary rounded-pill font-monospace'

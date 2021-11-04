@@ -1,13 +1,13 @@
 tr
-  td.text-center
+  td
     = line_group.id
-  td.text-center
+  td
     = l(line_group.remind_at, format: :shot)
-  td.text-center
+  td
     = link_to line_group.status, operator_line_group_path(line_group), class: 'link-dark text-decoration-none'
-  td.text-center
+  td
     = line_group.post_count
-  td.text-center
+  td
     = line_group.member_count
-  td.text-center
+  td
     = l(line_group.updated_at, format: :shot)
