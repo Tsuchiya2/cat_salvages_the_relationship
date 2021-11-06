@@ -21,18 +21,15 @@ Operator.create(name: 'operator',
 
 unless Content.find_by(body: Rails.application.credentials.content[:movie])
   Content.transaction do
-    Content.create(body: 'ニャ〜ニャ〜久しぶりニャ🐱🐾', category: :call)
-    Content.create(body: Rails.application.credentials.content[:movie], category: :movie)
-    Content.create(body: '聞いたところによると日本にはいろんなお茶会があるらしいニャンね🍵 今度、お茶会ならぬ「ちゅ〜る食べ比べ会」を開催してほしいニャ〜🐾', category: :free)
+    Content.create(body: 'ニャ〜ニャ〜久しぶりニャ🐱🐾', category: :contact)
+    Content.create(body: Rails.application.credentials.content[:movie], category: :free)
+    Content.create(body: '再来週あたりでご飯に行かなニャい？🐱🐾', category: :text)
   end
 end
 
 unless AlarmContent.find_by(body: Rails.application.credentials.alarmcontent[:url])
   AlarmContent.transaction do
-    AlarmContent.create(body: 'あれ。。。みんニャ忙しい？', category: :contact)
-    AlarmContent.create(body: 'こんニャのどうかニャ〜🐱', category: :proposal)
-    AlarmContent.create(body: Rails.application.credentials.alarmcontent[:url], category: :url)
-    AlarmContent.create(body: '反応ないと寂しいニャ。。。', category: :naive)
-    AlarmContent.create(body: 'また近々コールするニャ！！ See you laterニャ🐱🐾', category: :free)
+    AlarmContent.create(body: 'みんな忙しいニャ？😥', category: :contact)
+    AlarmContent.create(body: Rails.application.credentials.alarmcontent[:url], category: :text)
   end
 end

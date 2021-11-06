@@ -12,9 +12,6 @@ ja:
     alarm_content:
       category:
         contact: 'コンタクト'
-        free_one: '自由記述１'
-        free_two: '自由記述２'
-        free_three: '自由期日２'
         text: 'テキスト'
     line_group:
       status:
