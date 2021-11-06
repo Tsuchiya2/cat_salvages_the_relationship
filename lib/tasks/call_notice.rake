@@ -5,9 +5,6 @@ namespace :call_notice do
     client = ClientConfig.set_line_bot_client
 
     messages = [{ type: 'text', text: AlarmContent.contact.sample.body },
-                { type: 'text', text: AlarmContent.free_one.sample.body },
-                { type: 'text', text: AlarmContent.free_two.sample.body },
-                { type: 'text', text: AlarmContent.free_three.sample.body },
                 { type: 'text', text: AlarmContent.text.sample.body }]
 
     remaind_groups = LineGroup.remind_call
@@ -16,7 +13,7 @@ namespace :call_notice do
         response = client.push_message(group.line_group_id, message)
         raise "働きかけ#{index + 1}つ目でエラー発生。#{message}" if response.code == '400'
       end
-      group.remind_at = Date.current.since((7..12).to_a.sample.days)
+      group.remind_at = Date.current.since((2..5).to_a.sample.days)
       group.save!
     rescue StandardError => e
       error_message = "<CallNotice> 例外:#{e.class}, メッセージ:#{e.message}"

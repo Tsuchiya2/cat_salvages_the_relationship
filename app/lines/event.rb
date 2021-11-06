@@ -60,7 +60,7 @@ class Event
     json_data = Event.members_count(event, client)
     count_menbers = JSON.parse(json_data.body)
     if LineGroup.find_by(line_group_id: group_id).nil? && count_menbers['count'].to_i > 1
-      LineGroup.create!(line_group_id: group_id, remind_at: Date.current.since(3.days),
+      LineGroup.create!(line_group_id: group_id, remind_at: Date.current.tomorrow,
                         status: :wait, member_count: count_menbers['count'].to_i)
     end
     message = { type: 'text', text: 'よろしくニャ🐱🐾' }
