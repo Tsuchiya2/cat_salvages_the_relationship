@@ -63,7 +63,7 @@ class Event
       LineGroup.create!(line_group_id: group_id, remind_at: Date.current.tomorrow,
                         status: :wait, member_count: count_menbers['count'].to_i)
     end
-    message = { type: 'text', text: 'よろしくニャ🐱🐾' }
+    message = { type: 'text', text: '加えてくれてありがとうニャ🌟！！最後のLINEから3週間〜2ヶ月後にwake upのLINEするニャ！！よろしくニャ🐱🐾' }
     client.push_message(group_id, message)
   end
   # ***** ↑↑↑ メンバー or LINE_Bot が入室した際、人数によっては LineGroup を作成します ↑↑↑ *****
