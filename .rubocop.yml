@@ -85,3 +85,7 @@ Layout/LineLength:
 
 RSpec/ContextWording:
   Enabled: false
+
+Metrics/MethodLength:
+  Exclude:
+    - 'app/lines/event.rb'
