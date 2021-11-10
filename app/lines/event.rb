@@ -65,7 +65,8 @@ class Event
     json_data = Event.members_count(event, client)
     count_menbers = JSON.parse(json_data.body)
     Event.create_line_group(group_id, count_menbers)
-    message = { type: 'text', text: '加えてくれてありがとうニャ🌟！！最後のLINEから3週間〜2ヶ月後にwake upのLINEするニャ！！よろしくニャ🐱🐾' }
+    message = { type: 'text',
+                text: '加えてくれてありがとうニャ🌟！！最後のLINEから3週間〜2ヶ月後にwake upのLINEするニャ！！（反応が無いとすぐwake upするかも知れニャンよ⏰）末永くよろしくニャ🐱🐾' }
     client.push_message(group_id, message)
   end
 

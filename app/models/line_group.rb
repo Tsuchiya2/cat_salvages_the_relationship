@@ -15,7 +15,7 @@ class LineGroup < ApplicationRecord
   scope :remind_call, -> { call.where('remind_at <= ?', Date.current) }
 
   def change_status_to_wait(count_menbers)
-    random_number = (23..60).to_a.sample
+    random_number = (17..50).to_a.sample
     update!(remind_at: Date.current.since(random_number.days),
             status: :wait,
             post_count: post_count + 1,
