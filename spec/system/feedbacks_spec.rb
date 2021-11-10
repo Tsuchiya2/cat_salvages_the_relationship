@@ -15,18 +15,18 @@ RSpec.describe '[SystemTest] Feedbacks', type: :system do
         expect(page).to have_current_path root_path
       end
 
-      it '100文字の投稿を行うと、トップページに戻ってくる' do
+      it '30文字の投稿を行うと、トップページに戻ってくる' do
         visit new_feedback_path
-        fill_in 'feedback[text]', with: 'a' * 100
+        fill_in 'feedback[text]', with: 'a' * 30
         click_on '🐾 送信 🐾'
         expect(page).to have_content('フィードバックありがとうございます！')
         expect(Feedback.count).to eq 1
         expect(page).to have_current_path root_path
       end
 
-      it '300文字の投稿を行うと、トップページに戻ってくる' do
+      it '500文字の投稿を行うと、トップページに戻ってくる' do
         visit new_feedback_path
-        fill_in 'feedback[text]', with: 'a' * 300
+        fill_in 'feedback[text]', with: 'a' * 500
         click_on '🐾 送信 🐾'
         expect(page).to have_content('フィードバックありがとうございます！')
         expect(Feedback.count).to eq 1
@@ -38,17 +38,17 @@ RSpec.describe '[SystemTest] Feedbacks', type: :system do
       it '空の投稿を行うと、フラッシュメッセージが表示される' do
         visit new_feedback_path
         click_on '🐾 送信 🐾'
-        expect(page).to have_content('100〜300文字でお願いします！🐾')
+        expect(page).to have_content('30〜500文字でお願いします！🐾')
         expect(Feedback.count).to eq 0
         expect(page).to have_current_path feedbacks_path
       end
 
-      it '99文字以下の投稿を行うと、フラッシュメッセージが表示される' do
-        # 301以上はtext_areaのmaxlengthオプションにより入力できない
+      it '29文字以下の投稿を行うと、フラッシュメッセージが表示される' do
+        # 501以上はtext_areaのmaxlengthオプションにより入力できない
         visit new_feedback_path
-        fill_in 'feedback[text]', with: 'a' * 99
+        fill_in 'feedback[text]', with: 'a' * 29
         click_on '🐾 送信 🐾'
-        expect(page).to have_content('100〜300文字でお願いします！🐾')
+        expect(page).to have_content('30〜500文字でお願いします！🐾')
         expect(Feedback.count).to eq 0
         expect(page).to have_current_path feedbacks_path
       end

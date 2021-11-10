@@ -11,13 +11,13 @@ RSpec.describe Feedback, type: :model do
     end
 
     context 'text' do
-      it '文字列が100以上の場合、保存できる。' do
-        feedback[:text] = 'a' * 100
+      it '文字列が30上の場合、保存できる。' do
+        feedback[:text] = 'a' * 30
         expect(feedback).to be_valid
       end
 
-      it '文字列が300以下の場合、保存できる。' do
-        feedback[:text] = 'a' * 300
+      it '文字列が500以下の場合、保存できる。' do
+        feedback[:text] = 'a' * 500
         expect(feedback).to be_valid
       end
     end
@@ -31,14 +31,14 @@ RSpec.describe Feedback, type: :model do
         expect(feedback.errors.full_messages).to include('内容 が空白です')
       end
 
-      it '99以下の文字列が入力された場合、保存できない。' do
-        feedback[:text] = 'a' * 99
+      it '29以下の文字列が入力された場合、保存できない。' do
+        feedback[:text] = 'a' * 29
         feedback.valid?
         expect(feedback.errors.full_messages).to include('内容 が短すぎです')
       end
 
-      it '301以上の文字列が入力された場合、保存できない。' do
-        feedback[:text] = 'a' * 301
+      it '501以上の文字列が入力された場合、保存できない。' do
+        feedback[:text] = 'a' * 501
         feedback.valid?
         expect(feedback.errors.full_messages).to include('内容 が長すぎです')
       end

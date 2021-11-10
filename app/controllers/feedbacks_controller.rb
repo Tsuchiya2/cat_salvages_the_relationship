@@ -8,7 +8,7 @@ class FeedbacksController < ApplicationController
     if @feedback.save
       redirect_to root_path, success: 'フィードバックありがとうございます！'
     else
-      flash.now[:danger] = '100〜300文字でお願いします！🐾'
+      flash.now[:danger] = '30〜500文字でお願いします！🐾'
       render :new
     end
   end
