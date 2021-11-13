@@ -64,9 +64,10 @@ class Event
 
   # 上記から呼び出しを受けて、投稿されたメッセージに応じてLineGroupレコードの状態を更新します。
   def self.posted_textmessage_by_member(event, client, line_group, count_menbers)
-    if event.message['text'].match?('Cat… Would you set wake up to faster.')
+    event.message['text'] ||= 'テキスト以外の通信です'
+    if event.message['text'].match?('Would you set to faster.')
       Event.change_status_by_short_magicword(client, line_group, count_menbers)
-    elsif event.message['text'].match?('Cat… Would you set wake up post to latter.')
+    elsif event.message['text'].match?('Would you set to latter.')
       Event.change_status_by_long_magicword(client, line_group, count_menbers)
     else
       line_group.auto_change_status(count_menbers['count'].to_i)
