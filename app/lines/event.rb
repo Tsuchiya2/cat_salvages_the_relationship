@@ -63,8 +63,8 @@ class Event
   end
 
   # 上記から呼び出しを受けて、投稿されたメッセージに応じてLineGroupレコードの状態を更新します。
-  def self.posted_textmessage_by_member(evnet, client, line_group, count_menbers)
-    if evnet.message['text'].match?('Cat… Would you change wake up to faster.')
+  def self.posted_textmessage_by_member(event, client, line_group, count_menbers)
+    if event.message['text'].match?('Cat… Would you change wake up to faster.')
       Event.change_status_by_short_magicword(client, line_group, count_menbers)
     elsif event.message['text'].match?('Cat… Would you set wake up post to latter.')
       Event.change_status_by_long_magicword(client, line_group, count_menbers)
