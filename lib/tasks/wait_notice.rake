@@ -17,7 +17,7 @@ namespace :wait_notice do
       group.remind_at = Date.current.since((1..3).to_a.sample.days)
       group.call!
     rescue StandardError => e
-      error_message = "<WaitNotice> 例外:#{e.class}, メッセージ:#{e.message}"
+      error_message = "<WaitNotice> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
       LineMailer.error_email(group.line_group_id, error_message).deliver_later
     end
   end

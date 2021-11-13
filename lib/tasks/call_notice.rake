@@ -16,7 +16,7 @@ namespace :call_notice do
       group.remind_at = Date.current.since((2..5).to_a.sample.days)
       group.save!
     rescue StandardError => e
-      error_message = "<CallNotice> 例外:#{e.class}, メッセージ:#{e.message}"
+      error_message = "<CallNotice> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
       LineMailer.error_email(group.line_group_id, error_message).deliver_later
     end
   end

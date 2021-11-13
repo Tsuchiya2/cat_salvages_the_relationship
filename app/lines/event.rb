@@ -5,7 +5,7 @@ class Event
       Event.event_branches(event, client)
     rescue StandardError => e
       group_id = Event.judge_group_or_room(event)
-      error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}"
+      error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
       LineMailer.error_email(group_id, error_message).deliver_later
     end
   end
@@ -64,7 +64,7 @@ class Event
 
   # 上記から呼び出しを受けて、投稿されたメッセージに応じてLineGroupレコードの状態を更新します。
   def self.posted_textmessage_by_member(event, client, line_group, count_menbers)
-    if event.message['text'].match?('Cat… Would you change wake up to faster.')
+    if event.message['text'].match?('Cat… Would you set wake up to faster.')
       Event.change_status_by_short_magicword(client, line_group, count_menbers)
     elsif event.message['text'].match?('Cat… Would you set wake up post to latter.')
       Event.change_status_by_long_magicword(client, line_group, count_menbers)
@@ -76,14 +76,14 @@ class Event
   # line_group.change_long_status_by_magicwordを望んだ投稿がされた場合の処理になります。
   def self.change_status_by_short_magicword(client, line_group, count_menbers)
     line_group.change_short_status_by_magicword(count_menbers['count'].to_i)
-    client.push_message(line_group.line_group_id,
-                        { type: 'text', text: '了解ニャ！, 1つ前のみんなのやり取りから3週間〜1ヶ月後にwake up投稿するニャ🐾！！' })
+    message = { type: 'text', text: '了解ニャ！, おおよそ3週間〜1ヶ月後にwake up投稿するニャ🐾！！' }
+    client.push_message(line_group.line_group_id, message)
   end
 
   # line_group.change_long_status_by_magicwordを望んだ投稿がされた場合の処理になります。
   def self.change_status_by_long_magicword(client, line_group, count_menbers)
     line_group.change_long_status_by_magicword(count_menbers['count'].to_i)
-    message = { type: 'text', text: '了解ニャ！, 1つ前のみんなのやり取りから7週間〜2ヶ月後にwake up投稿するニャ🐾！！' }
+    message = { type: 'text', text: '了解ニャ！, おおよそ7週間〜2ヶ月後にwake up投稿するニャ🐾！！' }
     client.push_message(line_group.line_group_id, message)
   end
 
