@@ -133,10 +133,29 @@ RSpec.describe LineGroup, type: :model do
   end
 
   describe 'インスタンスメソッド' do
-    it 'change_status_to_wait' do
-      line_group.change_status_to_wait(5)
+    it 'change_short_status_by_magicword' do
+      before_remind_at = line_group.remind_at
+      line_group.change_short_status_by_magicword(5)
       expect(line_group.status).to eq 'wait'
-      expect(line_group.remind_at).not_to eq Time.current.since(21.days)
+      expect(line_group.remind_at).not_to eq before_remind_at
+      expect(line_group.post_count).to be 1
+      expect(line_group.member_count).to be 5
+    end
+
+    it 'change_long_status_by_magicword' do
+      before_remind_at = line_group.remind_at
+      line_group.change_long_status_by_magicword(5)
+      expect(line_group.status).to eq 'wait'
+      expect(line_group.remind_at).not_to eq before_remind_at
+      expect(line_group.post_count).to be 1
+      expect(line_group.member_count).to be 5
+    end
+
+    it 'auto_change_status' do
+      before_remind_at = line_group.remind_at
+      line_group.auto_change_status(5)
+      expect(line_group.status).to eq 'wait'
+      expect(line_group.remind_at).not_to eq before_remind_at
       expect(line_group.post_count).to be 1
       expect(line_group.member_count).to be 5
     end
