@@ -22,11 +22,11 @@ class Event
       Event.goodbye_cat(event, client, group_id) if event['message']['type'] == Line::Bot::Event::MessageType::Text
       Event.catch_message(event, client, group_id, count_menbers)
     when Line::Bot::Event::Join
-      Event.join_bot(event, client, group_id, count_menbers)
+      Event.join_bot(client, group_id, count_menbers)
     when Line::Bot::Event::MemberJoined
-      Event.join_member(event, client, group_id, count_menbers)
+      Event.join_member(client, group_id, count_menbers)
     when Line::Bot::Event::Leave, Line::Bot::Event::MemberLeft
-      Event.leave_events(event, client, group_id, count_menbers)
+      Event.leave_events(group_id, count_menbers)
     end
   end
 
