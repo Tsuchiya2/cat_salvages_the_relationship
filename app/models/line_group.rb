@@ -16,14 +16,16 @@ class LineGroup < ApplicationRecord
 
   def change_short_status_by_magicword(count_menbers)
     random_number = (21..32).to_a.sample
-    update!(remind_at: remind_at + random_number,
+    passsed_day = (remind_at - updated_at.to_date).to_int
+    update!(remind_at: remind_at + (random_number - passsed_day),
             status: :wait, post_count: post_count + 1,
             member_count: count_menbers)
   end
 
   def change_long_status_by_magicword(count_menbers)
     random_number = (49..60).to_a.sample
-    update!(remind_at: remind_at + random_number,
+    passsed_day = (remind_at - updated_at.to_date).to_int
+    update!(remind_at: remind_at + (random_number - passsed_day),
             status: :wait, post_count: post_count + 1,
             member_count: count_menbers)
   end
