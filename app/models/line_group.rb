@@ -11,6 +11,7 @@ class LineGroup < ApplicationRecord
   validates :member_count,  presence: true, numericality: { only_integer: true,
                                                             greater_than_or_equal_to: 0,
                                                             less_than_or_equal_to: 50 }
+  validates :set_span,      presence: true
 
   scope :remind_wait, -> { wait.where('remind_at <= ?', Date.current) }
   scope :remind_call, -> { call.where('remind_at <= ?', Date.current) }

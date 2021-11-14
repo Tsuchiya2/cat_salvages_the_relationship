@@ -13,7 +13,7 @@ RSpec.describe '[SystemTest] LineGroups', type: :system do
       it 'indexからshowへのアクセスが成功する。' do
         line_group
         visit operator_line_groups_path
-        click_link line_group.status
+        click_link line_group.status_i18n
         expect(page).to have_content('グループ詳細')
         expect(page).to have_content(line_group.line_group_id)
       end
@@ -26,7 +26,7 @@ RSpec.describe '[SystemTest] LineGroups', type: :system do
         fill_in 'line_group[remind_at]', with: '2021-11-01'
         click_on '🐾 送信 🐾'
         expect(page).to have_content('LINEグループ情報の一部を更新しました。')
-        expect(page).to have_content(line_group.status)
+        expect(page).to have_content(line_group.status_i18n)
       end
 
       it 'showから編集・更新を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
