@@ -15,24 +15,14 @@ class LineGroup < ApplicationRecord
   scope :remind_wait, -> { wait.where('remind_at <= ?', Date.current) }
   scope :remind_call, -> { call.where('remind_at <= ?', Date.current) }
 
-  def change_short_status_by_magicword(count_menbers)
-    random_number = (21..32).to_a.sample
-    passsed_day = (remind_at - updated_at.to_date).to_int
-    update!(remind_at: remind_at + (random_number - passsed_day),
-            status: :wait, post_count: post_count + 1,
-            member_count: count_menbers)
-  end
-
-  def change_long_status_by_magicword(count_menbers)
-    random_number = (49..60).to_a.sample
-    passsed_day = (remind_at - updated_at.to_date).to_int
-    update!(remind_at: remind_at + (random_number - passsed_day),
-            status: :wait, post_count: post_count + 1,
-            member_count: count_menbers)
-  end
-
   def auto_change_status(count_menbers)
-    random_number = (17..50).to_a.sample
+    random_number = if faster?
+                      (21..32).to_a.sample
+                    elsif latter?
+                      (49..60).to_a.sample
+                    else
+                      (17..60).to_a.sample
+                    end
     update!(remind_at: Date.current.since(random_number.days),
             status: :wait, post_count: post_count + 1,
             member_count: count_menbers)
