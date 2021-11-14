@@ -4,10 +4,12 @@ tr
   td
     = l(line_group.remind_at, format: :shot)
   td
-    = link_to line_group.status, operator_line_group_path(line_group), class: 'link-dark text-decoration-none'
+    = link_to line_group.status_i18n, operator_line_group_path(line_group), class: 'link-dark text-decoration-none'
   td
     = line_group.post_count
   td
     = line_group.member_count
+  td
+    = line_group.set_span_i18n
   td
     = l(line_group.updated_at, format: :shot)

@@ -11,17 +11,19 @@ h1.mt-5
     table.table.table-striped.table-hover.text-nowrap
       thead.px-5
         tr
-          th.col-1
+          th
             | ID
-          th.col-1
+          th
             | Day
-          th.col-1
+          th
             | 状態
-          th.col-2
+          th
             | 交流
-          th.col-2
-            | 利用者
-          th.col-1
-            | 更新日
+          th
+            | 人数
+          th
+            | 期間
+          th
+            | 更新
       tbody
         = render @line_groups if @line_groups

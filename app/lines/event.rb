@@ -1,8 +1,8 @@
 class Event
-  # catch_events_controller#callbackが動いた際のイベント振り分けメソッド'event_branches'を呼び出します。
-  def self.events_processes(events, client)
+  # catch_events_controller#callbackが動いた際のイベント振り分けメソッド'pretreatment'を呼び出します。
+  def self.catched_events(events, client)
     events.each do |event|
-      Event.event_branches(event, client)
+      pretreatment(event, client)
     rescue StandardError => e
       group_id = Event.judge_group_or_room(event)
       error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
@@ -11,12 +11,16 @@ class Event
   end
 
   # 上記から呼び出されて各イベントごとに、どんな操作を行うか振り分けます。
-  def self.event_branches(event, client)
+  def self.pretreatment(event, client)
     json_data = Event.members_count(event, client)
     count_menbers = JSON.parse(json_data.body)
     group_id = Event.judge_group_or_room(event)
     return if group_id.blank?
 
+    Event.split_event(event, client, group_id, count_menbers)
+  end
+
+  def self.split_event(event, client, group_id, count_menbers)
     case event
     when Line::Bot::Event::Message
       Event.goodbye_cat(event, client, group_id) if event['message']['type'] == Line::Bot::Event::MessageType::Text
@@ -66,25 +70,22 @@ class Event
   def self.posted_textmessage_by_member(event, client, line_group, count_menbers)
     event.message['text'] ||= 'テキスト以外の通信です'
     if event.message['text'].match?('Would you set to faster.')
-      Event.change_status_by_short_magicword(client, line_group, count_menbers)
+      line_group.faster!
+      Event.catched_magicword(client, line_group)
     elsif event.message['text'].match?('Would you set to latter.')
-      Event.change_status_by_long_magicword(client, line_group, count_menbers)
+      line_group.latter!
+      Event.catched_magicword(client, line_group)
+    elsif event.message['text'].match?('Would you set to default.')
+      line_group.random!
+      Event.catched_magicword(client, line_group)
     else
       line_group.auto_change_status(count_menbers['count'].to_i)
     end
   end
 
-  # line_group.change_long_status_by_magicwordを望んだ投稿がされた場合の処理になります。
-  def self.change_status_by_short_magicword(client, line_group, count_menbers)
-    line_group.change_short_status_by_magicword(count_menbers['count'].to_i)
-    message = { type: 'text', text: '了解ニャ！, おおよそ3週間〜1ヶ月後にwake up投稿するニャ🐾！！' }
-    client.push_message(line_group.line_group_id, message)
-  end
-
-  # line_group.change_long_status_by_magicwordを望んだ投稿がされた場合の処理になります。
-  def self.change_status_by_long_magicword(client, line_group, count_menbers)
-    line_group.change_long_status_by_magicword(count_menbers['count'].to_i)
-    message = { type: 'text', text: '了解ニャ！, おおよそ7週間〜2ヶ月後にwake up投稿するニャ🐾！！' }
+  # 設定に関する"おまじない"が投稿された際にメッセージを返します。
+  def self.catched_magicword(client, line_group)
+    message = { type: 'text', text: '了解ニャ！, 次のwake up投稿をしたら、それ以降は設定した期間内でwake up投稿するニャ🐾！！' }
     client.push_message(line_group.line_group_id, message)
   end
 
@@ -92,7 +93,7 @@ class Event
   def self.join_bot(client, group_id, count_menbers)
     Event.create_line_group(group_id, count_menbers)
     message = { type: 'text',
-                text: '加えてくれてありがとうニャ🌟！！最後のLINEから3週間〜2ヶ月後にwake upのLINEするニャ！！（反応が無いとすぐwake upするかも知れニャンよ⏰）末永くよろしくニャ🐱🐾' }
+                text: '加えてくれてありがとうニャ🌟！！最後のLINEから3週間〜2ヶ月後にwake upのLINEするニャ！！（反応が無いとすぐかも知れニャンよ⏰）末永くよろしくニャ🐱🐾' }
     client.push_message(group_id, message)
   end
 

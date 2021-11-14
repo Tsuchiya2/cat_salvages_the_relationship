@@ -12,7 +12,7 @@ class Operator::CatchEventsController < Operator::BaseController
 
     # === 以下イベント毎の処理になります ===
     events = client.parse_events_from(body)
-    Event.events_processes(events, client)
+    Event.catched_events(events, client)
     'OK'
   end
 end

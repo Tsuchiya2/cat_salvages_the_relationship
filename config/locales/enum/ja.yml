@@ -15,5 +15,9 @@ ja:
         text: 'テキスト'
     line_group:
       status:
-        wait: '呼びかけ前'
-        call: '呼びかけ実施中'
+        wait: '待機'
+        call: '呼出'
+      set_span:
+        random: '乱数'
+        faster: '早め'
+        latter: '遅め'
