@@ -12,10 +12,10 @@ class Event
 
   # 上記から呼び出されて各イベントごとに、どんな操作を行うか振り分けます。
   def self.pretreatment(event, client)
-    json_data = Event.members_count(event, client)
-    count_menbers = JSON.parse(json_data.body)
     group_id = Event.judge_group_or_room(event)
     return if group_id.blank?
+    json_data = Event.members_count(event, client)
+    count_menbers = JSON.parse(json_data.body)
 
     Event.split_event(event, client, group_id, count_menbers)
   end
