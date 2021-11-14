@@ -1,5 +1,6 @@
 class LineGroup < ApplicationRecord
-  enum status: { wait: 0, call: 1 }
+  enum status:    { wait: 0, call: 1 }
+  enum set_span:  { random: 0, faster: 1, latter: 2 }
 
   validates :line_group_id, presence: true, uniqueness: true, length: { maximum: 255 }
   validates :remind_at,     presence: true

@@ -96,4 +96,5 @@ ja:
         remind_at: 'リマインド'
         status: '状態'
         post_count: '投稿数'
-        member_count: '利用者数'
+        member_count: '人数'
+        set_span: '期間'

@@ -42,6 +42,6 @@ class Operator::LineGroupsController < Operator::BaseController
   end
 
   def line_group_params
-    params.require(:line_group).permit(:remind_at, :status, :post_count)
+    params.require(:line_group).permit(:remind_at, :status, :post_count, :set_span)
   end
 end

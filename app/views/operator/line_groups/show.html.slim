@@ -9,13 +9,16 @@ h1.mt-5
     = @line_group.remind_at
   h3.mt-5
     | 状態：
-    = @line_group.status
+    = @line_group.status_i18n
   h3.mt-5
     | 交流数：
     = @line_group.post_count
   h3.mt-5
-    | 利用者数：
+    | 人数：
     = @line_group.member_count
+  h3.mt-5
+    | 期間：
+    = @line_group.set_span_i18n
   h3.mt-5
     | 作成日：
     = l(@line_group.created_at, format: :long)
