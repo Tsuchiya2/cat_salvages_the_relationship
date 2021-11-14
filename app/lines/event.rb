@@ -85,7 +85,7 @@ class Event
 
   # 設定に関する"おまじない"が投稿された際にメッセージを返します。
   def self.catched_magicword(client, line_group)
-    message = { type: 'text', text: '了解ニャ！, 次の投稿から設定を適応するニャ🐾！！' }
+    message = { type: 'text', text: '了解ニャ！次の投稿から設定を適応するニャ🐾！！' }
     client.push_message(line_group.line_group_id, message)
   end
 
