@@ -2,7 +2,7 @@ class Event
   # catch_events_controller#callbackが動いた際のイベント振り分けメソッド'pretreatment'を呼び出します。
   def self.catched_events(events, client)
     events.each do |event|
-      pretreatment(event, client)
+      Event.pretreatment(event, client)
     rescue StandardError => e
       group_id = Event.judge_group_or_room(event)
       error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
