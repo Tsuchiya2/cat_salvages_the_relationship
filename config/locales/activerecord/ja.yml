@@ -64,6 +64,8 @@ ja:
               greater_than_or_equal_to: 'が0より小さい値です'
               less_than_or_equal_to: 'が50より大きい値です'
               not_a_number: 'が数値ではありません'
+            set_span:
+              blank: 'が空白です'
 
     models:
       operator: 'オペレーター'

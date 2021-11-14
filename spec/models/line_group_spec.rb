@@ -109,55 +109,67 @@ RSpec.describe LineGroup, type: :model do
       it '空の状態だと、保存できない。' do
         line_group[:member_count] = nil
         line_group.valid?
-        expect(line_group.errors.full_messages).to include('利用者数 が空白です')
+        expect(line_group.errors.full_messages).to include('人数 が空白です')
       end
 
       it '数値が0未満の場合、保存できない。' do
         line_group[:member_count] = -1
         line_group.valid?
-        expect(line_group.errors.full_messages).to include('利用者数 が0より小さい値です')
+        expect(line_group.errors.full_messages).to include('人数 が0より小さい値です')
       end
 
       it '数値が51以上の場合、保存できない。' do
         line_group[:member_count] = 51
         line_group.valid?
-        expect(line_group.errors.full_messages).to include('利用者数 が50より大きい値です')
+        expect(line_group.errors.full_messages).to include('人数 が50より大きい値です')
       end
 
       it '文字列"abc"が入力された場合、保存できない。' do
         line_group[:member_count] = 'abc'
         line_group.valid?
-        expect(line_group.errors.full_messages).to include('利用者数 が数値ではありません')
+        expect(line_group.errors.full_messages).to include('人数 が数値ではありません')
+      end
+    end
+
+    context 'set_span' do
+      it '空の状態だと、保存できない。' do
+        line_group[:set_span] = nil
+        line_group.valid?
+        expect(line_group.errors.full_messages).to include('期間 が空白です')
       end
     end
   end
 
   describe 'インスタンスメソッド' do
-    it 'change_short_status_by_magicword' do
-      before_remind_at = line_group.remind_at
-      line_group.change_short_status_by_magicword(5)
-      expect(line_group.status).to eq 'wait'
-      expect(line_group.remind_at).not_to eq before_remind_at
-      expect(line_group.post_count).to be 1
-      expect(line_group.member_count).to be 5
-    end
+    context 'auto_change_status' do
+      it 'faster設定' do
+        before_remind_at = line_group.remind_at
+        line_group.faster!
+        line_group.auto_change_status(5)
+        expect(line_group.status).to eq 'wait'
+        expect(line_group.remind_at).not_to eq before_remind_at
+        expect(line_group.post_count).to be 1
+        expect(line_group.member_count).to be 5
+      end
 
-    it 'change_long_status_by_magicword' do
-      before_remind_at = line_group.remind_at
-      line_group.change_long_status_by_magicword(5)
-      expect(line_group.status).to eq 'wait'
-      expect(line_group.remind_at).not_to eq before_remind_at
-      expect(line_group.post_count).to be 1
-      expect(line_group.member_count).to be 5
-    end
+      it 'latter設定' do
+        before_remind_at = line_group.remind_at
+        line_group.latter!
+        line_group.auto_change_status(5)
+        expect(line_group.status).to eq 'wait'
+        expect(line_group.remind_at).not_to eq before_remind_at
+        expect(line_group.post_count).to be 1
+        expect(line_group.member_count).to be 5
+      end
 
-    it 'auto_change_status' do
-      before_remind_at = line_group.remind_at
-      line_group.auto_change_status(5)
-      expect(line_group.status).to eq 'wait'
-      expect(line_group.remind_at).not_to eq before_remind_at
-      expect(line_group.post_count).to be 1
-      expect(line_group.member_count).to be 5
+      it 'random設定' do
+        before_remind_at = line_group.remind_at
+        line_group.auto_change_status(5)
+        expect(line_group.status).to eq 'wait'
+        expect(line_group.remind_at).not_to eq before_remind_at
+        expect(line_group.post_count).to be 1
+        expect(line_group.member_count).to be 5
+      end
     end
   end
 end
