@@ -14,9 +14,9 @@ class Event
   def self.pretreatment(event, client)
     group_id = Event.judge_group_or_room(event)
     return if group_id.blank?
+
     json_data = Event.members_count(event, client)
     count_menbers = JSON.parse(json_data.body)
-
     Event.split_event(event, client, group_id, count_menbers)
   end
 
