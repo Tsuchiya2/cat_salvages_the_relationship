@@ -2,11 +2,12 @@ class Operator::CatchEventsController < Operator::BaseController
   skip_before_action :require_login, only: %i[callback]
   protect_from_forgery with: :null_session, only: %i[callback]
 
+  require './app/lines/config/client_config'
   require './app/lines/line_event'
 
   def callback
     # === リクエストがLINEプラットフォームから送信されたものかを確認します ====
-    client = LineEvent.set_line_bot_client
+    client = ClientConfig.set_line_bot_client
     body = LineEvent.request_body_read(request)
     LineEvent.verify_request(request, client, body)
 
