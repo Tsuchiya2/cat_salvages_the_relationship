@@ -1,5 +1,5 @@
 namespace :wait_notice do
-  require './app/lines/config/client_config'
+  require './app/lines/client_config'
   require './app/lines/line_event'
   desc '不定期な働きかけを行う'
   task wait_reminds: :environment do
