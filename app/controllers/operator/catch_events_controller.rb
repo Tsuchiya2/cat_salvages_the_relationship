@@ -8,7 +8,7 @@ class Operator::CatchEventsController < Operator::BaseController
     # === リクエストがLINEプラットフォームから送信されたものかを確認します ====
     client = LineEvent.set_line_bot_client
     body = LineEvent.request_body_read(request)
-    LineEvent.verify_request(request, body, client)
+    LineEvent.verify_request(request, client, body)
 
     # === 以下イベント毎の処理になります ===
     events = client.parse_events_from(body)
