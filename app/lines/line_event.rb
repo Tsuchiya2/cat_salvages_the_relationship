@@ -1,10 +1,10 @@
 class LineEvent
-  require './app/lines/config/client_config'
-  require './app/lines/config/request'
+  require './app/lines/settings/client_setting'
+  require './app/lines/settings/request'
   require_relative 'message_event'
   require_relative 'join_event'
   require_relative 'leave_event'
-  extend ClientConfig
+  extend ClientSetting
   extend Request
   extend MessageEvent
   extend JoinEvent

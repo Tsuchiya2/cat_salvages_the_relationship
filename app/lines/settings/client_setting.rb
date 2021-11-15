@@ -1,4 +1,4 @@
-module ClientConfig
+module ClientSetting
   def set_line_bot_client
     Line::Bot::Client.new do |config|
       config.channel_id = Rails.application.credentials.channel_id
