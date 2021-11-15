@@ -1,8 +1,8 @@
 namespace :call_notice do
-  require './app/lines/events/line_event'
+  require './app/lines/webhook/line_event'
   desc '短いスパンでの働きかけを行う'
   task call_reminds: :environment do
-    client = Events::LineEvent.set_line_bot_client
+    client = Webhook::LineEvent.set_line_bot_client
 
     messages = [{ type: 'text', text: AlarmContent.contact.sample.body },
                 { type: 'text', text: AlarmContent.text.sample.body }]
