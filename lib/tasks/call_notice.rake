@@ -1,8 +1,9 @@
 namespace :call_notice do
+  require './app/lines/config/client_config'
   require './app/lines/line_event'
   desc '短いスパンでの働きかけを行う'
   task call_reminds: :environment do
-    client = LineEvent.set_line_bot_client
+    client = ClientConfig.set_line_bot_client
 
     messages = [{ type: 'text', text: AlarmContent.contact.sample.body },
                 { type: 'text', text: AlarmContent.text.sample.body }]
