@@ -1,4 +1,4 @@
-module JoinEvent
+module Events::JoinEvent
   def join_bot(client, group_id, count_menbers)
     LineEvent.create_line_group(group_id, count_menbers)
     message = { type: 'text',

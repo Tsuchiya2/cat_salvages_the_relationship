@@ -1,4 +1,4 @@
-module MessageEvent
+module Events::MessageEvent
   CHANGE_SPAN_WORDS = /Would you set to faster.|Would you set to latter.|Would you set to default./
 
   def catch_message(event, client, group_id, count_menbers)

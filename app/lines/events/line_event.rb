@@ -1,14 +1,14 @@
-class LineEvent
+class Events::LineEvent
   require './app/lines/client_config'
   require './app/lines/request'
-  require_relative 'message_event'
-  require_relative 'join_event'
-  require_relative 'leave_event'
-  extend ClientConfig
-  extend Request
-  extend MessageEvent
-  extend JoinEvent
-  extend LeaveEvent
+  require './app/lines/events/message_event'
+  require './app/lines/events/join_event'
+  require './app/lines/events/leave_event'
+  extend Events::ClientConfig
+  extend Events::Request
+  extend Events::MessageEvent
+  extend Events::JoinEvent
+  extend Events::LeaveEvent
 
   def self.catch_events(events, client)
     events.each do |event|
