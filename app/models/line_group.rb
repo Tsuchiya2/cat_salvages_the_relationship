@@ -16,7 +16,7 @@ class LineGroup < ApplicationRecord
   scope :remind_wait, -> { wait.where('remind_at <= ?', Date.current) }
   scope :remind_call, -> { call.where('remind_at <= ?', Date.current) }
 
-  def auto_change_status(count_menbers)
+  def update_line_group_record(count_menbers)
     random_number = if faster?
                       (21..32).to_a.sample
                     elsif latter?

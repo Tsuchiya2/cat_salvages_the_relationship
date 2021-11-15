@@ -85,10 +85,3 @@ Layout/LineLength:
 
 RSpec/ContextWording:
   Enabled: false
-
-# 新たに追加した項目
-Metrics/MethodLength:
-  Max: 13
-
-Metrics/AbcSize:
-  Max: 21
