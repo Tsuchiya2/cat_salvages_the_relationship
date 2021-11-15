@@ -2,8 +2,8 @@ class Operator::CatchEventsController < Operator::BaseController
   skip_before_action :require_login, only: %i[callback]
   protect_from_forgery with: :null_session, only: %i[callback]
 
-  require './app/lines/config/client_config'
-  require './app/lines/config/request'
+  require './app/lines//client_config'
+  require './app/lines//request'
   require './app/lines/line_event'
 
   def callback
