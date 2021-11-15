@@ -1,44 +1,44 @@
-class Events::LineEvent
+class Webhook::LineEvent
   require './app/lines/client_config'
   require './app/lines/request'
-  require './app/lines/events/message_event'
-  require './app/lines/events/join_event'
-  require './app/lines/events/leave_event'
-  extend Events::ClientConfig
-  extend Events::Request
-  extend Events::MessageEvent
-  extend Events::JoinEvent
-  extend Events::LeaveEvent
+  require './app/lines/webhook/message_event'
+  require './app/lines/webhook/join_event'
+  require './app/lines/webhook/leave_event'
+  extend Webhook::ClientConfig
+  extend Webhook::Request
+  extend Webhook::MessageEvent
+  extend Webhook::JoinEvent
+  extend Webhook::LeaveEvent
 
   def self.catch_events(events, client)
     events.each do |event|
-      Events::LineEvent.callback_action(event, client)
+      Webhook::LineEvent.callback_action(event, client)
     rescue StandardError => e
       group_id = Event.catch_group_or_room_id(event)
       error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
-      Events::LineEvent.error_email(group_id, error_message).deliver_later
+      Webhook::LineEvent.error_email(group_id, error_message).deliver_later
     end
   end
 
   def self.callback_action(event, client)
-    group_id = Events::LineEvent.catch_group_or_room_id(event)
+    group_id = Webhook::LineEvent.catch_group_or_room_id(event)
     return if group_id.blank?
 
-    json_data = Events::LineEvent.count_group_members(event, client)
+    json_data = Webhook::LineEvent.count_group_members(event, client)
     count_menbers = JSON.parse(json_data.body)
-    Events::LineEvent.branch_event_type(event, client, group_id, count_menbers)
+    Webhook::LineEvent.branch_event_type(event, client, group_id, count_menbers)
   end
 
   def self.branch_event_type(event, client, group_id, count_menbers)
     case event
     when Line::Bot::Event::Message
-      Events::LineEvent.catch_message(event, client, group_id, count_menbers)
+      Webhook::LineEvent.catch_message(event, client, group_id, count_menbers)
     when Line::Bot::Event::Join
-      Events::LineEvent.join_bot(client, group_id, count_menbers)
+      Webhook::LineEvent.join_bot(client, group_id, count_menbers)
     when Line::Bot::Event::MemberJoined
-      Events::LineEvent.join_member(client, group_id, count_menbers)
+      Webhook::LineEvent.join_member(client, group_id, count_menbers)
     when Line::Bot::Event::Leave, Line::Bot::Event::MemberLeft
-      Events::LineEvent.leave_events(group_id, count_menbers)
+      Webhook::LineEvent.leave_events(group_id, count_menbers)
     end
   end
 
