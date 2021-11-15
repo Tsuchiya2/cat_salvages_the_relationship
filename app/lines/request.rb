@@ -1,4 +1,4 @@
-class Request
+module Request
   def request_body_read(request)
     request.body.read
   end
