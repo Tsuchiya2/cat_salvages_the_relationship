@@ -14,7 +14,7 @@ class LineEvent
     events.each do |event|
       LineEvent.callback_action(event, client)
     rescue StandardError => e
-      group_id = Event.catch_group_or_room_id(event)
+      group_id = LineEvent.catch_group_or_room_id(event)
       error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
       LineEvent.error_email(group_id, error_message).deliver_later
     end
