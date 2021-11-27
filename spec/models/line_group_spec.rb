@@ -145,7 +145,7 @@ RSpec.describe LineGroup, type: :model do
       it 'faster設定' do
         before_remind_at = line_group.remind_at
         line_group.faster!
-        line_group.update_line_group_record(5)
+        line_group.update_record(5)
         expect(line_group.status).to eq 'wait'
         expect(line_group.remind_at).not_to eq before_remind_at
         expect(line_group.post_count).to be 1
@@ -155,7 +155,7 @@ RSpec.describe LineGroup, type: :model do
       it 'latter設定' do
         before_remind_at = line_group.remind_at
         line_group.latter!
-        line_group.update_line_group_record(5)
+        line_group.update_record(5)
         expect(line_group.status).to eq 'wait'
         expect(line_group.remind_at).not_to eq before_remind_at
         expect(line_group.post_count).to be 1
@@ -164,7 +164,7 @@ RSpec.describe LineGroup, type: :model do
 
       it 'random設定' do
         before_remind_at = line_group.remind_at
-        line_group.update_line_group_record(5)
+        line_group.update_record(5)
         expect(line_group.status).to eq 'wait'
         expect(line_group.remind_at).not_to eq before_remind_at
         expect(line_group.post_count).to be 1

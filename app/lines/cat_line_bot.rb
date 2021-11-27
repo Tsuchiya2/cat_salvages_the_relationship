@@ -27,22 +27,22 @@ module CatLineBot
     events.each do |event|
       parse_event(event, client)
     rescue StandardError => e
-      group_id = set_group_id(event)
+      group_id = current_group_id(event)
       error_message = "<Callback> 例外:#{e.class}, メッセージ:#{e.message}, バックトレース:#{e.backtrace}"
       LineMailer.error_email(group_id, error_message).deliver_later
     end
   end
 
   def parse_event(event, client)
-    group_id = set_group_id(event)
-    return solitude_human(event, client) if group_id.blank? ##########
+    group_id = current_group_id(event)
+    return if group_id.blank?
 
     json_data = count_members(event, client)
     count_menbers = JSON.parse(json_data.body)
     action_by_event_type(event, client, group_id, count_menbers)
   end
 
-  def set_group_id(event)
+  def current_group_id(event)
     if event['source']['groupId']
       event['source']['groupId']    # LINE Botが加わっているグループIDを返す
     elsif event['source']['roomId']
