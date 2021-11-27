@@ -1,8 +1,8 @@
 namespace :wait_notice do
-  require './app/lines/line_event'
   desc '不定期な働きかけを行う'
   task wait_reminds: :environment do
-    client = LineEvent.set_line_bot_client
+    include CatLineBot
+    client = set_client
 
     messages = [{ type: 'text', text: Content.contact.sample.body },
                 { type: 'text', text: Content.free.sample.body },
