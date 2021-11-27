@@ -4,7 +4,7 @@ module MessageEvent
   private
 
   def message_events(event, client, group_id, count_menbers)
-    cat_back_to_memory(event, client, group_id) if event.message['text'].match?('Cat sleeping on our Memory.')
+    cat_back_to_memory(event, client, group_id) if event.message['text']&.match?('Cat sleeping on our Memory.')
     update_line_group_record(event, client, group_id, count_menbers)
   end
 
