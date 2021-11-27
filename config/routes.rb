@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     resources :alarm_contents
     resources :feedbacks,   only: %i[index show destroy]
     resources :line_groups, only: %i[index show edit update destroy]
-    post Rails.application.credentials.callback_route, to: 'catch_events#callback'
+    post Rails.application.credentials.callback_route, to: 'webhooks#callback'
   end
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end

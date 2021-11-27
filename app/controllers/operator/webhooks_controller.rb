@@ -1,4 +1,4 @@
-class Operator::CatchEventsController < Operator::BaseController
+class Operator::WebhooksController < Operator::BaseController
   skip_before_action :require_login, only: %i[callback]
   protect_from_forgery except: :callback
 
