@@ -35,7 +35,7 @@ module CatLineBot
 
   def parse_event(event, client)
     group_id = current_group_id(event)
-    return if group_id.blank?
+    return one_on_one(event, client) if group_id.blank?
 
     json_data = count_members(event, client)
     count_menbers = JSON.parse(json_data.body)

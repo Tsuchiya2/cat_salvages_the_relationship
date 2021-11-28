@@ -1,6 +1,31 @@
 module MessageEvent
   CHANGE_SPAN_WORDS = /Would you set to faster.|Would you set to latter.|Would you set to default./
 
+  HOW_TO_USE = <<~TEXT.freeze
+    メッセージありがとうニャ🐾！
+
+    （1on1の状態でテキストを投稿すると、このメッセージを返します）
+
+    ReLINEの使い方は以下のとおりニャ📱、
+    大切な人との交流にお役に立てたら嬉しいニャ！！🐾
+
+    "==== 使い方 ====
+    ● 2人以上のグループorトークルームに'猫さん'を参加させます
+    ● 最後の投稿から約3週間後〜約2ヶ月後のどこかのタイミングで'猫さん'がLINEを送ってきます
+    ● LINEが送られてくる時期を設定したい場合は以下の"おまじない"を各グループ等で投稿してください🖍
+
+    ・約1ヶ月後：
+        "Would you set to faster."
+    ・約2ヶ月後：
+        "Would you set to latter."
+    ・デフォルト：
+        "Would you set to default."
+
+    もし"猫さん"からの働きかけを止めたいときは
+    "Cat sleeping on our Memory."
+    と各グループ等で投稿してください🐾
+  TEXT
+
   private
 
   def message_events(event, client, group_id, count_menbers)
@@ -42,5 +67,18 @@ module MessageEvent
   def response_to_change_span_word(client, line_group)
     message = { type: 'text', text: '了解ニャ！次の投稿から設定を適応するニャ🐾！！' }
     client.push_message(line_group.line_group_id, message)
+  end
+
+  # === 1on1の場合 ===``
+  def one_on_one(event, client)
+    message = case event.type
+              when Line::Bot::Event::MessageType::Text
+                { type: 'text', text: HOW_TO_USE }
+              when Line::Bot::Event::MessageType::Sticker
+                { type: 'text', text: "スタンプありがとうニャ！✨\nお礼にこちらをお送りするニャ🐾🐾\n#{Content.free.sample.body}" }
+              else
+                { type: 'text', text: 'ごめんニャ😿分からないニャ。。。' }
+              end
+    client.reply_message(event['replyToken'], message)
   end
 end
