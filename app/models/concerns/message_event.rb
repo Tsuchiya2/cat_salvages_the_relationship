@@ -1,32 +1,8 @@
 module MessageEvent
+  extend ActiveSupport::Concern
+
+  HOW_TO_USE = 'https://www.cat-reline.com/'.freeze
   CHANGE_SPAN_WORDS = /Would you set to faster.|Would you set to latter.|Would you set to default./
-
-  HOW_TO_USE = <<~TEXT.freeze
-    メッセージありがとうニャ🐾！
-
-    （1on1の状態でテキストを投稿すると、このメッセージを返します）
-
-    ReLINEの使い方は以下のとおりニャ📱、
-    大切な人との交流にお役に立てたら嬉しいニャ！！🐾
-
-    "==== 使い方 ====
-    ● 2人以上のグループorトークルームに'猫さん'を参加させます
-    ● 最後の投稿から約3週間後〜約2ヶ月後のどこかのタイミングで'猫さん'がLINEを送ってきます
-    ● LINEが送られてくる時期を設定したい場合は以下の"おまじない"を各グループ等で投稿してください🖍
-
-    ・約1ヶ月後：
-        "Would you set to faster."
-    ・約2ヶ月後：
-        "Would you set to latter."
-    ・デフォルト：
-        "Would you set to default."
-
-    もし"猫さん"からの働きかけを止めたいときは
-    "Cat sleeping on our Memory."
-    と各グループ等で投稿してください🐾
-  TEXT
-
-  private
 
   def message_events(event, client, group_id, count_menbers)
     cat_back_to_memory(event, client, group_id) if event.message['text']&.match?('Cat sleeping on our Memory.')
@@ -73,7 +49,7 @@ module MessageEvent
   def one_on_one(event, client)
     message = case event.type
               when Line::Bot::Event::MessageType::Text
-                { type: 'text', text: HOW_TO_USE }
+                { type: 'text', text: "【ReLINE】の使い方はこちらで確認してほしいにゃ！🐱🐾#{HOW_TO_USE}" }
               when Line::Bot::Event::MessageType::Sticker
                 { type: 'text', text: "スタンプありがとうニャ！✨\nお礼にこちらをお送りするニャ🐾🐾\n#{Content.free.sample.body}" }
               else

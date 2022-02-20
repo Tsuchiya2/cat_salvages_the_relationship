@@ -85,3 +85,10 @@ Layout/LineLength:
 
 RSpec/ContextWording:
   Enabled: false
+
+# rescue の 'e' 変数を他のメソッドに渡す際、引数の文字数は3文字以上の必要がありますが、
+# 'e'を変えると、rescue内容を格納する変数は'e'を使用するようにと指摘されてしまうため、
+# 現状は限定的に該当のファイルのみ3文字以上の制約を解除しています。
+Naming/MethodParameterName:
+  Exclude:
+    - 'app/models/scheduler.rb'
