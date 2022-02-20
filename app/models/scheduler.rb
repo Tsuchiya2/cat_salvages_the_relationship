@@ -5,7 +5,7 @@ class Scheduler
     def call_notice
       remaind_groups = LineGroup.remind_call
       messages = call_message
-      client = CatLineBot.get_line_client
+      client = CatLineBot.line_client_config
 
       wait_notice(remaind_groups, messages, client)
     end
@@ -13,7 +13,7 @@ class Scheduler
     def wait_notice
       remaind_groups = LineGroup.remind_wait
       messages = wait_messages
-      client = CatLineBot.get_line_client
+      client = CatLineBot.line_client_config
 
       wait_notice(remaind_groups, messages, client)
     end
