@@ -1,5 +1,6 @@
 class CatLineBot
   include ActiveModel::Model
+  # modelの単体テストもしくはリクエストテストを実装の際を考えて上記の記載を残しております。
   extend MessageEvent
 
   class << self

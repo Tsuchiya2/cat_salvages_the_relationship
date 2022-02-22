@@ -1,5 +1,6 @@
 class Scheduler
   include ActiveModel::Model
+  # modelの単体テストもしくはリクエストテストを実装の際を考えて上記の記載を残しております。
 
   class << self
     def call_notice
@@ -7,7 +8,7 @@ class Scheduler
       messages = call_message
       client = CatLineBot.line_client_config
 
-      wait_notice(remaind_groups, messages, client)
+      scheduler(remaind_groups, messages, client)
     end
 
     def wait_notice
@@ -15,7 +16,7 @@ class Scheduler
       messages = wait_messages
       client = CatLineBot.line_client_config
 
-      wait_notice(remaind_groups, messages, client)
+      scheduler(remaind_groups, messages, client)
     end
 
     def call_messages
