@@ -1,14 +1,14 @@
 doctype html
 html
   head
-    = favicon_pack_tag 'media/images/favicon.ico'
+    = favicon_link_tag asset_path('favicon.ico')
     title
       | ReLINE
     meta[name="viewport" content="width=device-width,initial-scale=1"]
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_pack_tag 'application', media: 'all'
-    = javascript_pack_tag 'application'
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbo-track': 'reload', type: 'module'
   body.web-font
     = render 'shared/navbar'
     = render 'shared/flash_message'

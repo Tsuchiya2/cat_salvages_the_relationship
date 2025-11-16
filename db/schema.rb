@@ -10,55 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_14_025759) do
-
-  create_table "alarm_contents", charset: "utf8mb4", force: :cascade do |t|
+ActiveRecord::Schema[8.1].define(version: 2021_11_14_025759) do
+  create_table "alarm_contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "body", null: false
     t.integer "category", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["body"], name: "index_alarm_contents_on_body", unique: true
   end
 
-  create_table "contents", charset: "utf8mb4", force: :cascade do |t|
+  create_table "contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "body", null: false
     t.integer "category", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["body"], name: "index_contents_on_body", unique: true
   end
 
-  create_table "feedbacks", charset: "utf8mb4", force: :cascade do |t|
+  create_table "feedbacks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.text "text", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "line_groups", charset: "utf8mb4", force: :cascade do |t|
+  create_table "line_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "line_group_id", null: false
-    t.date "remind_at", null: false
-    t.integer "status", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.integer "post_count", default: 0, null: false
     t.integer "member_count", default: 0, null: false
+    t.integer "post_count", default: 0, null: false
+    t.date "remind_at", null: false
     t.integer "set_span", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
     t.index ["line_group_id"], name: "index_line_groups_on_line_group_id", unique: true
   end
 
-  create_table "operators", charset: "utf8mb4", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "email", null: false
+  create_table "operators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "crypted_password"
-    t.string "salt"
-    t.integer "role", default: 1, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "email", null: false
     t.integer "failed_logins_count", default: 0
     t.datetime "lock_expires_at"
+    t.string "name", null: false
+    t.integer "role", default: 1, null: false
+    t.string "salt"
     t.string "unlock_token"
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_operators_on_email", unique: true
     t.index ["unlock_token"], name: "index_operators_on_unlock_token"
   end
-
 end
