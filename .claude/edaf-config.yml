@@ -1,0 +1,34 @@
+language_preferences:
+  documentation_language: en
+  terminal_output_language: ja
+  save_dual_language_docs: false
+docker:
+  enabled: false
+project:
+  type: ruby_rails
+  framework: rails
+  version: 6.1.4
+  ruby_version: 3.0.2
+  database:
+    development: mysql2
+    test: mysql2
+    production: postgresql
+  orm: activerecord
+  testing_framework: rspec
+  code_quality:
+    - rubocop
+    - rubocop-rails
+    - rubocop-performance
+    - rubocop-rspec
+  authentication: sorcery
+  authorization: pundit
+  template_engine: slim
+  frontend:
+    bundler: webpacker
+    webpack_version: 4.46.0
+    css_framework: bootstrap
+    libraries:
+      - rails_ujs
+      - actioncable
+      - activestorage
+      - fontawesome

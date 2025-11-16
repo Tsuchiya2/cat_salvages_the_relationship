@@ -1,6 +1,6 @@
 class Operator < ApplicationRecord
   authenticates_with_sorcery!
-  enum role: { operator: 0, guest: 1 }
+  enum :role, { operator: 0, guest: 1 }
 
   validates :name,                    presence: true, length: { in: 2..255 }
   validates :email,                   presence: true, uniqueness: true
