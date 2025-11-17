@@ -3,6 +3,12 @@ Rails.application.routes.draw do
   get 'terms',              to: 'customers#terms'
   get 'privacy_policy',     to: 'customers#privacy_policy'
   resources :feedbacks,     only: %i[new create]
+
+  # Health check and monitoring endpoints
+  get '/health',            to: 'health#check'
+  get '/health/deep',       to: 'health#deep'
+  get '/metrics',           to: 'metrics#index'
+
   namespace :operator do
     get    'cat_in',        to: 'operator_sessions#new'
     post   'cat_in',        to: 'operator_sessions#create'

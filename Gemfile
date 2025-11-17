@@ -32,8 +32,11 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'slim-rails'
 gem 'sorcery'
 gem 'enum_help'
-gem 'line-bot-api'
+gem 'line-bot-api', '~> 2.0'
 gem 'pundit'
+gem 'prometheus-client', '~> 4.0'
+gem 'lograge', '~> 0.14'
+gem 'request_store', '~> 1.5'
 
 group :production do
   gem 'pg'
@@ -51,6 +54,9 @@ group :development, :test do
   gem 'rubocop-performance'
   gem 'rubocop-rspec'
   gem 'pry-byebug'
+  # Security scanners
+  gem 'brakeman', require: false
+  gem 'bundler-audit', require: false
 end
 
 group :development do
