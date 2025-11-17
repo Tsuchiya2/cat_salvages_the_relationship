@@ -88,7 +88,12 @@ Rails.application.configure do
   # require "syslog/logger"
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  config.logger = Logger.new('log/development.log', 7, 1 * 1024 * 1024)
+  # Configure logger with rotation (10 files, 100MB each)
+  config.logger = ActiveSupport::Logger.new(
+    Rails.root.join('log', 'production.log'),
+    10,           # Keep 10 old log files
+    100.megabytes # Rotate when file reaches 100MB
+  )
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
