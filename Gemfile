@@ -78,6 +78,7 @@ group :test do
   gem 'faker'
   gem 'webdrivers'
   gem 'simplecov'
+  gem 'rspec_junit_formatter' # For CI/CD integration
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
