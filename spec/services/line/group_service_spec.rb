@@ -99,7 +99,7 @@ RSpec.describe Line::GroupService do
       it 'does not update group' do
         expect do
           service.update_record(group_id, 1)
-        end.not_to change { line_group.reload.post_count }
+        end.not_to(change { line_group.reload.post_count })
       end
     end
   end

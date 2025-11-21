@@ -24,7 +24,6 @@ module Line
     #
     # @param event [Line::Bot::Event] LINE event
     # @return [Integer] Member count
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def count(event)
       return fallback_count unless event.source
 
@@ -39,7 +38,6 @@ module Line
       Rails.logger.warn "Failed to get member count: #{e.message}"
       fallback_count
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     private
 
