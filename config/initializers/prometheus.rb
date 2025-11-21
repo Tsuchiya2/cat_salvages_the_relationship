@@ -21,13 +21,13 @@ WEBHOOK_REQUESTS_TOTAL = prometheus.counter(
 EVENT_PROCESSED_TOTAL = prometheus.counter(
   :event_processed_total,
   docstring: 'Total events processed',
-  labels: [:event_type, :status]
+  labels: %i[event_type status]
 )
 
 LINE_API_CALLS_TOTAL = prometheus.counter(
   :line_api_calls_total,
   docstring: 'Total LINE API calls',
-  labels: [:method, :status]
+  labels: %i[method status]
 )
 
 LINE_API_DURATION = prometheus.histogram(

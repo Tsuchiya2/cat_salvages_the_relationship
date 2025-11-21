@@ -15,13 +15,10 @@ RSpec.describe Line::ClientProvider do
 
     before do
       # Stub the Line::Bot::Client constant to allow mocking
-      unless defined?(Line::Bot::Client)
-        stub_const('Line::Bot::Client', Class.new)
-      end
+      stub_const('Line::Bot::Client', Class.new) unless defined?(Line::Bot::Client)
 
-      allow(Rails.application.credentials).to receive(:channel_id).and_return(mock_credentials[:channel_id])
-      allow(Rails.application.credentials).to receive(:channel_secret).and_return(mock_credentials[:channel_secret])
-      allow(Rails.application.credentials).to receive(:channel_token).and_return(mock_credentials[:channel_token])
+      allow(Rails.application.credentials).to receive_messages(channel_id: mock_credentials[:channel_id],
+                                                               channel_secret: mock_credentials[:channel_secret], channel_token: mock_credentials[:channel_token])
 
       # Reset singleton before each test
       described_class.reset!
@@ -66,13 +63,10 @@ RSpec.describe Line::ClientProvider do
 
     before do
       # Stub the Line::Bot::Client constant to allow mocking
-      unless defined?(Line::Bot::Client)
-        stub_const('Line::Bot::Client', Class.new)
-      end
+      stub_const('Line::Bot::Client', Class.new) unless defined?(Line::Bot::Client)
 
-      allow(Rails.application.credentials).to receive(:channel_id).and_return(mock_credentials[:channel_id])
-      allow(Rails.application.credentials).to receive(:channel_secret).and_return(mock_credentials[:channel_secret])
-      allow(Rails.application.credentials).to receive(:channel_token).and_return(mock_credentials[:channel_token])
+      allow(Rails.application.credentials).to receive_messages(channel_id: mock_credentials[:channel_id],
+                                                               channel_secret: mock_credentials[:channel_secret], channel_token: mock_credentials[:channel_token])
     end
 
     it 'clears the memoized client' do

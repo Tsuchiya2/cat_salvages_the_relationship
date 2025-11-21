@@ -134,15 +134,15 @@ class Scheduler
 
     def safe_body(sampler, category, fallback)
       content = sampler.sample(category)
-      return content.body if content&.respond_to?(:body)
+      return content.body if content.respond_to?(:body)
 
       fallback
     end
 
-    CALL_FALLBACK_CONTACT = '管理者へ連絡お願いします。'
-    CALL_FALLBACK_TEXT = '呼びかけメッセージを用意できなかったニャ…🐱'
-    WAIT_FALLBACK_CONTACT = 'いつでも声をかけてニャ！'
-    WAIT_FALLBACK_FREE = '今日はどんな一日だった？'
-    WAIT_FALLBACK_TEXT = 'もう少し仲良くなりたいニャ🐾'
+    CALL_FALLBACK_CONTACT = '管理者へ連絡お願いします。'.freeze
+    CALL_FALLBACK_TEXT = '呼びかけメッセージを用意できなかったニャ…🐱'.freeze
+    WAIT_FALLBACK_CONTACT = 'いつでも声をかけてニャ！'.freeze
+    WAIT_FALLBACK_FREE = '今日はどんな一日だった？'.freeze
+    WAIT_FALLBACK_TEXT = 'もう少し仲良くなりたいニャ🐾'.freeze
   end
 end

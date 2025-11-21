@@ -155,7 +155,7 @@ RSpec.describe Line::CommandHandler do
       it 'does not update set_span' do
         expect do
           handler.handle_span_setting(event, group_id)
-        end.not_to change { line_group.reload.set_span }
+        end.not_to(change { line_group.reload.set_span })
       end
 
       it 'does not send confirmation' do

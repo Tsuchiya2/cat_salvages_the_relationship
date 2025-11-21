@@ -6,10 +6,8 @@ module LineTestHelpers
     allow(operator).to receive(:[]).with(:email).and_return('test@example.com')
 
     credentials = double('credentials')
-    allow(credentials).to receive(:channel_id).and_return('test_channel_id')
-    allow(credentials).to receive(:channel_secret).and_return('test_channel_secret')
-    allow(credentials).to receive(:channel_token).and_return('test_channel_token')
-    allow(credentials).to receive(:operator).and_return(operator)
+    allow(credentials).to receive_messages(channel_id: 'test_channel_id', channel_secret: 'test_channel_secret',
+                                           channel_token: 'test_channel_token', operator: operator)
 
     allow(Rails.application).to receive(:credentials).and_return(credentials)
   end

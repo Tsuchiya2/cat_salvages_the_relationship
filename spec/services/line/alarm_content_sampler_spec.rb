@@ -132,13 +132,11 @@ RSpec.describe Line::AlarmContentSampler do
   end
 
   # Helper method to count database queries
-  def count_queries
+  def count_queries(&block)
     count = 0
     counter = ->(*, **) { count += 1 }
 
-    ActiveSupport::Notifications.subscribed(counter, 'sql.active_record') do
-      yield
-    end
+    ActiveSupport::Notifications.subscribed(counter, 'sql.active_record', &block)
 
     count
   end

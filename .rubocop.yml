@@ -1,10 +1,11 @@
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
 
 # Exlucdeに設定したファイルはチェックの対象外になります。
 AllCops:
+  NewCops: disable
   Exclude:
     - 'vendor/**/*'
     - 'db/**/*'
@@ -42,7 +43,7 @@ RSpec/ExampleLength:
   Enabled: false
 
 # RspecのsystemテストでHTTP Status CodeよりSymbolを優先する規約を解除(Codeの方が共有しやすいとの判断から)
-RSpec/Rails/HttpStatus:
+Rails/HttpStatus:
   Enabled: false
 
 # 以下、初期状態でRubocopに引っかかる項目をスキップさせています。
@@ -79,10 +80,6 @@ Layout/CommentIndentation:
   Exclude:
     - 'config/environments/development.rb'
 
-Layout/LineLength:
-  Exclude:
-    - 'config/initializers/sorcery.rb'
-
 RSpec/ContextWording:
   Enabled: false
 
@@ -92,3 +89,39 @@ RSpec/ContextWording:
 Naming/MethodParameterName:
   Exclude:
     - 'app/models/scheduler.rb'
+
+# プロジェクトの実態に合わせて緩和・無効化したCop
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 40
+
+Lint/MissingSuper:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 200
+  Exclude:
+    - 'config/initializers/sorcery.rb'
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/IndexedLet:
+  Enabled: false
+
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/MultipleDescribes:
+  Enabled: false

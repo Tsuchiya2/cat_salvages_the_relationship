@@ -148,7 +148,7 @@ module Line
     end
 
     # Process leave events (bot or member left)
-    def process_leave_event(event, group_id, member_count)
+    def process_leave_event(_event, group_id, member_count)
       @group_service.delete_if_empty(group_id, member_count)
     end
   end
