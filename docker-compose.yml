@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: reline_development
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  web:
+    build: .
+    command: bin/dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
+    environment:
+      RAILS_ENV: development
+      DB_HOST: db
+      DB_USERNAME: root
+      DB_PASSWORD: rootpassword
+      DB_PORT: 3306
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
+  bundle_cache:
+  node_modules:

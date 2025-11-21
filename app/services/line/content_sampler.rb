@@ -54,6 +54,15 @@ module Line
       @cache[category]&.dig(:content)
     end
 
+    # Check if specified category has at least one entry
+    #
+    # @param category [Symbol] Content category
+    # @return [Boolean] true when content exists
+    def available?(category)
+      refresh_cache(category) unless cache_valid?(category)
+      @cache[category][:content].present?
+    end
+
     private
 
     # Check if cache is still valid

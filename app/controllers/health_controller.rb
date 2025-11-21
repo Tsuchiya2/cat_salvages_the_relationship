@@ -5,6 +5,7 @@
 # - GET /health/deep - Deep health check (slower, checks all dependencies)
 class HealthController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_monitor!, only: :deep, if: -> { Rails.env.production? }
 
   # Shallow health check
   #
@@ -97,5 +98,16 @@ class HealthController < ApplicationController
     end
   rescue StandardError => e
     { status: 'unhealthy', error: e.message }
+  end
+
+  def authenticate_monitor!
+    username = ENV['MONITOR_USERNAME']
+    password = ENV['MONITOR_PASSWORD']
+    return head :forbidden if username.blank? || password.blank?
+
+    authenticate_or_request_with_http_basic('Monitoring') do |user, pass|
+      ActiveSupport::SecurityUtils.secure_compare(user, username) &&
+        ActiveSupport::SecurityUtils.secure_compare(pass, password)
+    end
   end
 end

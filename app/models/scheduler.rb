@@ -17,9 +17,7 @@ class Scheduler
     def call_notice
       remind_groups = LineGroup.remind_call
       sampler = initialize_alarm_sampler
-      adapter = Line::ClientProvider.client
-
-      scheduler(remind_groups, sampler, adapter, :call)
+      scheduler(remind_groups, sampler, :call)
     end
 
     # Send wait reminder messages
@@ -29,9 +27,7 @@ class Scheduler
     def wait_notice
       remind_groups = LineGroup.remind_wait
       sampler = initialize_content_sampler
-      adapter = Line::ClientProvider.client
-
-      scheduler(remind_groups, sampler, adapter, :wait)
+      scheduler(remind_groups, sampler, :wait)
     end
 
     # Initialize alarm content sampler
@@ -61,8 +57,10 @@ class Scheduler
     # @param sampler [Line::AlarmContentSampler] Preloaded content sampler
     # @return [Array<Hash>] Array of message hashes for LINE API
     def call_messages(sampler)
-      [{ type: 'text', text: sampler.sample(:contact).body },
-       { type: 'text', text: sampler.sample(:text).body }]
+      ensure_content_presence!(sampler, %i[contact text])
+
+      [{ type: 'text', text: safe_body(sampler, :contact, CALL_FALLBACK_CONTACT) },
+       { type: 'text', text: safe_body(sampler, :text, CALL_FALLBACK_TEXT) }]
     end
 
     # Build wait reminder messages
@@ -70,9 +68,11 @@ class Scheduler
     # @param sampler [Line::ContentSampler] Preloaded content sampler
     # @return [Array<Hash>] Array of message hashes for LINE API
     def wait_messages(sampler)
-      [{ type: 'text', text: sampler.sample(:contact).body },
-       { type: 'text', text: sampler.sample(:free).body },
-       { type: 'text', text: sampler.sample(:text).body }]
+      ensure_content_presence!(sampler, %i[contact free text])
+
+      [{ type: 'text', text: safe_body(sampler, :contact, WAIT_FALLBACK_CONTACT) },
+       { type: 'text', text: safe_body(sampler, :free, WAIT_FALLBACK_FREE) },
+       { type: 'text', text: safe_body(sampler, :text, WAIT_FALLBACK_TEXT) }]
     end
 
     # Core scheduler logic
@@ -83,25 +83,16 @@ class Scheduler
     # @param sampler [Line::ContentSampler, Line::AlarmContentSampler] Preloaded content sampler
     # @param adapter [Line::ClientAdapter] LINE client adapter
     # @param notice_type [Symbol] Type of notice (:call or :wait)
-    def scheduler(remind_groups, sampler, adapter, notice_type)
-      retry_handler = Resilience::RetryHandler.new(max_attempts: 3)
-
+    def scheduler(remind_groups, sampler, notice_type)
       remind_groups.find_each do |group|
+        messages = build_messages(sampler, notice_type)
+
         ActiveRecord::Base.transaction do
-          messages = build_messages(sampler, notice_type)
-
-          messages.each_with_index do |message, index|
-            retry_handler.call do
-              response = adapter.push_message(group.line_group_id, message)
-              raise "働きかけ#{index + 1}つ目でエラー発生。#{message}" if response.code == '400'
-
-              PrometheusMetrics.track_message_send('success')
-            end
-          end
-
           group.remind_at = Date.current.since((1..3).to_a.sample.days)
           group.call!
         end
+
+        Line::ReminderJob.perform_later(group.line_group_id, messages)
       rescue StandardError => e
         report_scheduler_errors(e, group)
         PrometheusMetrics.track_message_send('error')
@@ -135,5 +126,23 @@ class Scheduler
       error_message = sanitizer.format_error(exception, 'Scheduler')
       LineMailer.error_email(group.line_group_id, error_message).deliver_later
     end
+
+    def ensure_content_presence!(sampler, categories)
+      missing = categories.reject { |category| sampler.available?(category) }
+      raise StandardError, "コンテンツ未登録: #{missing.join(', ')}" if missing.any?
+    end
+
+    def safe_body(sampler, category, fallback)
+      content = sampler.sample(category)
+      return content.body if content&.respond_to?(:body)
+
+      fallback
+    end
+
+    CALL_FALLBACK_CONTACT = '管理者へ連絡お願いします。'
+    CALL_FALLBACK_TEXT = '呼びかけメッセージを用意できなかったニャ…🐱'
+    WAIT_FALLBACK_CONTACT = 'いつでも声をかけてニャ！'
+    WAIT_FALLBACK_FREE = '今日はどんな一日だった？'
+    WAIT_FALLBACK_TEXT = 'もう少し仲良くなりたいニャ🐾'
   end
 end
