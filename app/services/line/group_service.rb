@@ -60,7 +60,7 @@ module Line
       line_group&.destroy!
     end
 
-    # Send welcome message to group
+    # Enqueue welcome message to group (send outside DB transaction)
     #
     # @param group_id [String] LINE group or room ID
     # @param message_type [Symbol] :join or :member_joined
@@ -74,7 +74,7 @@ module Line
                     text: '初めまして🌟ReLINE(https://www.cat-reline.com/)の"猫さん"っていうニャ🐱よろしくニャ🐾！！' }
                 end
 
-      @adapter.push_message(group_id, message)
+      Line::WelcomeMessageJob.perform_later(group_id, message)
     end
 
     private

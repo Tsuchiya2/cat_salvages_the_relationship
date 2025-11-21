@@ -1,0 +1,13 @@
+.git
+log
+tmp
+coverage
+node_modules
+vendor/bundle
+.bundle
+.env
+storage
+public/assets
+public/packs
+public/packs-test
+readme-images
