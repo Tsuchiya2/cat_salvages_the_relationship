@@ -27,10 +27,12 @@ RSpec.describe Testing::FileSystemStorage do
     end
 
     it 'creates screenshots directory on initialization' do
+      storage # Force evaluation of let
       expect(File.exist?(File.join(temp_dir, 'screenshots'))).to be true
     end
 
     it 'creates traces directory on initialization' do
+      storage # Force evaluation of let
       expect(File.exist?(File.join(temp_dir, 'traces'))).to be true
     end
 

@@ -31,7 +31,7 @@ module Testing
         # @example
         #   TimeUtils.format_for_filename #=> "20251123-143052"
         #   TimeUtils.format_for_filename(Time.new(2025, 1, 1, 12, 0, 0)) #=> "20250101-120000"
-        def format_for_filename(time = Time.zone.now)
+        def format_for_filename(time = Time.now)
           # Format: YYYYMMDD-HHMMSS
           # Safe for filenames (no colons, slashes, or spaces)
           time.strftime('%Y%m%d-%H%M%S')
@@ -45,7 +45,7 @@ module Testing
         # @return [String] ISO 8601 formatted timestamp
         # @example
         #   TimeUtils.format_iso8601 #=> "2025-11-23T14:30:52+09:00"
-        def format_iso8601(time = Time.zone.now)
+        def format_iso8601(time = Time.now)
           # ISO 8601 format with timezone
           time.iso8601
         end
@@ -58,7 +58,7 @@ module Testing
         # @return [String] Human-readable timestamp
         # @example
         #   TimeUtils.format_human #=> "2025-11-23 14:30:52"
-        def format_human(time = Time.zone.now)
+        def format_human(time = Time.now)
           # Human-readable format
           time.strftime('%Y-%m-%d %H:%M:%S')
         end

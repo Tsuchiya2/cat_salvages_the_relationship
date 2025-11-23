@@ -145,7 +145,7 @@ module Testing
     # @param metadata [Hash] Metadata to save
     # @return [void]
     def save_metadata(artifact_path, metadata)
-      return if metadata.empty?
+      metadata ||= {}
 
       metadata_path = artifact_path.sub_ext('.metadata.json')
       enhanced_metadata = metadata.merge(
