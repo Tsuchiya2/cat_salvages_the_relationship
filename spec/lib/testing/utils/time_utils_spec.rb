@@ -62,12 +62,12 @@ RSpec.describe Testing::Utils::TimeUtils do
   describe '.format_iso8601' do
     it 'returns ISO 8601 formatted timestamp' do
       result = described_class.format_iso8601(fixed_time)
-      expect(result).to eq('2025-11-23T14:30:52+09:00')
+      expect(result).to eq('2025-11-23T14:30:52.000+09:00')
     end
 
     it 'uses Time.now when no parameter provided' do
       result = described_class.format_iso8601
-      expect(result).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/)
+      expect(result).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/)
     end
 
     it 'includes timezone information' do

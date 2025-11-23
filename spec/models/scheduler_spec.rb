@@ -14,8 +14,8 @@ RSpec.describe Scheduler, type: :model do
       allow(sampler).to receive(:sample).and_return(nil)
 
       messages = described_class.call_messages(sampler)
-      expect(messages[0][:text]).to eq(Scheduler::CALL_FALLBACK_CONTACT)
-      expect(messages[1][:text]).to eq(Scheduler::CALL_FALLBACK_TEXT)
+      expect(messages[0][:text]).to eq('管理者へ連絡お願いします。')
+      expect(messages[1][:text]).to eq('呼びかけメッセージを用意できなかったニャ…🐱')
     end
   end
 
@@ -41,9 +41,9 @@ RSpec.describe Scheduler, type: :model do
       allow(sampler).to receive(:sample).and_return(nil, nil, nil)
 
       messages = described_class.wait_messages(sampler)
-      expect(messages[0][:text]).to eq(Scheduler::WAIT_FALLBACK_CONTACT)
-      expect(messages[1][:text]).to eq(Scheduler::WAIT_FALLBACK_FREE)
-      expect(messages[2][:text]).to eq(Scheduler::WAIT_FALLBACK_TEXT)
+      expect(messages[0][:text]).to eq('いつでも声をかけてニャ！')
+      expect(messages[1][:text]).to eq('今日はどんな一日だった？')
+      expect(messages[2][:text]).to eq('もう少し仲良くなりたいニャ🐾')
     end
   end
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'playwright'
 require_relative '../../../lib/testing/playwright_browser_session'
 
 RSpec.describe Testing::PlaywrightBrowserSession do

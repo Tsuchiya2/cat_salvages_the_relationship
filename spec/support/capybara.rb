@@ -1,3 +1,7 @@
+# Only load Playwright configuration for system tests
+# This prevents initialization errors when running unit tests
+return unless RSpec.configuration.files_to_run.any? { |f| f.include?('spec/system') }
+
 require 'testing/playwright_configuration'
 require 'testing/playwright_driver'
 require 'testing/file_system_storage'

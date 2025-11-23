@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'tempfile'
+require 'playwright'
 require_relative '../../../lib/testing/playwright_artifact_capture'
 require_relative '../../../lib/testing/utils/null_logger'
 require_relative '../../../lib/testing/utils/time_utils'
