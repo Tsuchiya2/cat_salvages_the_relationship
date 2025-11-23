@@ -165,8 +165,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe '#restart' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_driver).to receive(:close_browser)
     end
 
@@ -460,8 +459,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe 'browser lifecycle' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_driver).to receive(:close_browser)
     end
 
@@ -543,8 +541,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
     it 'works without Rails' do
       hide_const('Rails') if defined?(Rails)
 
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_driver).to receive(:close_browser)
 
       session.start

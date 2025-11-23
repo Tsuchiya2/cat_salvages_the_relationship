@@ -112,9 +112,7 @@ module Testing
     #   end
     def capture_trace(context, test_name:, trace_mode:, metadata: {}, &block)
       valid_modes = %w[on off on-first-retry]
-      unless valid_modes.include?(trace_mode)
-        raise ArgumentError, "invalid trace_mode: #{trace_mode}. Must be one of: #{valid_modes.join(', ')}"
-      end
+      raise ArgumentError, "invalid trace_mode: #{trace_mode}. Must be one of: #{valid_modes.join(', ')}" unless valid_modes.include?(trace_mode)
 
       return yield if trace_mode == 'off'
 
