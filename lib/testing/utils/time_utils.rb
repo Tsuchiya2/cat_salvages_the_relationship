@@ -3,6 +3,7 @@
 require 'time'
 require 'securerandom'
 
+# rubocop:disable Rails/TimeZone
 module Testing
   module Utils
     # Provides timestamp formatting utilities for artifact filenames and correlation IDs.
@@ -84,3 +85,4 @@ module Testing
     end
   end
 end
+# rubocop:enable Rails/TimeZone
