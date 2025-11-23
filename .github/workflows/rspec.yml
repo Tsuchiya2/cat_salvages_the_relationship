@@ -48,6 +48,9 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Remove yarn.lock if exists
+        run: rm -f yarn.lock
+
       - name: Install Node dependencies
         run: npm ci
 
