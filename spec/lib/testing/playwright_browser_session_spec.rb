@@ -6,17 +6,6 @@ require_relative '../../../lib/testing/playwright_browser_session'
 
 RSpec.describe Testing::PlaywrightBrowserSession do
   let(:mock_driver) { instance_double(Testing::PlaywrightDriver) }
-  let(:mock_config) { instance_double(Testing::PlaywrightConfiguration) }
-  let(:mock_artifact_capture) { instance_double(Testing::PlaywrightArtifactCapture) }
-  let(:mock_retry_policy) { instance_double(Testing::RetryPolicy) }
-  let(:mock_browser) { instance_double(Playwright::Browser) }
-  let(:mock_context) { instance_double(Playwright::BrowserContext, close: nil) }
-
-  before do
-    allow(mock_config).to receive(:browser_type).and_return('chromium')
-    allow(mock_config).to receive(:headless).and_return(true)
-  end
-
   let(:session) do
     described_class.new(
       driver: mock_driver,
@@ -24,6 +13,15 @@ RSpec.describe Testing::PlaywrightBrowserSession do
       artifact_capture: mock_artifact_capture,
       retry_policy: mock_retry_policy
     )
+  end
+  let(:mock_config) { instance_double(Testing::PlaywrightConfiguration) }
+  let(:mock_artifact_capture) { instance_double(Testing::PlaywrightArtifactCapture) }
+  let(:mock_retry_policy) { instance_double(Testing::RetryPolicy) }
+  let(:mock_browser) { instance_double(Playwright::Browser) }
+  let(:mock_context) { instance_double(Playwright::BrowserContext, close: nil) }
+
+  before do
+    allow(mock_config).to receive_messages(browser_type: 'chromium', headless: true)
   end
 
   describe '#initialize' do
@@ -86,21 +84,10 @@ RSpec.describe Testing::PlaywrightBrowserSession do
       allow(mock_driver).to receive(:create_context).with(mock_browser, mock_config).and_return(mock_context)
     end
 
-    it 'launches browser using driver' do
+    it 'launches browser and creates context' do
       session.start
 
       expect(session.browser).to eq(mock_browser)
-    end
-
-    it 'returns the browser instance' do
-      session.start
-
-      expect(session.browser).to eq(mock_browser)
-    end
-
-    it 'creates context automatically' do
-      session.start
-
       expect(session.context).to eq(mock_context)
     end
 
@@ -124,8 +111,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe '#stop' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_driver).to receive(:close_browser)
       allow(mock_context).to receive(:close)
       session.start
