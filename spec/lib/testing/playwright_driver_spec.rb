@@ -45,12 +45,12 @@ RSpec.describe Testing::PlaywrightDriver do
         playwright_cli_executable_path: 'npx playwright'
       ).and_return(mock_playwright)
 
-      driver = Testing::PlaywrightDriver.new
+      driver = described_class.new
 
       expect(driver.playwright).to eq(mock_playwright)
     end
 
-    # Note: Testing the LoadError scenario requires stubbing Kernel#require
+    # NOTE: Testing the LoadError scenario requires stubbing Kernel#require
     # which can cause issues in test environment. In practice, the error
     # message is comprehensive and includes installation instructions.
   end
@@ -58,7 +58,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe '#launch_browser' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'launches browser with configuration options' do
@@ -166,7 +166,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe '#close_browser' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'closes the browser' do
@@ -185,7 +185,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe '#create_context' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'creates browser context with configuration options' do
@@ -228,7 +228,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe '#take_screenshot' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     let(:screenshot_path) { '/tmp/screenshots/test.png' }
@@ -270,7 +270,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe '#start_trace' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'starts tracing with screenshots, snapshots, and sources' do
@@ -324,7 +324,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe '#stop_trace' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     let(:trace_path) { '/tmp/traces/test.zip' }
@@ -353,11 +353,11 @@ RSpec.describe Testing::PlaywrightDriver do
   describe 'integration with BrowserDriver interface' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'is a subclass of BrowserDriver' do
-      expect(Testing::PlaywrightDriver).to be < Testing::BrowserDriver
+      expect(described_class).to be < Testing::BrowserDriver
     end
 
     it 'implements all required methods' do
@@ -373,7 +373,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe 'error handling' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'propagates browser launch errors' do
@@ -415,7 +415,7 @@ RSpec.describe Testing::PlaywrightDriver do
   describe 'full workflow' do
     let(:driver) do
       allow(Playwright).to receive(:create).and_return(mock_playwright)
-      Testing::PlaywrightDriver.new
+      described_class.new
     end
 
     it 'supports complete browser automation workflow' do
@@ -423,10 +423,9 @@ RSpec.describe Testing::PlaywrightDriver do
       allow(mock_playwright).to receive(:chromium).and_return(mock_browser_type)
       allow(mock_browser_type).to receive(:launch).and_return(mock_browser)
       allow(mock_browser).to receive(:new_context).and_return(mock_context)
-      allow(mock_context).to receive(:tracing).and_return(mock_tracing)
       allow(mock_tracing).to receive(:start)
       allow(mock_tracing).to receive(:stop)
-      allow(mock_context).to receive(:new_page).and_return(mock_page)
+      allow(mock_context).to receive_messages(tracing: mock_tracing, new_page: mock_page)
       allow(mock_page).to receive(:goto)
       allow(mock_page).to receive(:screenshot)
       allow(mock_browser).to receive(:close)

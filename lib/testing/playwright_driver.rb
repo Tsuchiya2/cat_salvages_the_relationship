@@ -73,7 +73,7 @@ module Testing
     # @example
     #   driver.close_browser(browser)
     def close_browser(browser)
-      browser.close if browser
+      browser&.close
     end
 
     # Create a new browser context (isolated session).

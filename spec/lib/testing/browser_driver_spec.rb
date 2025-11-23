@@ -5,7 +5,7 @@ require_relative '../../../lib/testing/browser_driver'
 
 RSpec.describe Testing::BrowserDriver do
   let(:driver) { described_class.new }
-  let(:mock_config) { instance_double('Testing::PlaywrightConfiguration') }
+  let(:mock_config) { instance_double(Testing::PlaywrightConfiguration) }
   let(:mock_browser) { double('Browser') }
   let(:mock_context) { double('BrowserContext') }
   let(:mock_page) { double('Page') }

@@ -110,34 +110,21 @@ module Testing
     #     page.goto('http://localhost:3000')
     #     page.click('text=Login')
     #   end
-    def capture_trace(context, test_name:, trace_mode:, metadata: {})
+    def capture_trace(context, test_name:, trace_mode:, metadata: {}, &block)
       return yield if trace_mode == 'off'
 
       artifact_name = generate_artifact_name(test_name)
       temp_file = Tempfile.new(['trace', '.zip'])
 
       begin
-        driver.start_trace(context)
-        result = yield
-        driver.stop_trace(context, temp_file.path)
-
-        enhanced_metadata = metadata.merge(
-          test_name: test_name,
-          timestamp: Utils::TimeUtils.format_iso8601,
-          correlation_id: artifact_name,
-          trace_mode: trace_mode
-        )
-
-        saved_path = storage.save_trace(artifact_name, temp_file.path, enhanced_metadata)
-        log_artifact_saved('trace', saved_path, enhanced_metadata)
-
+        result = execute_trace_capture(context, temp_file.path, &block)
+        save_trace_artifact(artifact_name, temp_file.path, test_name, trace_mode, metadata)
         result
       rescue StandardError => e
         logger.error("Failed to capture trace: #{e.message}")
         raise
       ensure
-        temp_file.close
-        temp_file.unlink
+        cleanup_temp_file(temp_file)
       end
     end
 
@@ -162,6 +149,49 @@ module Testing
     # @return [void]
     def log_artifact_saved(type, path, metadata)
       logger.info("Artifact saved: #{type} | path=#{path} | correlation_id=#{metadata[:correlation_id]}")
+    end
+
+    # Execute trace capture with Playwright.
+    #
+    # @param context [Playwright::BrowserContext] Browser context
+    # @param temp_path [String] Temporary file path for trace
+    # @yield Block to execute with tracing
+    # @return [Object] Result from block execution
+    def execute_trace_capture(context, temp_path)
+      driver.start_trace(context)
+      result = yield
+      driver.stop_trace(context, temp_path)
+      result
+    end
+
+    # Save trace artifact with metadata.
+    #
+    # @param artifact_name [String] Artifact name
+    # @param temp_path [String] Temporary file path
+    # @param test_name [String] Test name
+    # @param trace_mode [String] Trace mode
+    # @param metadata [Hash] Additional metadata
+    # @return [Pathname] Path to saved trace
+    def save_trace_artifact(artifact_name, temp_path, test_name, trace_mode, metadata)
+      enhanced_metadata = metadata.merge(
+        test_name: test_name,
+        timestamp: Utils::TimeUtils.format_iso8601,
+        correlation_id: artifact_name,
+        trace_mode: trace_mode
+      )
+
+      saved_path = storage.save_trace(artifact_name, temp_path, enhanced_metadata)
+      log_artifact_saved('trace', saved_path, enhanced_metadata)
+      saved_path
+    end
+
+    # Cleanup temporary file.
+    #
+    # @param temp_file [Tempfile] Temporary file to cleanup
+    # @return [void]
+    def cleanup_temp_file(temp_file)
+      temp_file.close
+      temp_file.unlink
     end
   end
 end

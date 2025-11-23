@@ -477,8 +477,8 @@ RSpec.describe Testing::FileSystemStorage do
   describe 'concurrency safety' do
     it 'creates directories with mkdir_p (idempotent)' do
       # Create multiple storage instances simultaneously
-      storage1 = described_class.new(base_path: temp_dir)
-      storage2 = described_class.new(base_path: temp_dir)
+      described_class.new(base_path: temp_dir)
+      described_class.new(base_path: temp_dir)
 
       expect(File.exist?(File.join(temp_dir, 'screenshots'))).to be true
       expect(File.exist?(File.join(temp_dir, 'traces'))).to be true

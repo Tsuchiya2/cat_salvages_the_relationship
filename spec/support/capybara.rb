@@ -57,14 +57,18 @@ RSpec.configure do |config|
     rescue LoadError
       # Fallback: Use capybara-playwright adapter if available
       # This requires installing capybara-playwright gem
-      warn "Warning: Direct Playwright integration not available. Using fallback."
+      warn 'Warning: Direct Playwright integration not available. Using fallback.'
       driven_by :selenium, using: :headless_chrome, screen_size: [1920, 1080]
     end
 
     # Use Playwright driver for system specs
-    driven_by :playwright, screen_size: [1920, 1080] do |driver_options|
-      driver_options.add_argument('--window-size=1920,1080')
-    end rescue driven_by :selenium, using: :headless_chrome, screen_size: [1920, 1080]
+    begin
+      driven_by :playwright, screen_size: [1920, 1080] do |driver_options|
+        driver_options.add_argument('--window-size=1920,1080')
+      end
+    rescue StandardError
+      driven_by :selenium, using: :headless_chrome, screen_size: [1920, 1080]
+    end
   end
 
   # Clean up browser session after each test

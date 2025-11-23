@@ -113,15 +113,10 @@ module Testing
     #   config.timeout #=> 60000
     def self.ci_config
       new(
-        browser_type: Utils::EnvUtils.get('PLAYWRIGHT_BROWSER', DEFAULT_BROWSER),
-        headless: true, # Always headless in CI
-        viewport: {
-          width: DEFAULT_VIEWPORT_WIDTH,
-          height: DEFAULT_VIEWPORT_HEIGHT
-        },
-        slow_mo: 0,
-        timeout: 60_000, # Longer timeout for CI
-        trace_mode: 'on-first-retry' # Save trace on retry
+        **base_config,
+        headless: true,
+        trace_mode: 'on-first-retry',
+        options: { slow_mo: 0, timeout: 60_000 }
       )
     end
 
@@ -136,15 +131,13 @@ module Testing
     #   config.timeout #=> 30000
     def self.local_config
       new(
-        browser_type: Utils::EnvUtils.get('PLAYWRIGHT_BROWSER', DEFAULT_BROWSER),
+        **base_config,
         headless: Utils::EnvUtils.get('PLAYWRIGHT_HEADLESS', 'true') == 'true',
-        viewport: {
-          width: DEFAULT_VIEWPORT_WIDTH,
-          height: DEFAULT_VIEWPORT_HEIGHT
-        },
-        slow_mo: Utils::EnvUtils.get('PLAYWRIGHT_SLOW_MO', '0').to_i,
-        timeout: DEFAULT_TIMEOUT,
-        trace_mode: Utils::EnvUtils.get('PLAYWRIGHT_TRACE_MODE', DEFAULT_TRACE_MODE)
+        trace_mode: Utils::EnvUtils.get('PLAYWRIGHT_TRACE_MODE', DEFAULT_TRACE_MODE),
+        options: {
+          slow_mo: Utils::EnvUtils.get('PLAYWRIGHT_SLOW_MO', '0').to_i,
+          timeout: DEFAULT_TIMEOUT
+        }
       )
     end
 
@@ -159,33 +152,43 @@ module Testing
     #   config.slow_mo #=> 500
     def self.development_config
       new(
-        browser_type: Utils::EnvUtils.get('PLAYWRIGHT_BROWSER', DEFAULT_BROWSER),
-        headless: false, # Always headed in development
-        viewport: {
-          width: DEFAULT_VIEWPORT_WIDTH,
-          height: DEFAULT_VIEWPORT_HEIGHT
-        },
-        slow_mo: Utils::EnvUtils.get('PLAYWRIGHT_SLOW_MO', '500').to_i,
-        timeout: DEFAULT_TIMEOUT,
-        trace_mode: 'on' # Always capture trace in development
+        **base_config,
+        headless: false,
+        trace_mode: 'on',
+        options: {
+          slow_mo: Utils::EnvUtils.get('PLAYWRIGHT_SLOW_MO', '500').to_i,
+          timeout: DEFAULT_TIMEOUT
+        }
       )
     end
+
+    # Base configuration shared across all presets.
+    #
+    # @return [Hash] Base configuration hash
+    def self.base_config
+      {
+        browser_type: Utils::EnvUtils.get('PLAYWRIGHT_BROWSER', DEFAULT_BROWSER),
+        viewport: { width: DEFAULT_VIEWPORT_WIDTH, height: DEFAULT_VIEWPORT_HEIGHT }
+      }
+    end
+    private_class_method :base_config
 
     # Initialize Playwright configuration.
     #
     # @param browser_type [String] Browser type (chromium, firefox, webkit)
     # @param headless [Boolean] Headless mode enabled
     # @param viewport [Hash] Viewport size {width: Integer, height: Integer}
-    # @param slow_mo [Integer] Slow motion delay in milliseconds
-    # @param timeout [Integer] Timeout in milliseconds
     # @param trace_mode [String] Trace mode (on, off, on-first-retry)
+    # @param options [Hash] Additional options (slow_mo, timeout)
+    # @option options [Integer] :slow_mo Slow motion delay (default: 0)
+    # @option options [Integer] :timeout Timeout in ms (default: 30000)
     # @raise [ArgumentError] If invalid browser_type or trace_mode
-    def initialize(browser_type:, headless:, viewport:, slow_mo:, timeout:, trace_mode:)
+    def initialize(browser_type:, headless:, viewport:, trace_mode:, options: {})
       @browser_type = browser_type
       @headless = headless
       @viewport = viewport
-      @slow_mo = slow_mo
-      @timeout = timeout
+      @slow_mo = options.fetch(:slow_mo, DEFAULT_SLOW_MO)
+      @timeout = options.fetch(:timeout, DEFAULT_TIMEOUT)
       @trace_mode = trace_mode
       @screenshots_path = Utils::PathUtils.screenshots_path
       @traces_path = Utils::PathUtils.traces_path
@@ -236,11 +239,11 @@ module Testing
               "Valid options: #{VALID_BROWSERS.join(', ')}"
       end
 
-      unless VALID_TRACE_MODES.include?(@trace_mode)
-        raise ArgumentError,
-              "Invalid trace_mode: #{@trace_mode}. " \
-              "Valid options: #{VALID_TRACE_MODES.join(', ')}"
-      end
+      return if VALID_TRACE_MODES.include?(@trace_mode)
+
+      raise ArgumentError,
+            "Invalid trace_mode: #{@trace_mode}. " \
+            "Valid options: #{VALID_TRACE_MODES.join(', ')}"
     end
 
     # Ensure artifact directories exist.

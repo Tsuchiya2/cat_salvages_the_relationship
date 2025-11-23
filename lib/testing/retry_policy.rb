@@ -65,22 +65,22 @@ module Testing
     # @param backoff_multiplier [Integer] Exponential backoff multiplier (default: 2)
     # @param initial_delay [Integer] Initial delay in seconds (default: 2)
     # @param logger [Logger] Logger for retry attempts (default: NullLogger)
-    # @param retryable_errors [Array<Class>] Error classes to retry (default: StandardError)
-    # @param non_retryable_errors [Array<Class>] Error classes to never retry (default: assertion errors)
+    # @param error_handling [Hash] Error handling configuration
+    # @option error_handling [Array<Class>] :retryable Retryable error classes
+    # @option error_handling [Array<Class>] :non_retryable Non-retryable error classes
     def initialize(
       max_attempts: DEFAULT_MAX_ATTEMPTS,
       backoff_multiplier: DEFAULT_BACKOFF_MULTIPLIER,
       initial_delay: DEFAULT_INITIAL_DELAY,
       logger: Utils::NullLogger.new,
-      retryable_errors: [StandardError],
-      non_retryable_errors: []
+      error_handling: {}
     )
       @max_attempts = max_attempts
       @backoff_multiplier = backoff_multiplier
       @initial_delay = initial_delay
       @logger = logger
-      @retryable_errors = retryable_errors
-      @non_retryable_errors = non_retryable_errors + default_non_retryable_errors
+      @retryable_errors = error_handling.fetch(:retryable, [StandardError])
+      @non_retryable_errors = error_handling.fetch(:non_retryable, []) + default_non_retryable_errors
     end
 
     # Execute block with retry logic.
@@ -102,16 +102,14 @@ module Testing
       begin
         yield
       rescue StandardError => e
-        if retryable_error?(e) && attempt < max_attempts
-          delay = calculate_delay(attempt)
-          log_retry_attempt(attempt, e, delay)
+        raise unless retryable_error?(e) && attempt < max_attempts
 
-          sleep(delay)
-          attempt += 1
-          retry
-        else
-          raise
-        end
+        delay = calculate_delay(attempt)
+        log_retry_attempt(attempt, e, delay)
+
+        sleep(delay)
+        attempt += 1
+        retry
       end
     end
 
@@ -166,9 +164,7 @@ module Testing
       errors = []
 
       # RSpec assertion errors (if RSpec is loaded)
-      if defined?(RSpec::Expectations::ExpectationNotMetError)
-        errors << RSpec::Expectations::ExpectationNotMetError
-      end
+      errors << RSpec::Expectations::ExpectationNotMetError if defined?(RSpec::Expectations::ExpectationNotMetError)
 
       # Minitest assertion errors (if Minitest is loaded)
       errors << Minitest::Assertion if defined?(Minitest::Assertion)

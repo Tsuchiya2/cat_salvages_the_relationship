@@ -8,10 +8,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
   # Mock PathUtils and EnvUtils before each test
   before do
     # Mock PathUtils
-    allow(Testing::Utils::PathUtils).to receive(:screenshots_path)
-      .and_return(Pathname.new(Dir.mktmpdir))
-    allow(Testing::Utils::PathUtils).to receive(:traces_path)
-      .and_return(Pathname.new(Dir.mktmpdir))
+    allow(Testing::Utils::PathUtils).to receive_messages(screenshots_path: Pathname.new(Dir.mktmpdir), traces_path: Pathname.new(Dir.mktmpdir))
   end
 
   describe 'constants' do
@@ -20,7 +17,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
     end
 
     it 'defines DEFAULT_HEADLESS' do
-      expect(described_class::DEFAULT_HEADLESS).to eq(true)
+      expect(described_class::DEFAULT_HEADLESS).to be(true)
     end
 
     it 'defines DEFAULT_VIEWPORT_WIDTH' do
@@ -55,8 +52,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
   describe '.for_environment' do
     context 'when in CI environment' do
       before do
-        allow(Testing::Utils::EnvUtils).to receive(:ci_environment?).and_return(true)
-        allow(Testing::Utils::EnvUtils).to receive(:environment).and_return('test')
+        allow(Testing::Utils::EnvUtils).to receive_messages(ci_environment?: true, environment: 'test')
         allow(Testing::Utils::EnvUtils).to receive(:get).with('PLAYWRIGHT_BROWSER', 'chromium').and_return('chromium')
       end
 
@@ -72,8 +68,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
 
     context 'when in development environment' do
       before do
-        allow(Testing::Utils::EnvUtils).to receive(:ci_environment?).and_return(false)
-        allow(Testing::Utils::EnvUtils).to receive(:environment).and_return('development')
+        allow(Testing::Utils::EnvUtils).to receive_messages(ci_environment?: false, environment: 'development')
         allow(Testing::Utils::EnvUtils).to receive(:get).with('PLAYWRIGHT_BROWSER', 'chromium').and_return('chromium')
         allow(Testing::Utils::EnvUtils).to receive(:get).with('PLAYWRIGHT_SLOW_MO', '500').and_return('500')
       end
@@ -90,8 +85,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
 
     context 'when in test environment (local)' do
       before do
-        allow(Testing::Utils::EnvUtils).to receive(:ci_environment?).and_return(false)
-        allow(Testing::Utils::EnvUtils).to receive(:environment).and_return('test')
+        allow(Testing::Utils::EnvUtils).to receive_messages(ci_environment?: false, environment: 'test')
         allow(Testing::Utils::EnvUtils).to receive(:get).with('PLAYWRIGHT_BROWSER', 'chromium').and_return('chromium')
         allow(Testing::Utils::EnvUtils).to receive(:get).with('PLAYWRIGHT_HEADLESS', 'true').and_return('true')
         allow(Testing::Utils::EnvUtils).to receive(:get).with('PLAYWRIGHT_SLOW_MO', '0').and_return('0')
@@ -252,9 +246,8 @@ RSpec.describe Testing::PlaywrightConfiguration do
         browser_type: 'chromium',
         headless: true,
         viewport: { width: 1920, height: 1080 },
-        slow_mo: 0,
-        timeout: 30_000,
-        trace_mode: 'off'
+        trace_mode: 'off',
+        options: { slow_mo: 0, timeout: 30_000 }
       }
     end
 
@@ -354,8 +347,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
         browser_type: 'chromium',
         headless: true,
         viewport: { width: 1920, height: 1080 },
-        slow_mo: 100,
-        timeout: 45_000,
+        options: { slow_mo: 100, timeout: 45_000 },
         trace_mode: 'on'
       )
     end
@@ -387,8 +379,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
         browser_type: 'chromium',
         headless: true,
         viewport: { width: 1280, height: 720 },
-        slow_mo: 0,
-        timeout: 30_000,
+        options: { slow_mo: 0, timeout: 30_000 },
         trace_mode: 'off'
       )
     end
@@ -434,8 +425,7 @@ RSpec.describe Testing::PlaywrightConfiguration do
           browser_type: 'chromium',
           headless: true,
           viewport: { width: 1920, height: 1080 },
-          slow_mo: 0,
-          timeout: 30_000,
+          options: { slow_mo: 0, timeout: 30_000 },
           trace_mode: mode
         )
 

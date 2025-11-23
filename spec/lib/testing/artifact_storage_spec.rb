@@ -139,7 +139,7 @@ RSpec.describe Testing::ArtifactStorage do
           { name: name, content: 'test' }
         end
 
-        def delete_artifact(name)
+        def delete_artifact(_name)
           true
         end
       end

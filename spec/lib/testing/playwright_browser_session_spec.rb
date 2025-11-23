@@ -4,12 +4,12 @@ require 'spec_helper'
 require_relative '../../../lib/testing/playwright_browser_session'
 
 RSpec.describe Testing::PlaywrightBrowserSession do
-  let(:mock_driver) { instance_double('Testing::PlaywrightDriver') }
-  let(:mock_config) { instance_double('Testing::PlaywrightConfiguration') }
-  let(:mock_artifact_capture) { instance_double('Testing::PlaywrightArtifactCapture') }
-  let(:mock_retry_policy) { instance_double('Testing::RetryPolicy') }
-  let(:mock_browser) { instance_double('Playwright::Browser') }
-  let(:mock_context) { instance_double('Playwright::BrowserContext') }
+  let(:mock_driver) { instance_double(Testing::PlaywrightDriver) }
+  let(:mock_config) { instance_double(Testing::PlaywrightConfiguration) }
+  let(:mock_artifact_capture) { instance_double(Testing::PlaywrightArtifactCapture) }
+  let(:mock_retry_policy) { instance_double(Testing::RetryPolicy) }
+  let(:mock_browser) { instance_double(Playwright::Browser) }
+  let(:mock_context) { instance_double(Playwright::BrowserContext) }
 
   let(:session) do
     described_class.new(
@@ -195,8 +195,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe '#create_context' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       session.start
     end
 
@@ -238,7 +237,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
       old_context = session.context
       expect(old_context).to receive(:close)
 
-      new_context = instance_double('Playwright::BrowserContext')
+      new_context = instance_double(Playwright::BrowserContext)
       allow(mock_driver).to receive(:create_context).and_return(new_context)
 
       session.create_context
@@ -249,8 +248,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe '#close_context' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_context).to receive(:close)
       session.start
       session.create_context
@@ -284,8 +282,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe '#execute_with_retry' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       session.start
       session.create_context
     end
@@ -324,7 +321,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
     end
 
     it 'captures screenshot on failure' do
-      mock_page = instance_double('Playwright::Page')
+      mock_page = instance_double(Playwright::Page)
       allow(mock_context).to receive(:pages).and_return([mock_page])
 
       allow(mock_retry_policy).to receive(:execute).and_yield
@@ -342,10 +339,10 @@ RSpec.describe Testing::PlaywrightBrowserSession do
     it 'passes test_name to artifact capture' do
       allow(mock_retry_policy).to receive(:execute).and_yield
 
-      mock_page = instance_double('Playwright::Page')
+      mock_page = instance_double(Playwright::Page)
       allow(mock_context).to receive(:pages).and_return([mock_page])
 
-      expect(mock_artifact_capture).to receive(:capture_screenshot) do |page, options|
+      expect(mock_artifact_capture).to receive(:capture_screenshot) do |_page, options|
         expect(options[:test_name]).to eq('My Test')
       end
 
@@ -361,7 +358,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
       allow(mock_retry_policy).to receive(:execute).and_yield
 
-      mock_page = instance_double('Playwright::Page')
+      mock_page = instance_double(Playwright::Page)
       allow(mock_context).to receive(:pages).and_return([mock_page])
 
       expect(mock_artifact_capture).to receive(:capture_screenshot) do |_page, options|
@@ -397,8 +394,8 @@ RSpec.describe Testing::PlaywrightBrowserSession do
     end
 
     it 'handles multiple page scenario (captures first page)' do
-      mock_page1 = instance_double('Playwright::Page')
-      mock_page2 = instance_double('Playwright::Page')
+      mock_page1 = instance_double(Playwright::Page)
+      mock_page2 = instance_double(Playwright::Page)
       allow(mock_context).to receive(:pages).and_return([mock_page1, mock_page2])
 
       allow(mock_retry_policy).to receive(:execute).and_yield
@@ -430,9 +427,8 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
   describe 'resource cleanup' do
     before do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
       allow(mock_driver).to receive(:close_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_context).to receive(:close)
     end
 
@@ -499,19 +495,17 @@ RSpec.describe Testing::PlaywrightBrowserSession do
       expect(mock_driver).to receive(:launch_browser).with(mock_config)
       expect(mock_driver).to receive(:create_context).with(mock_browser, mock_config)
 
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
 
       session.start
       session.create_context
     end
 
     it 'uses artifact_capture for screenshot capture' do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_retry_policy).to receive(:execute).and_yield
 
-      mock_page = instance_double('Playwright::Page')
+      mock_page = instance_double(Playwright::Page)
       allow(mock_context).to receive(:pages).and_return([mock_page])
 
       session.start
@@ -528,8 +522,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
     end
 
     it 'uses retry_policy for retry logic' do
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
 
       session.start
       session.create_context
@@ -558,8 +551,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
     it 'works with Minitest (simulated)' do
       # Simulates Minitest setup/teardown
-      allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
-      allow(mock_driver).to receive(:create_context).and_return(mock_context)
+      allow(mock_driver).to receive_messages(launch_browser: mock_browser, create_context: mock_context)
       allow(mock_driver).to receive(:close_browser)
       allow(mock_context).to receive(:close)
       allow(mock_retry_policy).to receive(:execute).and_yield

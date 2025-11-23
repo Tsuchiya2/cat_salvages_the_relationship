@@ -168,7 +168,7 @@ RSpec.describe Testing::Utils::NullLogger do
     end
 
     it 'handles array arguments' do
-      expect { logger.warn(['error1', 'error2']) }.not_to raise_error
+      expect { logger.warn(%w[error1 error2]) }.not_to raise_error
     end
 
     it 'handles exception arguments' do
@@ -191,7 +191,7 @@ RSpec.describe Testing::Utils::NullLogger do
 
   describe 'thread safety' do
     it 'can be used from multiple threads' do
-      threads = 10.times.map do
+      threads = Array.new(10) do
         Thread.new do
           100.times do |i|
             logger.info("Thread message #{i}")
@@ -222,7 +222,7 @@ RSpec.describe Testing::Utils::NullLogger do
 
   describe 'performance' do
     it 'is fast (no-op implementation)' do
-      start_time = Time.now
+      start_time = Time.zone.now
 
       10_000.times do
         logger.debug('message')
@@ -232,7 +232,7 @@ RSpec.describe Testing::Utils::NullLogger do
         logger.fatal('message')
       end
 
-      elapsed = Time.now - start_time
+      elapsed = Time.zone.now - start_time
 
       # Should complete very quickly (under 1 second for 50,000 calls)
       expect(elapsed).to be < 1.0

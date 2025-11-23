@@ -5,15 +5,15 @@ require_relative '../../../lib/testing/retry_policy'
 require_relative '../../../lib/testing/utils/null_logger'
 
 RSpec.describe Testing::RetryPolicy do
-  let(:mock_logger) { instance_double('Logger') }
+  let(:mock_logger) { instance_double(Logger) }
   let(:retry_policy) do
     described_class.new(
       max_attempts: 3,
       backoff_multiplier: 2,
       initial_delay: 2,
       logger: mock_logger,
-      retryable_errors: [Errno::ECONNREFUSED, Errno::ETIMEDOUT],
-      non_retryable_errors: []
+      error_handling: { retryable: [Errno::ECONNREFUSED, Errno::ETIMEDOUT],
+                        non_retryable: [] }
     )
   end
 
@@ -29,8 +29,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 1,
         logger: mock_logger,
-        retryable_errors: [],
-        non_retryable_errors: []
+        error_handling: { retryable: [],
+                          non_retryable: [] }
       )
 
       expect(policy.max_attempts).to eq(5)
@@ -42,8 +42,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 3,
         initial_delay: 1,
         logger: mock_logger,
-        retryable_errors: [],
-        non_retryable_errors: []
+        error_handling: { retryable: [],
+                          non_retryable: [] }
       )
 
       expect(policy.backoff_multiplier).to eq(3)
@@ -55,8 +55,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 5,
         logger: mock_logger,
-        retryable_errors: [],
-        non_retryable_errors: []
+        error_handling: { retryable: [],
+                          non_retryable: [] }
       )
 
       expect(policy.initial_delay).to eq(5)
@@ -68,8 +68,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 1,
         logger: mock_logger,
-        retryable_errors: [],
-        non_retryable_errors: []
+        error_handling: { retryable: [],
+                          non_retryable: [] }
       )
 
       expect(policy.logger).to eq(mock_logger)
@@ -80,8 +80,8 @@ RSpec.describe Testing::RetryPolicy do
         max_attempts: 3,
         backoff_multiplier: 2,
         initial_delay: 1,
-        retryable_errors: [],
-        non_retryable_errors: []
+        error_handling: { retryable: [],
+                          non_retryable: [] }
       )
 
       expect(policy.logger).to be_a(Testing::Utils::NullLogger)
@@ -94,8 +94,7 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 1,
         logger: mock_logger,
-        retryable_errors: errors,
-        non_retryable_errors: []
+        error_handling: { retryable: errors, non_retryable: [] }
       )
 
       expect(policy.retryable_errors).to eq(errors)
@@ -108,8 +107,7 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 1,
         logger: mock_logger,
-        retryable_errors: [],
-        non_retryable_errors: errors
+        error_handling: { retryable: [], non_retryable: errors }
       )
 
       expect(policy.non_retryable_errors).to eq(errors)
@@ -206,7 +204,7 @@ RSpec.describe Testing::RetryPolicy do
         retry_times = []
 
         retry_policy.execute do
-          retry_times << Time.now if execution_count > 0
+          retry_times << Time.zone.now if execution_count > 0
           execution_count += 1
           raise Errno::ECONNREFUSED if execution_count < 3
 
@@ -241,8 +239,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: 0.1,
           logger: mock_logger,
-          retryable_errors: [Errno::ECONNREFUSED],
-          non_retryable_errors: [ArgumentError, TypeError]
+          error_handling: { retryable: [Errno::ECONNREFUSED],
+                            non_retryable: [ArgumentError, TypeError] }
         )
       end
 
@@ -277,8 +275,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: 0.1,
           logger: mock_logger,
-          retryable_errors: [StandardError],
-          non_retryable_errors: []
+          error_handling: { retryable: [StandardError],
+                            non_retryable: [] }
         )
       end
 
@@ -298,8 +296,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: 0.1,
           logger: mock_logger,
-          retryable_errors: [StandardError],
-          non_retryable_errors: [expectation_error]
+          error_handling: { retryable: [StandardError],
+                            non_retryable: [expectation_error] }
         )
 
         expect do
@@ -320,8 +318,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: 0.1,
           logger: mock_logger,
-          retryable_errors: [StandardError],
-          non_retryable_errors: []
+          error_handling: { retryable: [StandardError],
+                            non_retryable: [] }
         )
       end
 
@@ -341,8 +339,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: 0.1,
           logger: mock_logger,
-          retryable_errors: [StandardError],
-          non_retryable_errors: [assertion_error]
+          error_handling: { retryable: [StandardError],
+                            non_retryable: [assertion_error] }
         )
 
         expect do
@@ -364,8 +362,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 2,
         logger: mock_logger,
-        retryable_errors: [StandardError],
-        non_retryable_errors: []
+        error_handling: { retryable: [StandardError],
+                          non_retryable: [] }
       )
     end
 
@@ -374,7 +372,7 @@ RSpec.describe Testing::RetryPolicy do
       start_times = []
 
       retry_policy.execute do
-        start_times << Time.now
+        start_times << Time.zone.now
         execution_count += 1
         raise StandardError if execution_count < 4
 
@@ -395,8 +393,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 5,
         logger: mock_logger,
-        retryable_errors: [StandardError],
-        non_retryable_errors: []
+        error_handling: { retryable: [StandardError],
+                          non_retryable: [] }
       )
 
       execution_count = 0
@@ -405,9 +403,9 @@ RSpec.describe Testing::RetryPolicy do
 
       policy.execute do
         if execution_count.zero?
-          start_time = Time.now
+          start_time = Time.zone.now
         else
-          first_retry_time = Time.now
+          first_retry_time = Time.zone.now
         end
 
         execution_count += 1
@@ -429,8 +427,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: 1,
           logger: mock_logger,
-          retryable_errors: [],
-          non_retryable_errors: []
+          error_handling: { retryable: [],
+                            non_retryable: [] }
         )
       end.to raise_error(ArgumentError, /max_attempts must be greater than 0/)
     end
@@ -442,8 +440,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 0,
           initial_delay: 1,
           logger: mock_logger,
-          retryable_errors: [],
-          non_retryable_errors: []
+          error_handling: { retryable: [],
+                            non_retryable: [] }
         )
       end.to raise_error(ArgumentError, /backoff_multiplier must be greater than 0/)
     end
@@ -455,8 +453,8 @@ RSpec.describe Testing::RetryPolicy do
           backoff_multiplier: 2,
           initial_delay: -1,
           logger: mock_logger,
-          retryable_errors: [],
-          non_retryable_errors: []
+          error_handling: { retryable: [],
+                            non_retryable: [] }
         )
       end.to raise_error(ArgumentError, /initial_delay must be greater than or equal to 0/)
     end
@@ -471,8 +469,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 0.1,
         logger: Testing::Utils::NullLogger.new,
-        retryable_errors: [StandardError],
-        non_retryable_errors: []
+        error_handling: { retryable: [StandardError],
+                          non_retryable: [] }
       )
 
       result = policy.execute { 'success' }
@@ -489,8 +487,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 0.1,
         logger: custom_logger,
-        retryable_errors: [StandardError],
-        non_retryable_errors: []
+        error_handling: { retryable: [StandardError],
+                          non_retryable: [] }
       )
 
       result = policy.execute { 'success' }
@@ -505,8 +503,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 0,
         logger: mock_logger,
-        retryable_errors: [StandardError],
-        non_retryable_errors: []
+        error_handling: { retryable: [StandardError],
+                          non_retryable: [] }
       )
 
       execution_count = 0
@@ -528,8 +526,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 1,
         logger: mock_logger,
-        retryable_errors: [StandardError],
-        non_retryable_errors: []
+        error_handling: { retryable: [StandardError],
+                          non_retryable: [] }
       )
 
       execution_count = 0
@@ -550,8 +548,8 @@ RSpec.describe Testing::RetryPolicy do
         backoff_multiplier: 2,
         initial_delay: 0.1,
         logger: mock_logger,
-        retryable_errors: [],
-        non_retryable_errors: []
+        error_handling: { retryable: [],
+                          non_retryable: [] }
       )
 
       execution_count = 0

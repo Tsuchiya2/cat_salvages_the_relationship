@@ -120,9 +120,9 @@ RSpec.describe Testing::Utils::PathUtils do
 
     it 'returns the set custom root path' do
       custom_path = '/return/test'
-      result = (described_class.root_path = custom_path)
+      described_class.root_path = custom_path
 
-      # Note: The setter returns Pathname, but assignment returns the original value
+      # NOTE: The setter returns Pathname, but assignment returns the original value
       expect(described_class.root_path).to be_a(Pathname)
       expect(described_class.root_path.to_s).to eq(custom_path)
     end

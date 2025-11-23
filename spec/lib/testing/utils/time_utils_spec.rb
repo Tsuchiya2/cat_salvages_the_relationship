@@ -33,27 +33,27 @@ RSpec.describe Testing::Utils::TimeUtils do
     end
 
     it 'handles different times correctly' do
-      time1 = Time.new(2025, 1, 1, 0, 0, 0)
-      time2 = Time.new(2025, 12, 31, 23, 59, 59)
+      time1 = Time.zone.local(2025, 1, 1, 0, 0, 0)
+      time2 = Time.zone.local(2025, 12, 31, 23, 59, 59)
 
       expect(described_class.format_for_filename(time1)).to eq('20250101-000000')
       expect(described_class.format_for_filename(time2)).to eq('20251231-235959')
     end
 
     it 'handles midnight correctly' do
-      midnight = Time.new(2025, 6, 15, 0, 0, 0)
+      midnight = Time.zone.local(2025, 6, 15, 0, 0, 0)
       result = described_class.format_for_filename(midnight)
       expect(result).to eq('20250615-000000')
     end
 
     it 'handles noon correctly' do
-      noon = Time.new(2025, 6, 15, 12, 0, 0)
+      noon = Time.zone.local(2025, 6, 15, 12, 0, 0)
       result = described_class.format_for_filename(noon)
       expect(result).to eq('20250615-120000')
     end
 
     it 'pads single-digit values with zeros' do
-      time = Time.new(2025, 1, 9, 5, 3, 7)
+      time = Time.zone.local(2025, 1, 9, 5, 3, 7)
       result = described_class.format_for_filename(time)
       expect(result).to eq('20250109-050307')
     end
@@ -116,8 +116,8 @@ RSpec.describe Testing::Utils::TimeUtils do
     end
 
     it 'handles different times correctly' do
-      time1 = Time.new(2025, 1, 1, 0, 0, 0)
-      time2 = Time.new(2025, 12, 31, 23, 59, 59)
+      time1 = Time.zone.local(2025, 1, 1, 0, 0, 0)
+      time2 = Time.zone.local(2025, 12, 31, 23, 59, 59)
 
       expect(described_class.format_human(time1)).to eq('2025-01-01 00:00:00')
       expect(described_class.format_human(time2)).to eq('2025-12-31 23:59:59')
@@ -161,12 +161,12 @@ RSpec.describe Testing::Utils::TimeUtils do
     end
 
     it 'generates multiple unique IDs' do
-      ids = 10.times.map { described_class.generate_correlation_id }
+      ids = Array.new(10) { described_class.generate_correlation_id }
       expect(ids.uniq.length).to eq(10)
     end
 
     it 'handles various prefix formats' do
-      prefixes = ['test', 'rspec', 'playwright', 'ci-run', 'test_run']
+      prefixes = %w[test rspec playwright ci-run test_run]
 
       prefixes.each do |prefix|
         result = described_class.generate_correlation_id(prefix)
@@ -198,7 +198,7 @@ RSpec.describe Testing::Utils::TimeUtils do
 
   describe 'integration tests' do
     it 'all formats work with the same time object' do
-      time = Time.new(2025, 6, 15, 12, 30, 45)
+      time = Time.zone.local(2025, 6, 15, 12, 30, 45)
 
       filename_format = described_class.format_for_filename(time)
       iso_format = described_class.format_iso8601(time)
@@ -210,7 +210,7 @@ RSpec.describe Testing::Utils::TimeUtils do
     end
 
     it 'correlation ID includes current timestamp' do
-      before_time = Time.now
+      before_time = Time.zone.now
       correlation_id = described_class.generate_correlation_id
 
       # Extract timestamp from correlation ID
@@ -228,28 +228,28 @@ RSpec.describe Testing::Utils::TimeUtils do
 
   describe 'edge cases' do
     it 'handles leap year dates' do
-      leap_day = Time.new(2024, 2, 29, 12, 0, 0)
+      leap_day = Time.zone.local(2024, 2, 29, 12, 0, 0)
 
       expect(described_class.format_for_filename(leap_day)).to eq('20240229-120000')
       expect(described_class.format_human(leap_day)).to eq('2024-02-29 12:00:00')
     end
 
     it 'handles year boundaries' do
-      new_year = Time.new(2026, 1, 1, 0, 0, 0)
+      new_year = Time.zone.local(2026, 1, 1, 0, 0, 0)
 
       expect(described_class.format_for_filename(new_year)).to eq('20260101-000000')
       expect(described_class.format_human(new_year)).to eq('2026-01-01 00:00:00')
     end
 
     it 'handles far future dates' do
-      future = Time.new(2099, 12, 31, 23, 59, 59)
+      future = Time.zone.local(2099, 12, 31, 23, 59, 59)
 
       expect(described_class.format_for_filename(future)).to eq('20991231-235959')
       expect(described_class.format_human(future)).to eq('2099-12-31 23:59:59')
     end
 
     it 'handles past dates' do
-      past = Time.new(2000, 1, 1, 0, 0, 0)
+      past = Time.zone.local(2000, 1, 1, 0, 0, 0)
 
       expect(described_class.format_for_filename(past)).to eq('20000101-000000')
       expect(described_class.format_human(past)).to eq('2000-01-01 00:00:00')

@@ -75,37 +75,7 @@ module Testing
     # @return [Array<Hash>] Array of artifact metadata hashes
     #   Each hash contains: { name:, path:, type:, metadata: }
     def list_artifacts
-      artifacts = []
-
-      # List screenshots
-      Dir.glob(screenshots_path.join('*.png')).each do |screenshot_path|
-        name = File.basename(screenshot_path, '.png')
-        metadata_path = Pathname.new(screenshot_path).sub_ext('.metadata.json')
-        metadata = load_metadata(metadata_path)
-
-        artifacts << {
-          name: name,
-          path: screenshot_path,
-          type: 'screenshot',
-          metadata: metadata
-        }
-      end
-
-      # List traces
-      Dir.glob(traces_path.join('*.zip')).each do |trace_path|
-        name = File.basename(trace_path, '.zip')
-        metadata_path = Pathname.new(trace_path).sub_ext('.metadata.json')
-        metadata = load_metadata(metadata_path)
-
-        artifacts << {
-          name: name,
-          path: trace_path,
-          type: 'trace',
-          metadata: metadata
-        }
-      end
-
-      artifacts.sort_by { |a| a[:name] }
+      (list_screenshots_artifacts + list_traces_artifacts).sort_by { |a| a[:name] }
     end
 
     # Get an artifact by name.
@@ -213,6 +183,43 @@ module Testing
     def ensure_directories_exist
       FileUtils.mkdir_p(screenshots_path)
       FileUtils.mkdir_p(traces_path)
+    end
+
+    # List screenshot artifacts.
+    #
+    # @return [Array<Hash>] Array of screenshot artifact metadata
+    def list_screenshots_artifacts
+      Dir.glob(screenshots_path.join('*.png')).map do |screenshot_path|
+        build_artifact_hash(screenshot_path, 'screenshot', '.png')
+      end
+    end
+
+    # List trace artifacts.
+    #
+    # @return [Array<Hash>] Array of trace artifact metadata
+    def list_traces_artifacts
+      Dir.glob(traces_path.join('*.zip')).map do |trace_path|
+        build_artifact_hash(trace_path, 'trace', '.zip')
+      end
+    end
+
+    # Build artifact hash from file path.
+    #
+    # @param file_path [String] Path to artifact file
+    # @param type [String] Artifact type ('screenshot' or 'trace')
+    # @param extension [String] File extension
+    # @return [Hash] Artifact metadata hash
+    def build_artifact_hash(file_path, type, extension)
+      name = File.basename(file_path, extension)
+      metadata_path = Pathname.new(file_path).sub_ext('.metadata.json')
+      metadata = load_metadata(metadata_path)
+
+      {
+        name: name,
+        path: file_path,
+        type: type,
+        metadata: metadata
+      }
     end
   end
 end

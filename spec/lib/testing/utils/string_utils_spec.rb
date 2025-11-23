@@ -180,7 +180,7 @@ RSpec.describe Testing::Utils::StringUtils do
     end
 
     it 'truncates long filename while preserving extension' do
-      long_name = 'a' * 300 + '.png'
+      long_name = "#{'a' * 300}.png"
       result = described_class.truncate_filename(long_name, 255)
 
       expect(result.length).to eq(255)
@@ -189,14 +189,14 @@ RSpec.describe Testing::Utils::StringUtils do
     end
 
     it 'uses default max length of 255' do
-      long_name = 'a' * 300 + '.txt'
+      long_name = "#{'a' * 300}.txt"
       result = described_class.truncate_filename(long_name)
 
       expect(result.length).to eq(255)
     end
 
     it 'accepts custom max length' do
-      name = 'a' * 50 + '.txt'
+      name = "#{'a' * 50}.txt"
       result = described_class.truncate_filename(name, 20)
 
       expect(result.length).to eq(20)
@@ -204,14 +204,14 @@ RSpec.describe Testing::Utils::StringUtils do
     end
 
     it 'preserves file extension' do
-      long_name = 'a' * 300 + '.jpeg'
+      long_name = "#{'a' * 300}.jpeg"
       result = described_class.truncate_filename(long_name, 255)
 
       expect(result).to end_with('.jpeg')
     end
 
     it 'adds ellipsis when truncating' do
-      long_name = 'a' * 300 + '.txt'
+      long_name = "#{'a' * 300}.txt"
       result = described_class.truncate_filename(long_name, 255)
 
       expect(result).to include('...')
@@ -226,7 +226,7 @@ RSpec.describe Testing::Utils::StringUtils do
     end
 
     it 'handles very long extensions' do
-      name = 'test' + '.extension_very_long'
+      name = 'test.extension_very_long'
       result = described_class.truncate_filename(name, 20)
 
       # When extension is too long, truncate everything
@@ -241,7 +241,7 @@ RSpec.describe Testing::Utils::StringUtils do
     end
 
     it 'handles filename with multiple dots' do
-      long_name = 'a' * 300 + '.tar.gz'
+      long_name = "#{'a' * 300}.tar.gz"
       result = described_class.truncate_filename(long_name, 255)
 
       expect(result.length).to eq(255)
@@ -263,7 +263,7 @@ RSpec.describe Testing::Utils::StringUtils do
     it 'calculates available length correctly' do
       # Max 20, extension .txt (4), ellipsis ... (3)
       # Available for basename: 20 - 4 - 3 = 13
-      name = 'a' * 30 + '.txt'
+      name = "#{'a' * 30}.txt"
       result = described_class.truncate_filename(name, 20)
 
       expect(result.length).to eq(20)
@@ -273,7 +273,7 @@ RSpec.describe Testing::Utils::StringUtils do
 
   describe 'integration tests' do
     it 'sanitize_filename and truncate_filename work together' do
-      unsafe_long_name = '../' + 'a' * 300 + '/test.txt'
+      unsafe_long_name = "../#{'a' * 300}/test.txt"
 
       sanitized = described_class.sanitize_filename(unsafe_long_name)
       truncated = described_class.truncate_filename(sanitized, 255)

@@ -155,13 +155,11 @@ module Testing
     #     page.fill('#email', 'user@example.com')
     #     page.click('text=Login')
     #   end
-    def execute_with_retry(test_name:, metadata: {})
+    def execute_with_retry(test_name:, metadata: {}, &block)
       ensure_browser_started
       create_context unless @context
 
-      retry_policy.execute do
-        yield
-      end
+      retry_policy.execute(&block)
     rescue StandardError => e
       # Capture screenshot on final failure
       capture_failure_artifacts(test_name, metadata, e)
@@ -188,14 +186,14 @@ module Testing
     def cleanup
       close_context
 
-      if @browser
-        begin
-          driver.close_browser(@browser)
-        rescue StandardError => e
-          logger.error("Failed to close browser: #{e.message}")
-        ensure
-          @browser = nil
-        end
+      return unless @browser
+
+      begin
+        driver.close_browser(@browser)
+      rescue StandardError => e
+        logger.error("Failed to close browser: #{e.message}")
+      ensure
+        @browser = nil
       end
     end
 
@@ -215,7 +213,7 @@ module Testing
 
       # Capture screenshot from first page in context
       pages = @context.pages
-      if pages && !pages.empty?
+      if pages.present?
         artifact_capture.capture_screenshot(
           pages.first,
           test_name: test_name,

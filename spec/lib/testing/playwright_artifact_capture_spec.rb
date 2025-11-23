@@ -7,9 +7,9 @@ require_relative '../../../lib/testing/utils/null_logger'
 require_relative '../../../lib/testing/utils/time_utils'
 
 RSpec.describe Testing::PlaywrightArtifactCapture do
-  let(:mock_driver) { instance_double('Testing::PlaywrightDriver') }
-  let(:mock_storage) { instance_double('Testing::FileSystemStorage') }
-  let(:mock_logger) { instance_double('Logger') }
+  let(:mock_driver) { instance_double(Testing::PlaywrightDriver) }
+  let(:mock_storage) { instance_double(Testing::FileSystemStorage) }
+  let(:mock_logger) { instance_double(Logger) }
   let(:capture) do
     described_class.new(
       driver: mock_driver,
@@ -45,7 +45,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
   end
 
   describe '#capture_screenshot' do
-    let(:mock_page) { instance_double('Playwright::Page') }
+    let(:mock_page) { instance_double(Playwright::Page) }
     let(:temp_screenshot) { Tempfile.new(['screenshot', '.png']) }
     let(:saved_path) { Pathname.new('/tmp/screenshots/test-screenshot.png') }
 
@@ -166,7 +166,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
   end
 
   describe '#capture_trace' do
-    let(:mock_context) { instance_double('Playwright::BrowserContext') }
+    let(:mock_context) { instance_double(Playwright::BrowserContext) }
     let(:temp_trace) { Tempfile.new(['trace', '.zip']) }
     let(:saved_path) { Pathname.new('/tmp/traces/test-trace.zip') }
 
@@ -356,7 +356,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
   end
 
   describe 'correlation ID generation' do
-    let(:mock_page) { instance_double('Playwright::Page') }
+    let(:mock_page) { instance_double(Playwright::Page) }
     let(:temp_screenshot) { Tempfile.new(['screenshot', '.png']) }
     let(:saved_path) { Pathname.new('/tmp/screenshots/test.png') }
 
@@ -393,7 +393,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
   end
 
   describe 'integration with NullLogger' do
-    let(:mock_page) { instance_double('Playwright::Page') }
+    let(:mock_page) { instance_double(Playwright::Page) }
     let(:temp_screenshot) { Tempfile.new(['screenshot', '.png']) }
     let(:saved_path) { Pathname.new('/tmp/screenshots/test.png') }
 
@@ -418,7 +418,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
   end
 
   describe 'structured logging' do
-    let(:mock_page) { instance_double('Playwright::Page') }
+    let(:mock_page) { instance_double(Playwright::Page) }
     let(:temp_screenshot) { Tempfile.new(['screenshot', '.png']) }
     let(:saved_path) { Pathname.new('/tmp/screenshots/test-screenshot.png') }
 

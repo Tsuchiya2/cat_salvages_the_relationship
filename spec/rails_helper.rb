@@ -35,9 +35,9 @@ if ENV['CI'] == 'true' || ENV['COVERAGE'] == 'true'
 
     # Coverage output formatters
     formatter SimpleCov::Formatter::MultiFormatter.new([
-      SimpleCov::Formatter::HTMLFormatter,
-      SimpleCov::Formatter::Console
-    ])
+                                                         SimpleCov::Formatter::HTMLFormatter,
+                                                         SimpleCov::Formatter::Console
+                                                       ])
 
     # Track files even if they are not loaded
     track_files '{app,lib}/**/*.rb'
