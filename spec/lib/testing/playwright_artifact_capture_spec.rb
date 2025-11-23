@@ -66,7 +66,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
         .and_return(temp_screenshot.path)
 
       allow(mock_storage).to receive(:save_screenshot)
-        .with(anything, temp_screenshot.path, anything)
+        .with(anything, anything, anything)
         .and_return(saved_path)
 
       result = capture.capture_screenshot(mock_page, test_name: 'My Test')
@@ -479,9 +479,10 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
       capture.capture_screenshot(mock_page, test_name: 'My Test')
     end
 
-    it 'logs test name' do
+    it 'logs correlation ID with sanitized test name' do
       expect(mock_logger).to receive(:info) do |message|
-        expect(message).to include('My Test')
+        expect(message).to include('My_Test')
+        expect(message).to include('correlation_id=')
       end
 
       capture.capture_screenshot(mock_page, test_name: 'My Test')

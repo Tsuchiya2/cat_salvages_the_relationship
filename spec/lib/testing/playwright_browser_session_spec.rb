@@ -166,6 +166,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
   describe '#restart' do
     before do
       allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
+      allow(mock_driver).to receive(:create_context).and_return(mock_context)
       allow(mock_driver).to receive(:close_browser)
     end
 
@@ -446,25 +447,28 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
       allow(mock_context).to receive(:close).and_raise(StandardError.new('Close failed'))
 
-      expect do
-        session.stop
-      end.to raise_error(StandardError, 'Close failed')
+      session.stop
 
-      # Browser should still be attempted to close
+      # Both cleanup attempts should have been made despite error
+      expect(mock_context).to have_received(:close)
       expect(mock_driver).to have_received(:close_browser)
+      # Context and browser should be nil after cleanup
+      expect(session.context).to be_nil
+      expect(session.browser).to be_nil
     end
   end
 
   describe 'browser lifecycle' do
     before do
       allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
+      allow(mock_driver).to receive(:create_context).and_return(mock_context)
       allow(mock_driver).to receive(:close_browser)
     end
 
     it 'follows start -> create_context -> close_context -> stop lifecycle' do
       session.start
       expect(session.browser).to eq(mock_browser)
-      expect(session.context).to be_nil
+      expect(session.context).to eq(mock_context)
 
       allow(mock_driver).to receive(:create_context).and_return(mock_context)
       session.create_context
@@ -483,6 +487,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
   describe 'integration with components' do
     it 'uses driver for browser operations' do
       allow(mock_driver).to receive(:launch_browser).with(mock_config).and_return(mock_browser)
+      allow(mock_driver).to receive(:create_context).and_return(mock_context)
       allow(mock_driver).to receive(:close_browser).with(mock_browser)
 
       session.start
@@ -539,6 +544,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
       hide_const('Rails') if defined?(Rails)
 
       allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
+      allow(mock_driver).to receive(:create_context).and_return(mock_context)
       allow(mock_driver).to receive(:close_browser)
 
       session.start

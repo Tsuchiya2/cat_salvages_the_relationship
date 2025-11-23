@@ -111,6 +111,11 @@ module Testing
     #     page.click('text=Login')
     #   end
     def capture_trace(context, test_name:, trace_mode:, metadata: {}, &block)
+      valid_modes = %w[on off on-first-retry]
+      unless valid_modes.include?(trace_mode)
+        raise ArgumentError, "invalid trace_mode: #{trace_mode}. Must be one of: #{valid_modes.join(', ')}"
+      end
+
       return yield if trace_mode == 'off'
 
       artifact_name = generate_artifact_name(test_name)
@@ -158,9 +163,9 @@ module Testing
     # @return [Object] Result from block execution
     def execute_trace_capture(context, temp_path)
       driver.start_trace(context)
-      result = yield
+      yield
+    ensure
       driver.stop_trace(context, temp_path)
-      result
     end
 
     # Save trace artifact with metadata.
