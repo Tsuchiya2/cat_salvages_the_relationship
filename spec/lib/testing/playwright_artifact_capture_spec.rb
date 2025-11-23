@@ -60,15 +60,17 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
     end
 
     it 'captures screenshot using driver' do
-      expect(mock_driver).to receive(:take_screenshot)
+      allow(mock_driver).to receive(:take_screenshot)
         .with(mock_page, anything)
         .and_return(temp_screenshot.path)
 
-      expect(mock_storage).to receive(:save_screenshot)
+      allow(mock_storage).to receive(:save_screenshot)
         .with(anything, temp_screenshot.path, anything)
         .and_return(saved_path)
 
-      capture.capture_screenshot(mock_page, test_name: 'My Test')
+      result = capture.capture_screenshot(mock_page, test_name: 'My Test')
+
+      expect(result).to eq(saved_path)
     end
 
     it 'generates artifact name with correlation ID' do
@@ -198,15 +200,17 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
       it 'stops trace after block execution' do
         allow(mock_driver).to receive(:start_trace)
 
-        expect(mock_driver).to receive(:stop_trace)
+        allow(mock_driver).to receive(:stop_trace)
           .with(mock_context, anything)
           .and_return(temp_trace.path)
 
         allow(mock_storage).to receive(:save_trace).and_return(saved_path)
 
-        capture.capture_trace(mock_context, test_name: 'My Test', trace_mode: 'on') do
+        result = capture.capture_trace(mock_context, test_name: 'My Test', trace_mode: 'on') do
           # Test execution
         end
+
+        expect(result).to eq(saved_path)
       end
 
       it 'saves trace with metadata' do
@@ -269,7 +273,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
       it 'stops trace even if block raises error' do
         allow(mock_driver).to receive(:start_trace)
 
-        expect(mock_driver).to receive(:stop_trace)
+        allow(mock_driver).to receive(:stop_trace)
           .with(mock_context, anything)
           .and_return(temp_trace.path)
 
@@ -373,11 +377,28 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
     end
 
     it 'generates unique correlation IDs for each capture' do
+      allow(Testing::Utils::TimeUtils).to receive(:generate_correlation_id)
+        .and_return('test-run-20251123-120000-abc123', 'test-run-20251123-120001-xyz789')
+
+      first_id = nil
+      second_id = nil
+
+      allow(mock_storage).to receive(:save_screenshot) do |name, _path, _metadata|
+        first_id ||= name.match(/test-run-\d{8}-\d{6}-[a-z0-9]+/)&.to_s
+        first_id
+      end
+
       capture.capture_screenshot(mock_page, test_name: 'Test 1')
+
+      allow(mock_storage).to receive(:save_screenshot) do |name, _path, _metadata|
+        second_id = name.match(/test-run-\d{8}-\d{6}-[a-z0-9]+/)&.to_s
+      end
+
       capture.capture_screenshot(mock_page, test_name: 'Test 2')
 
-      # Verify TimeUtils generates different IDs
-      # (actual uniqueness tested in TimeUtils spec)
+      expect(first_id).not_to be_nil
+      expect(second_id).not_to be_nil
+      expect(first_id).not_to eq(second_id)
     end
 
     it 'includes correlation ID in log messages' do

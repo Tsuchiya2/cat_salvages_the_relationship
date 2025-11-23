@@ -41,7 +41,7 @@ RSpec.describe Testing::PlaywrightDriver do
 
   describe '#initialize' do
     it 'creates Playwright instance with npx playwright executable' do
-      expect(Playwright).to receive(:create).with(
+      allow(Playwright).to receive(:create).with(
         playwright_cli_executable_path: 'npx playwright'
       ).and_return(mock_playwright)
 

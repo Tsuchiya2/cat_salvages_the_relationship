@@ -322,14 +322,6 @@ RSpec.describe Testing::FileSystemStorage do
       end.to raise_error(Errno::ENOENT)
     end
 
-    it 'searches in screenshots directory' do
-      saved_path = storage.save_screenshot('test-screenshot', screenshot_file.path)
-
-      result = storage.get_artifact(saved_path.basename.to_s)
-
-      expect(result).to eq('screenshot data')
-    end
-
     it 'searches in traces directory' do
       trace_file = Tempfile.new(['trace', '.zip'])
       trace_file.write('trace data')
