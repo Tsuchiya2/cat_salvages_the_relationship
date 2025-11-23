@@ -58,13 +58,15 @@ RSpec.describe Scheduler, type: :model do
       )
     end
 
-    it 'raises when required content is missing' do
+    it 'sends error email when required content is missing' do
       allow(sampler).to receive(:available?).and_return(false, true, true)
       allow(LineMailer).to receive(:error_email).and_return(double(deliver_later: true))
+      allow(PrometheusMetrics).to receive(:track_message_send)
 
-      expect do
-        described_class.scheduler(LineGroup.where(id: group.id), sampler, :wait)
-      end.to raise_error(StandardError, /コンテンツ未登録/)
+      described_class.scheduler(LineGroup.where(id: group.id), sampler, :wait)
+
+      expect(LineMailer).to have_received(:error_email).with(group.line_group_id, /コンテンツ未登録/)
+      expect(PrometheusMetrics).to have_received(:track_message_send).with('error')
     end
   end
 end

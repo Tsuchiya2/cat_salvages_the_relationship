@@ -250,8 +250,21 @@ module Testing
     #
     # @return [void]
     def ensure_directories_exist
-      FileUtils.mkdir_p(@screenshots_path)
-      FileUtils.mkdir_p(@traces_path)
+      # Convert Pathname to String to ensure proper path handling
+      screenshots_dir = @screenshots_path.to_s
+      traces_dir = @traces_path.to_s
+
+      # Validate paths before creating directories
+      raise ArgumentError, "Invalid screenshots path: #{screenshots_dir.inspect}" if screenshots_dir.empty? || screenshots_dir == '/path'
+      raise ArgumentError, "Invalid traces path: #{traces_dir.inspect}" if traces_dir.empty? || traces_dir == '/path'
+
+      FileUtils.mkdir_p(screenshots_dir)
+      FileUtils.mkdir_p(traces_dir)
+    rescue Errno::EACCES => e
+      # Provide helpful error message for permission issues
+      raise Errno::EACCES, "Permission denied creating Playwright artifact directories. " \
+                           "Screenshots: #{screenshots_dir.inspect}, Traces: #{traces_dir.inspect}. " \
+                           "Original error: #{e.message}"
     end
   end
 end
