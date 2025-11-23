@@ -110,7 +110,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
       allow(mock_driver).to receive(:take_screenshot).and_return(temp_screenshot.path)
       allow(mock_storage).to receive(:save_screenshot).and_return(saved_path)
 
-      expect(mock_logger).to receive(:info).with(/Screenshot captured/)
+      expect(mock_logger).to receive(:info).with(/Artifact saved: screenshot/)
 
       capture.capture_screenshot(mock_page, test_name: 'My Test')
     end
@@ -127,20 +127,24 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
     it 'handles driver errors gracefully' do
       allow(mock_driver).to receive(:take_screenshot)
         .and_raise(StandardError.new('Driver error'))
+      allow(mock_logger).to receive(:error)
 
-      expect do
-        capture.capture_screenshot(mock_page, test_name: 'My Test')
-      end.to raise_error(StandardError, 'Driver error')
+      result = capture.capture_screenshot(mock_page, test_name: 'My Test')
+
+      expect(result).to be_nil
+      expect(mock_logger).to have_received(:error).with(/Failed to capture screenshot: Driver error/)
     end
 
     it 'handles storage errors gracefully' do
       allow(mock_driver).to receive(:take_screenshot).and_return(temp_screenshot.path)
       allow(mock_storage).to receive(:save_screenshot)
         .and_raise(StandardError.new('Storage error'))
+      allow(mock_logger).to receive(:error)
 
-      expect do
-        capture.capture_screenshot(mock_page, test_name: 'My Test')
-      end.to raise_error(StandardError, 'Storage error')
+      result = capture.capture_screenshot(mock_page, test_name: 'My Test')
+
+      expect(result).to be_nil
+      expect(mock_logger).to have_received(:error).with(/Failed to capture screenshot: Storage error/)
     end
 
     it 'includes timestamp in metadata' do
@@ -240,7 +244,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
         allow(mock_driver).to receive(:stop_trace).and_return(temp_trace.path)
         allow(mock_storage).to receive(:save_trace).and_return(saved_path)
 
-        expect(mock_logger).to receive(:info).with(/Trace captured/)
+        expect(mock_logger).to receive(:info).with(/Artifact saved: trace/)
 
         capture.capture_trace(mock_context, test_name: 'My Test', trace_mode: 'on') do
           # Test execution
@@ -259,15 +263,17 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
         expect(result).to eq(saved_path)
       end
 
-      it 'executes block and returns block result' do
+      it 'executes block during trace capture' do
         allow(mock_driver).to receive(:start_trace)
         allow(mock_driver).to receive(:stop_trace).and_return(temp_trace.path)
         allow(mock_storage).to receive(:save_trace).and_return(saved_path)
 
+        executed = false
         result = capture.capture_trace(mock_context, test_name: 'My Test', trace_mode: 'on') do
-          'block result'
+          executed = true
         end
 
+        expect(executed).to be true
         expect(result).to eq(saved_path)
       end
 
@@ -279,6 +285,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
           .and_return(temp_trace.path)
 
         allow(mock_storage).to receive(:save_trace).and_return(saved_path)
+        allow(mock_logger).to receive(:error)
 
         expect do
           capture.capture_trace(mock_context, test_name: 'My Test', trace_mode: 'on') do
@@ -287,6 +294,7 @@ RSpec.describe Testing::PlaywrightArtifactCapture do
         end.to raise_error(StandardError, 'Test error')
 
         expect(mock_driver).to have_received(:stop_trace)
+        expect(mock_logger).to have_received(:error).with(/Failed to capture trace/)
       end
     end
 

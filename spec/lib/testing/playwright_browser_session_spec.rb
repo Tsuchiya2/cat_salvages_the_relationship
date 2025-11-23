@@ -10,7 +10,12 @@ RSpec.describe Testing::PlaywrightBrowserSession do
   let(:mock_artifact_capture) { instance_double(Testing::PlaywrightArtifactCapture) }
   let(:mock_retry_policy) { instance_double(Testing::RetryPolicy) }
   let(:mock_browser) { instance_double(Playwright::Browser) }
-  let(:mock_context) { instance_double(Playwright::BrowserContext) }
+  let(:mock_context) { instance_double(Playwright::BrowserContext, close: nil) }
+
+  before do
+    allow(mock_config).to receive(:browser_type).and_return('chromium')
+    allow(mock_config).to receive(:headless).and_return(true)
+  end
 
   let(:session) do
     described_class.new(
@@ -78,6 +83,7 @@ RSpec.describe Testing::PlaywrightBrowserSession do
   describe '#start' do
     before do
       allow(mock_driver).to receive(:launch_browser).with(mock_config).and_return(mock_browser)
+      allow(mock_driver).to receive(:create_context).with(mock_browser, mock_config).and_return(mock_context)
     end
 
     it 'launches browser using driver' do
@@ -87,15 +93,15 @@ RSpec.describe Testing::PlaywrightBrowserSession do
     end
 
     it 'returns the browser instance' do
-      result = session.start
-
-      expect(result).to eq(mock_browser)
-    end
-
-    it 'does not create context automatically' do
       session.start
 
-      expect(session.context).to be_nil
+      expect(session.browser).to eq(mock_browser)
+    end
+
+    it 'creates context automatically' do
+      session.start
+
+      expect(session.context).to eq(mock_context)
     end
 
     it 'raises error if browser launch fails' do
@@ -119,7 +125,9 @@ RSpec.describe Testing::PlaywrightBrowserSession do
   describe '#stop' do
     before do
       allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
+      allow(mock_driver).to receive(:create_context).and_return(mock_context)
       allow(mock_driver).to receive(:close_browser)
+      allow(mock_context).to receive(:close)
       session.start
     end
 

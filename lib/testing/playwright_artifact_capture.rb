@@ -117,9 +117,8 @@ module Testing
       temp_file = Tempfile.new(['trace', '.zip'])
 
       begin
-        result = execute_trace_capture(context, temp_file.path, &block)
+        execute_trace_capture(context, temp_file.path, &block)
         save_trace_artifact(artifact_name, temp_file.path, test_name, trace_mode, metadata)
-        result
       rescue StandardError => e
         logger.error("Failed to capture trace: #{e.message}")
         raise
