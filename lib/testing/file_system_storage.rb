@@ -48,7 +48,7 @@ module Testing
       destination = screenshots_path.join("#{sanitized_name}.png")
 
       FileUtils.cp(file_path, destination)
-      save_metadata(destination, metadata)
+      save_metadata(destination, (metadata || {}).merge(type: 'screenshot'))
 
       destination
     end
@@ -65,7 +65,7 @@ module Testing
       destination = traces_path.join("#{sanitized_name}.zip")
 
       FileUtils.cp(file_path, destination)
-      save_metadata(destination, metadata)
+      save_metadata(destination, (metadata || {}).merge(type: 'trace'))
 
       destination
     end
@@ -74,53 +74,69 @@ module Testing
     #
     # @return [Array<Hash>] Array of artifact metadata hashes
     #   Each hash contains: { name:, path:, type:, metadata: }
+    #   Sorted by creation time (most recent first)
     def list_artifacts
-      (list_screenshots_artifacts + list_traces_artifacts).sort_by { |a| a[:name] }
+      (list_screenshots_artifacts + list_traces_artifacts).sort_by do |a|
+        # Sort by saved_at timestamp in descending order
+        # Use metadata[:saved_at] if available, otherwise fall back to file mtime
+        # Use to_f to preserve millisecond precision
+        timestamp = a[:metadata][:saved_at] || File.mtime(a[:path]).iso8601(3)
+        -Time.parse(timestamp).to_f
+      end
     end
 
     # Get an artifact by name.
     #
-    # @param name [String] Artifact name (without extension)
-    # @return [String, nil] Artifact content (binary) or nil if not found
+    # @param name [String] Artifact name (with or without extension)
+    # @return [String] Artifact content (binary)
+    # @raise [Errno::ENOENT] if artifact does not exist
     def get_artifact(name)
       sanitized_name = Utils::StringUtils.sanitize_filename(name)
 
+      # Remove extension if present
+      base_name = sanitized_name.sub(/\.(png|zip)$/, '')
+
       # Try screenshot first
-      screenshot_path = screenshots_path.join("#{sanitized_name}.png")
+      screenshot_path = screenshots_path.join("#{base_name}.png")
       return File.binread(screenshot_path) if screenshot_path.exist?
 
       # Try trace
-      trace_path = traces_path.join("#{sanitized_name}.zip")
+      trace_path = traces_path.join("#{base_name}.zip")
       return File.binread(trace_path) if trace_path.exist?
 
-      nil
+      # If neither found, raise error
+      raise Errno::ENOENT, "No such file or directory - #{sanitized_name}"
     end
 
     # Delete an artifact by name.
     #
-    # @param name [String] Artifact name (without extension)
-    # @return [Boolean] true if deleted, false if not found
+    # @param name [String] Artifact name (with or without extension)
+    # @return [Boolean] true if deleted
+    # @raise [Errno::ENOENT] if artifact does not exist
     def delete_artifact(name)
       sanitized_name = Utils::StringUtils.sanitize_filename(name)
-      deleted = false
+
+      # Remove extension if present
+      base_name = sanitized_name.sub(/\.(png|zip)$/, '')
 
       # Try screenshot
-      screenshot_path = screenshots_path.join("#{sanitized_name}.png")
+      screenshot_path = screenshots_path.join("#{base_name}.png")
       if screenshot_path.exist?
         File.delete(screenshot_path)
         delete_metadata(screenshot_path)
-        deleted = true
+        return true
       end
 
       # Try trace
-      trace_path = traces_path.join("#{sanitized_name}.zip")
+      trace_path = traces_path.join("#{base_name}.zip")
       if trace_path.exist?
         File.delete(trace_path)
         delete_metadata(trace_path)
-        deleted = true
+        return true
       end
 
-      deleted
+      # If neither found, raise error
+      raise Errno::ENOENT, "No such file or directory - #{sanitized_name}"
     end
 
     private
@@ -147,7 +163,7 @@ module Testing
     def save_metadata(artifact_path, metadata)
       metadata ||= {}
 
-      metadata_path = artifact_path.sub_ext('.metadata.json')
+      metadata_path = "#{artifact_path}.metadata.json"
       enhanced_metadata = metadata.merge(
         saved_at: Utils::TimeUtils.format_iso8601,
         file_size: File.size(artifact_path)
@@ -173,7 +189,7 @@ module Testing
     # @param artifact_path [Pathname] Path to artifact file
     # @return [void]
     def delete_metadata(artifact_path)
-      metadata_path = artifact_path.sub_ext('.metadata.json')
+      metadata_path = Pathname.new("#{artifact_path}.metadata.json")
       File.delete(metadata_path) if metadata_path.exist?
     end
 
@@ -211,12 +227,12 @@ module Testing
     # @return [Hash] Artifact metadata hash
     def build_artifact_hash(file_path, type, extension)
       name = File.basename(file_path, extension)
-      metadata_path = Pathname.new(file_path).sub_ext('.metadata.json')
+      metadata_path = Pathname.new("#{file_path}.metadata.json")
       metadata = load_metadata(metadata_path)
 
       {
         name: name,
-        path: file_path,
+        path: Pathname.new(file_path),
         type: type,
         metadata: metadata
       }

@@ -38,17 +38,17 @@ module Testing
           time.strftime('%Y%m%d-%H%M%S')
         end
 
-        # Format timestamp in ISO 8601 format.
+        # Format timestamp in ISO 8601 format with millisecond precision.
         #
-        # Returns format: YYYY-MM-DDTHH:MM:SS+TZ (standard for JSON/logs).
+        # Returns format: YYYY-MM-DDTHH:MM:SS.sss+TZ (standard for JSON/logs).
         #
         # @param time [Time] Time object to format (defaults to Time.now)
-        # @return [String] ISO 8601 formatted timestamp
+        # @return [String] ISO 8601 formatted timestamp with millisecond precision
         # @example
-        #   TimeUtils.format_iso8601 #=> "2025-11-23T14:30:52+09:00"
+        #   TimeUtils.format_iso8601 #=> "2025-11-23T14:30:52.123+09:00"
         def format_iso8601(time = Time.now)
-          # ISO 8601 format with timezone
-          time.iso8601
+          # ISO 8601 format with timezone and millisecond precision
+          time.iso8601(3)
         end
 
         # Format timestamp in human-readable format.
