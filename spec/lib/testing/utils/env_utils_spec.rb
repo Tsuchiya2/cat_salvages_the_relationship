@@ -288,7 +288,7 @@ RSpec.describe Testing::Utils::EnvUtils do
 
   describe 'edge cases' do
     it 'handles case sensitivity correctly' do
-      with_env(CI: 'True') do
+      with_env(CI: 'True', GITHUB_ACTIONS: nil) do
         # Should be case-sensitive ('true' vs 'True')
         expect(described_class.ci_environment?).to be false
       end

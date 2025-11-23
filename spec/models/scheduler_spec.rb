@@ -53,6 +53,7 @@ RSpec.describe Scheduler, type: :model do
 
     it 'raises when required content is missing' do
       allow(sampler).to receive(:available?).and_return(false, true, true)
+      allow(LineMailer).to receive(:error_email).and_return(double(deliver_later: true))
 
       expect do
         described_class.scheduler(LineGroup.where(id: group.id), sampler, :wait)

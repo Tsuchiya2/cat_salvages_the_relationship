@@ -83,7 +83,8 @@ module Testing
       @backoff_multiplier = backoff_multiplier
       @initial_delay = initial_delay
       @logger = logger
-      @retryable_errors = error_handling.fetch(:retryable, [StandardError])
+      retryable = error_handling.fetch(:retryable, [StandardError])
+      @retryable_errors = retryable.empty? ? [StandardError] : retryable
       @non_retryable_errors = error_handling.fetch(:non_retryable, []) + default_non_retryable_errors
     end
 
