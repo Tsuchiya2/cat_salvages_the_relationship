@@ -75,6 +75,10 @@ module Testing
       logger: Utils::NullLogger.new,
       error_handling: {}
     )
+      raise ArgumentError, 'max_attempts must be greater than 0' unless max_attempts.positive?
+      raise ArgumentError, 'backoff_multiplier must be greater than 0' unless backoff_multiplier.positive?
+      raise ArgumentError, 'initial_delay must be greater than or equal to 0' unless initial_delay >= 0
+
       @max_attempts = max_attempts
       @backoff_multiplier = backoff_multiplier
       @initial_delay = initial_delay
@@ -97,15 +101,15 @@ module Testing
     #     # Code that might fail
     #   end
     def execute
-      attempt = 1
+      attempt = 0
 
       begin
         yield
       rescue StandardError => e
-        raise unless retryable_error?(e) && attempt < max_attempts
+        raise unless retryable_error?(e) && attempt < max_attempts - 1
 
         delay = calculate_delay(attempt)
-        log_retry_attempt(attempt, e, delay)
+        log_retry_attempt(attempt + 1, e, delay)
 
         sleep(delay)
         attempt += 1

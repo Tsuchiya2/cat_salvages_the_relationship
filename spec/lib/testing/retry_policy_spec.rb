@@ -110,7 +110,8 @@ RSpec.describe Testing::RetryPolicy do
         error_handling: { retryable: [], non_retryable: errors }
       )
 
-      expect(policy.non_retryable_errors).to eq(errors)
+      expect(policy.non_retryable_errors).to include(*errors)
+      expect(policy.non_retryable_errors).to include(RSpec::Expectations::ExpectationNotMetError)
     end
   end
 
@@ -226,7 +227,7 @@ RSpec.describe Testing::RetryPolicy do
             execution_count += 1
             raise Errno::ECONNREFUSED, 'Connection refused'
           end
-        end.to raise_error(Errno::ECONNREFUSED, 'Connection refused')
+        end.to raise_error(Errno::ECONNREFUSED, /Connection refused/)
 
         expect(execution_count).to eq(3) # max_attempts
       end

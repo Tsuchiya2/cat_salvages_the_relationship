@@ -442,7 +442,6 @@ RSpec.describe Testing::PlaywrightBrowserSession do
 
     it 'cleans up even if close raises error' do
       session.start
-      session.create_context
 
       allow(mock_context).to receive(:close).and_raise(StandardError.new('Close failed'))
 
@@ -608,10 +607,8 @@ RSpec.describe Testing::PlaywrightBrowserSession do
       allow(mock_driver).to receive(:launch_browser).and_return(mock_browser)
       allow(mock_driver).to receive(:create_context).and_raise(StandardError.new('Context creation failed'))
 
-      session.start
-
       expect do
-        session.create_context
+        session.start
       end.to raise_error(StandardError, 'Context creation failed')
     end
   end

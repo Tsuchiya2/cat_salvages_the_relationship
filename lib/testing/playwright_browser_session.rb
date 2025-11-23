@@ -64,6 +64,9 @@ module Testing
     # @param retry_policy [RetryPolicy] Policy for retrying transient failures
     # @param logger [Logger] Logger for structured output (default: NullLogger)
     def initialize(driver:, config:, artifact_capture:, retry_policy:, logger: Utils::NullLogger.new)
+      raise ArgumentError, 'driver cannot be nil' if driver.nil?
+      raise ArgumentError, 'config cannot be nil' if config.nil?
+
       @driver = driver
       @config = config
       @artifact_capture = artifact_capture
@@ -77,12 +80,13 @@ module Testing
     #
     # Launches browser with configuration and creates initial context.
     #
-    # @return [void]
+    # @return [Playwright::Browser] The launched browser instance
     # @raise [StandardError] If browser fails to launch
     def start
       ensure_browser_started
       create_context unless @context
       logger.info("Browser session started | browser=#{config.browser_type} | headless=#{config.headless}")
+      @browser
     end
 
     # Stop browser session.
@@ -99,7 +103,7 @@ module Testing
     #
     # Closes current browser and starts a new one.
     #
-    # @return [void]
+    # @return [Playwright::Browser] The new browser instance
     def restart
       logger.info('Restarting browser session')
       stop
