@@ -39,14 +39,16 @@ RSpec.configure do |config|
       backoff_multiplier: Testing::RetryPolicy::DEFAULT_BACKOFF_MULTIPLIER,
       initial_delay: Testing::RetryPolicy::DEFAULT_INITIAL_DELAY,
       logger: Rails.logger,
-      retryable_errors: [
-        Net::ReadTimeout,
-        Errno::ECONNREFUSED,
-        Timeout::Error
-      ],
-      non_retryable_errors: [
-        RSpec::Expectations::ExpectationNotMetError
-      ]
+      error_handling: {
+        retryable: [
+          Net::ReadTimeout,
+          Errno::ECONNREFUSED,
+          Timeout::Error
+        ],
+        non_retryable: [
+          RSpec::Expectations::ExpectationNotMetError
+        ]
+      }
     )
 
     # Initialize browser session
