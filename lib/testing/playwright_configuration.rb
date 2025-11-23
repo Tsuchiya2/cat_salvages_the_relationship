@@ -262,7 +262,7 @@ module Testing
       FileUtils.mkdir_p(traces_dir)
     rescue Errno::EACCES => e
       # Provide helpful error message for permission issues
-      raise Errno::EACCES, "Permission denied creating Playwright artifact directories. " \
+      raise Errno::EACCES, 'Permission denied creating Playwright artifact directories. ' \
                            "Screenshots: #{screenshots_dir.inspect}, Traces: #{traces_dir.inspect}. " \
                            "Original error: #{e.message}"
     end

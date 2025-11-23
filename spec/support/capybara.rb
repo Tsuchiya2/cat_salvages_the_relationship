@@ -13,11 +13,9 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     # Ensure PathUtils returns valid paths for system tests
     # Use Rails.root if available, otherwise use Dir.pwd
-    root_path = (defined?(Rails) && Rails.respond_to?(:root) && Rails.root) ? Rails.root : Dir.pwd
-    allow(Testing::Utils::PathUtils).to receive(:root_path).and_return(Pathname.new(root_path))
-    allow(Testing::Utils::PathUtils).to receive(:tmp_path).and_return(Pathname.new(root_path).join('tmp'))
-    allow(Testing::Utils::PathUtils).to receive(:screenshots_path).and_return(Pathname.new(root_path).join('tmp/screenshots'))
-    allow(Testing::Utils::PathUtils).to receive(:traces_path).and_return(Pathname.new(root_path).join('tmp/traces'))
+    root_path = defined?(Rails) && Rails.respond_to?(:root) && Rails.root ? Rails.root : Dir.pwd
+    allow(Testing::Utils::PathUtils).to receive_messages(root_path: Pathname.new(root_path), tmp_path: Pathname.new(root_path).join('tmp'),
+                                                         screenshots_path: Pathname.new(root_path).join('tmp/screenshots'), traces_path: Pathname.new(root_path).join('tmp/traces'))
 
     # Initialize Playwright configuration for the current environment
     playwright_config = Testing::PlaywrightConfiguration.for_environment
