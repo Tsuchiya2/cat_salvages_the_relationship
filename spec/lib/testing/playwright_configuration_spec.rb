@@ -326,7 +326,8 @@ RSpec.describe Testing::PlaywrightConfiguration do
 
         described_class.new(**valid_params)
 
-        expect(FileUtils).to have_received(:mkdir_p).with(screenshots_path)
+        # Expect String argument (converted from Pathname in ensure_directories_exist)
+        expect(FileUtils).to have_received(:mkdir_p).with(screenshots_path.to_s)
       end
 
       it 'creates traces directory' do
@@ -336,7 +337,8 @@ RSpec.describe Testing::PlaywrightConfiguration do
 
         described_class.new(**valid_params)
 
-        expect(FileUtils).to have_received(:mkdir_p).with(traces_path)
+        # Expect String argument (converted from Pathname in ensure_directories_exist)
+        expect(FileUtils).to have_received(:mkdir_p).with(traces_path.to_s)
       end
     end
   end

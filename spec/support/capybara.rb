@@ -42,7 +42,7 @@ RSpec.configure do |config|
       retryable_errors: [
         Net::ReadTimeout,
         Errno::ECONNREFUSED,
-        Selenium::WebDriver::Error::WebDriverError
+        Timeout::Error
       ],
       non_retryable_errors: [
         RSpec::Expectations::ExpectationNotMetError
