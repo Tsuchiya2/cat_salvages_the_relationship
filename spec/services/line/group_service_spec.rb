@@ -143,14 +143,14 @@ RSpec.describe Line::GroupService do
     let(:group_id) { 'GROUP123' }
 
     before do
-      allow(adapter).to receive(:push_message)
+      allow(Line::WelcomeMessageJob).to receive(:perform_later)
     end
 
     context 'with :join message type' do
       it 'sends join welcome message' do
         service.send_welcome_message(group_id, message_type: :join)
 
-        expect(adapter).to have_received(:push_message).with(
+        expect(Line::WelcomeMessageJob).to have_received(:perform_later).with(
           group_id,
           hash_including(
             type: 'text',
@@ -164,7 +164,7 @@ RSpec.describe Line::GroupService do
       it 'sends member joined welcome message' do
         service.send_welcome_message(group_id, message_type: :member_joined)
 
-        expect(adapter).to have_received(:push_message).with(
+        expect(Line::WelcomeMessageJob).to have_received(:perform_later).with(
           group_id,
           hash_including(
             type: 'text',
@@ -178,7 +178,7 @@ RSpec.describe Line::GroupService do
       it 'sends join message by default' do
         service.send_welcome_message(group_id)
 
-        expect(adapter).to have_received(:push_message).with(
+        expect(Line::WelcomeMessageJob).to have_received(:perform_later).with(
           group_id,
           hash_including(
             type: 'text',

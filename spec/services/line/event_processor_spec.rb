@@ -68,6 +68,8 @@ RSpec.describe Line::EventProcessor do
         allow(Line::Bot::Event::MemberJoined).to receive(:===).with(event).and_return(false)
         allow(Line::Bot::Event::Leave).to receive(:===).with(event).and_return(false)
         allow(Line::Bot::Event::MemberLeft).to receive(:===).with(event).and_return(false)
+        # Add is_a? check for message_type determination
+        allow(event).to receive(:is_a?).with(Line::Bot::Event::Join).and_return(true)
       end
     end
 
@@ -85,6 +87,8 @@ RSpec.describe Line::EventProcessor do
         allow(Line::Bot::Event::MemberJoined).to receive(:===).with(event).and_return(true)
         allow(Line::Bot::Event::Leave).to receive(:===).with(event).and_return(false)
         allow(Line::Bot::Event::MemberLeft).to receive(:===).with(event).and_return(false)
+        # Add is_a? check for message_type determination (returns false for Join)
+        allow(event).to receive(:is_a?).with(Line::Bot::Event::Join).and_return(false)
       end
     end
 
@@ -144,6 +148,12 @@ RSpec.describe Line::EventProcessor do
           reply_token: 'REPLY456'
         ).tap do |event|
           allow(event).to receive(:kind_of?).with(Line::Bot::Event::Message).and_return(true)
+          # Setup case/when matching for 1-on-1 message
+          allow(Line::Bot::Event::Message).to receive(:===).with(event).and_return(true)
+          allow(Line::Bot::Event::Join).to receive(:===).with(event).and_return(false)
+          allow(Line::Bot::Event::MemberJoined).to receive(:===).with(event).and_return(false)
+          allow(Line::Bot::Event::Leave).to receive(:===).with(event).and_return(false)
+          allow(Line::Bot::Event::MemberLeft).to receive(:===).with(event).and_return(false)
         end
 
         allow(one_on_one_handler).to receive(:handle)
@@ -208,6 +218,12 @@ RSpec.describe Line::EventProcessor do
           reply_token: 'REPLY789'
         ).tap do |event|
           allow(event).to receive(:kind_of?).with(Line::Bot::Event::Message).and_return(true)
+          # Setup case/when matching for second event
+          allow(Line::Bot::Event::Message).to receive(:===).with(event).and_return(true)
+          allow(Line::Bot::Event::Join).to receive(:===).with(event).and_return(false)
+          allow(Line::Bot::Event::MemberJoined).to receive(:===).with(event).and_return(false)
+          allow(Line::Bot::Event::Leave).to receive(:===).with(event).and_return(false)
+          allow(Line::Bot::Event::MemberLeft).to receive(:===).with(event).and_return(false)
         end
 
         allow(group_service).to receive(:update_record).with('GROUP456', anything).and_return(true)

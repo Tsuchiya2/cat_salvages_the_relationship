@@ -51,6 +51,13 @@ RSpec.describe Scheduler, type: :model do
     let(:sampler) { instance_double(Line::ContentSampler) }
     let(:group) { create(:line_group) }
 
+    before do
+      # Mock Rails credentials to prevent ApplicationMailer initialization error
+      allow(Rails.application).to receive(:credentials).and_return(
+        double(operator: { email: 'test@example.com' })
+      )
+    end
+
     it 'raises when required content is missing' do
       allow(sampler).to receive(:available?).and_return(false, true, true)
       allow(LineMailer).to receive(:error_email).and_return(double(deliver_later: true))
