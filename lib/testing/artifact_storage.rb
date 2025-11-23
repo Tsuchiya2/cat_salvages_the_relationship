@@ -25,7 +25,7 @@ module Testing
     # @return [void]
     # @raise [NotImplementedError] Must be implemented by subclass
     def save_screenshot(name, file_path, metadata = {})
-      raise NotImplementedError, "#{self.class}#save_screenshot must be implemented"
+      raise NotImplementedError, "Subclass must implement save_screenshot"
     end
 
     # Save a trace artifact.
@@ -36,7 +36,7 @@ module Testing
     # @return [void]
     # @raise [NotImplementedError] Must be implemented by subclass
     def save_trace(name, file_path, metadata = {})
-      raise NotImplementedError, "#{self.class}#save_trace must be implemented"
+      raise NotImplementedError, "Subclass must implement save_trace"
     end
 
     # List all artifacts.
@@ -44,7 +44,7 @@ module Testing
     # @return [Array<Hash>] Array of artifact metadata hashes
     # @raise [NotImplementedError] Must be implemented by subclass
     def list_artifacts
-      raise NotImplementedError, "#{self.class}#list_artifacts must be implemented"
+      raise NotImplementedError, "Subclass must implement list_artifacts"
     end
 
     # Get an artifact by name.
@@ -53,7 +53,7 @@ module Testing
     # @return [String, nil] Artifact content (binary) or nil if not found
     # @raise [NotImplementedError] Must be implemented by subclass
     def get_artifact(name)
-      raise NotImplementedError, "#{self.class}#get_artifact must be implemented"
+      raise NotImplementedError, "Subclass must implement get_artifact"
     end
 
     # Delete an artifact by name.
@@ -62,7 +62,7 @@ module Testing
     # @return [Boolean] true if deleted, false if not found
     # @raise [NotImplementedError] Must be implemented by subclass
     def delete_artifact(name)
-      raise NotImplementedError, "#{self.class}#delete_artifact must be implemented"
+      raise NotImplementedError, "Subclass must implement delete_artifact"
     end
   end
 end
