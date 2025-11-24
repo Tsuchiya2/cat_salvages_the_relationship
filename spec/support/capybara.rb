@@ -4,10 +4,23 @@ return unless RSpec.configuration.files_to_run.any? { |f| f.include?('spec/syste
 Capybara.default_max_wait_time = 5
 Capybara.server = :puma, { Silent: true }
 
+# Configure Chrome options for CI environment
+Capybara.register_driver :headless_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless=new')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--disable-gpu')
+  options.add_argument('--window-size=1920,1080')
+  options.add_argument('--disable-blink-features=AutomationControlled')
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
 RSpec.configure do |config|
   config.before(:each, type: :system) do
-    # Use Selenium with headless Chrome for system tests
-    driven_by :selenium, using: :headless_chrome, screen_size: [1920, 1080]
+    # Use custom headless Chrome driver
+    driven_by :headless_chrome
   end
 
   config.after(:each, type: :system) do

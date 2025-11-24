@@ -72,22 +72,22 @@ jobs:
         run: bundle exec rails assets:precompile
 
       - name: Run RSpec tests
-        run: bundle exec rspec --format documentation
+        run: bundle exec rspec --format documentation --format RspecJunitFormatter --out tmp/rspec_results.xml
 
       - name: Upload screenshots (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-screenshots-${{ github.run_number }}
-          path: tmp/screenshots/
+          name: capybara-screenshots-${{ github.run_number }}
+          path: tmp/capybara/
           retention-days: 7
 
-      - name: Upload traces (on failure)
+      - name: Upload test results (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces-${{ github.run_number }}
-          path: tmp/traces/
+          name: rspec-results-${{ github.run_number }}
+          path: tmp/rspec_results.xml
           retention-days: 7
 
       - name: Upload coverage report
