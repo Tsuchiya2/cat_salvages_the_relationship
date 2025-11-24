@@ -32,7 +32,7 @@ nav.navbar.navbar-expand-xl.navbar-dark.bg-secondary.fixed-top
             .guide-text
               | アラームコンテンツ
         li.nav-item
-          = link_to operator_cat_out_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center', method: :delete do
+          = link_to operator_cat_out_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center', data: { turbo_method: :delete } do
             icon.fas.fa-user-alt.me-2
             .guide-text
               | キャットアウト

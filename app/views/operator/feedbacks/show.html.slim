@@ -9,4 +9,4 @@ h3.mt-5
   = l(@feedback.created_at)
 - if current_user.operator?
   .my-5
-    = link_to '- 削除 -', operator_feedback_path(@feedback), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
+    = link_to '- 削除 -', operator_feedback_path(@feedback), class: 'btn btn-danger rounded-pill font-monospace', data: { turbo_method: :delete, confirm: '本当に削除しますか？' }

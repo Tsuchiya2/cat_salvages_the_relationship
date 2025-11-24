@@ -28,4 +28,4 @@ h1.mt-5
   .mt-5
     = link_to '🐾 編集 🐾', edit_operator_line_group_path(@line_group), class: 'btn btn-secondary rounded-pill font-monospace'
   .my-5
-    = link_to '- 削除 -', operator_line_group_path(@line_group), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '"おまじない"を使ってユーザーに削除をお願いするのが基本線ですが、本当に削除しますか？ ' }
+    = link_to '- 削除 -', operator_line_group_path(@line_group), class: 'btn btn-danger rounded-pill font-monospace', data: { turbo_method: :delete, confirm: '"おまじない"を使ってユーザーに削除をお願いするのが基本線ですが、本当に削除しますか？ ' }
