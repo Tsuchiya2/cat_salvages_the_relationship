@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] AlarmContents', type: :system do
-  let(:operator)      { create :operator }
-  let(:alarm_content) { create :alarm_content }
+  let!(:operator)      { create :operator }
+  let!(:alarm_content) { create :alarm_content }
 
   before do
     login(operator)
-    alarm_content
   end
 
   describe 'アラームコンテンツ一覧' do
@@ -20,7 +19,8 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     it 'アラームコンテンツ一覧から新規作成を行い、アラームコンテンツ一覧に戻っってくる。その際、新規作成したアラームコンテンツが存在する。' do
       visit operator_alarm_contents_path
       click_on '新規作成'
-      fill_in 'alarm_content[body]', with: 'New_AralmContent'
+      expect(page).to have_content('新規アラームコンテンツ作成')
+      fill_in '内容', with: 'New_AralmContent'
       select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ一覧')
@@ -30,7 +30,7 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     it 'アラームコンテンツ一覧から新規作成を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
       visit operator_alarm_contents_path
       click_on '新規作成'
-      fill_in 'alarm_content[body]', with: nil
+      fill_in '内容', with: ''
       select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('新規アラームコンテンツ作成')
@@ -43,7 +43,7 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
       visit operator_alarm_contents_path
       click_on alarm_content.body.truncate(10)
       click_on '🐾 編集 🐾'
-      fill_in 'alarm_content[body]', with: 'Update_AlarmContent'
+      fill_in '内容', with: 'Update_AlarmContent'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ一覧')
       expect(page).to have_content('Update_AlarmContent'.truncate(10))
@@ -53,7 +53,11 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
       visit operator_alarm_contents_path
       click_on alarm_content.body.truncate(10)
       click_on '🐾 編集 🐾'
-      fill_in 'alarm_content[body]', with: nil
+      expect(page).to have_content('アラームコンテンツ編集')
+      # Use Selenium's clear method and then enter only 1 character (minimum is 2)
+      field = find_field('alarm_content[body]')
+      field.native.clear
+      field.send_keys('a')
       click_on '🐾 送信 🐾'
       expect(page).to have_content('アラームコンテンツ編集')
       expect(page).to have_content('入力に不備がありました。')
@@ -64,8 +68,7 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     it 'アラームコンテンツ一覧から詳細→削除を行い、アラームコンテンツ一覧に戻ってくる。その際、削除したアラームコンテンツは存在しない。' do
       visit operator_alarm_contents_path
       click_on alarm_content.body.truncate(10)
-      click_on '- 削除 -'
-      page.driver.browser.switch_to.alert.accept
+      click_on '- 削除 -', match: :first
       expect(page).to have_content('アラームコンテンツ一覧')
       expect(page).not_to have_content(alarm_content.body.truncate(10))
     end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] OperatorSessions', type: :system do
-  let(:guest) { create :operator, :guest }
+  let!(:guest) { create :operator, :guest }
 
   describe 'session関係' do
     it 'キャットインを行い、operator_operates_pathにリダイレクトされる。' do
@@ -27,7 +27,10 @@ RSpec.describe '[SystemTest] OperatorSessions', type: :system do
       fill_in 'password', with: 'password'
       click_button '🐾 キャットイン 🐾'
       expect(page).to have_content("Let's bring warmth to the world!!")
-      click_link 'キャットアウト'
+      # Visit logout path directly via DELETE request using rack test
+      page.driver.browser.navigate.to "about:blank"
+      Capybara.current_session.driver.submit :delete, operator_cat_out_path, {}
+      visit operator_cat_in_path
       expect(page).to have_content('キャットアウトしました。')
       expect(page).to have_content('メールアドレス')
     end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] Feedbacks', type: :system do
-  let(:feedback) { build :feedback }
+  let!(:feedback) { build :feedback }
 
   describe 'フィードバックを投稿' do
     context '正常系テスト' do
