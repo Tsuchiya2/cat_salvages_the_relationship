@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] GuestAccesses', type: :system do
-  let(:guest)         { create :operator, :guest }
-  let(:content)       { create :content }
-  let(:alarm_content) { create :alarm_content }
-  let(:feedback)      { create :feedback }
-  let(:line_group)    { create :line_group }
+  let!(:guest)         { create :operator, :guest }
+  let!(:content)       { create :content }
+  let!(:alarm_content) { create :alarm_content }
+  let!(:feedback)      { create :feedback }
+  let!(:line_group)    { create :line_group }
 
   before do
     driven_by(:rack_test)

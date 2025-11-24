@@ -1,5 +1,5 @@
 - if current_user.operator?
-  = form_with model: content, url: url, local: true do |f|
+  = form_with model: content, url: url, data: { turbo: false } do |f|
     .form-group.my-5.offset-2.col-8
       = f.label :body, Content.human_attribute_name(:body)
       = f.text_field :body, class: 'form-control rounded-pill'

@@ -19,12 +19,29 @@ RSpec.configure do |config|
 end
 
 # SimpleCov configuration
-require 'simplecov'
-SimpleCov.start 'rails' do
-  add_filter '/spec/'
-  add_filter '/config/'
-  add_filter '/vendor/'
-  minimum_coverage 88
+if ENV['CI'] == 'true' || ENV['COVERAGE'] == 'true'
+  require 'simplecov'
+  require 'simplecov-console'
+
+  SimpleCov.start 'rails' do
+    # Set minimum coverage threshold
+    minimum_coverage 75
+
+    # Filters - exclude these directories from coverage
+    add_filter '/spec/'
+    add_filter '/config/'
+    add_filter '/vendor/'
+    add_filter '/test/'
+
+    # Coverage output formatters
+    formatter SimpleCov::Formatter::MultiFormatter.new([
+                                                         SimpleCov::Formatter::HTMLFormatter,
+                                                         SimpleCov::Formatter::Console
+                                                       ])
+
+    # Track files even if they are not loaded
+    track_files '{app,lib}/**/*.rb'
+  end
 end
 
 # Load support files

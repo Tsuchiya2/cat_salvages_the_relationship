@@ -1,0 +1,110 @@
+name: RSpec Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: cat_salvages_the_relationship_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: mysql2://root:password@127.0.0.1:3306/cat_salvages_the_relationship_test
+      CI: true
+      COVERAGE: true
+      PLAYWRIGHT_BROWSER: chromium
+      PLAYWRIGHT_HEADLESS: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4.6
+          bundler-cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Remove yarn.lock if exists
+        run: rm -f yarn.lock
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Set up database
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+
+      - name: Build JavaScript assets
+        run: npm run build
+
+      - name: Build CSS assets
+        run: npm run build:css
+
+      - name: Precompile assets
+        run: bundle exec rails assets:precompile
+
+      - name: Run RSpec tests
+        run: bundle exec rspec --format documentation --format RspecJunitFormatter --out tmp/rspec_results.xml
+
+      - name: Upload screenshots (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capybara-screenshots-${{ github.run_number }}
+          path: tmp/capybara/
+          retention-days: 7
+
+      - name: Upload test results (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rspec-results-${{ github.run_number }}
+          path: tmp/rspec_results.xml
+          retention-days: 7
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ github.run_number }}
+          path: coverage/
+          retention-days: 30
+
+      - name: Check coverage threshold
+        run: |
+          if [ -f coverage/.last_run.json ]; then
+            COVERAGE=$(cat coverage/.last_run.json | grep -o '"covered_percent":[0-9.]*' | cut -d':' -f2)
+            echo "Coverage: $COVERAGE%"
+            if (( $(echo "$COVERAGE < 75" | bc -l) )); then
+              echo "ERROR: Coverage $COVERAGE% is below minimum threshold of 75%"
+              exit 1
+            fi
+          fi

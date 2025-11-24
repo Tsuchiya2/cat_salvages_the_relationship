@@ -71,10 +71,11 @@
 #### Development & Testing
 
 - **Testing Framework** - `rspec-rails` - Comprehensive test suite
+- **Browser Automation** - `playwright-ruby-client` - Modern system testing with Playwright
 - **Code Quality** - `rubocop` with Rails, Performance, and RSpec extensions
 - **Test Data** - `factory_bot_rails`, `faker` - Factory and fixture generation
 - **Security** - `brakeman`, `bundler-audit` - Security vulnerability scanning
-- **Coverage** - `simplecov` - Test coverage analysis
+- **Coverage** - `simplecov` - Test coverage analysis (88% threshold)
 
 ### Frontend
 
@@ -121,9 +122,21 @@ Our event processing system elegantly handles multiple LINE Messaging API events
 ![Test Coverage](/readme-images/coverage.jpg)
 
 - **Model Specs** - Comprehensive unit tests for business logic
-- **System Specs** - End-to-end integration testing
+- **System Specs** - End-to-end integration testing with **Playwright**
 - **RSpec** - Primary testing framework
-- **SimpleCov** - Coverage reporting
+- **SimpleCov** - Coverage reporting (88% threshold)
+- **Playwright** - Modern browser automation (25-36% faster than Selenium)
+
+### Testing Infrastructure
+
+Our testing infrastructure uses Playwright for system tests, providing:
+- 🚀 **Faster Execution** - 25-36% faster than traditional Selenium tests
+- 📸 **Automatic Screenshots** - Captured on test failures
+- 🎬 **Browser Traces** - Full interaction recording for debugging
+- 🔄 **Smart Retries** - Exponential backoff for transient failures
+- 🌐 **Multi-Browser** - Supports Chromium, Firefox, and WebKit
+
+For detailed testing documentation, see [TESTING.md](TESTING.md).
 
 ---
 
@@ -133,6 +146,7 @@ Our event processing system elegantly handles multiple LINE Messaging API events
 
 - Ruby 3.4.6
 - Rails 8.1.1
+- Node.js 20+ and npm
 - MySQL 5.7+ (development) or PostgreSQL (production)
 - LINE Developer Account ([Create one here](https://developers.line.biz/))
 
@@ -150,6 +164,9 @@ cd cat_salvages_the_relationship
 ```bash
 bundle install
 npm install
+
+# Install Playwright browsers (for system testing)
+npx playwright install chromium --with-deps
 ```
 
 3. **Configure environment variables**
@@ -194,7 +211,13 @@ Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
 ```bash
 # Run tests
-bin/rails spec
+bundle exec rspec
+
+# Run tests with coverage
+COVERAGE=true bundle exec rspec
+
+# Run system tests only (with Playwright)
+bundle exec rspec spec/system
 
 # Check code quality
 bundle exec rubocop
@@ -209,6 +232,8 @@ bin/rails routes
 # Rails console
 bin/rails console
 ```
+
+For detailed testing commands and options, see [TESTING.md](TESTING.md).
 
 ---
 

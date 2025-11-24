@@ -50,7 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2021_11_14_025759) do
     t.string "crypted_password"
     t.string "email", null: false
     t.integer "failed_logins_count", default: 0
-    t.datetime "lock_expires_at"
+    t.datetime "lock_expires_at", precision: nil
     t.string "name", null: false
     t.integer "role", default: 1, null: false
     t.string "salt"

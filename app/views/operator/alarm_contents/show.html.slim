@@ -7,4 +7,4 @@ h3.mt-5
   .mt-5
     = link_to '🐾 編集 🐾', edit_operator_alarm_content_path(@alarm_content), class: 'btn btn-secondary rounded-pill font-monospace'
   .my-5
-    = link_to '- 削除 -', operator_alarm_content_path(@alarm_content), class: 'btn btn-danger rounded-pill font-monospace', method: :delete, data: { confirm: '本当に削除しますか？' }
+    = button_to '- 削除 -', operator_alarm_content_path(@alarm_content), method: :delete, class: 'btn btn-danger rounded-pill font-monospace', form: { style: 'display: inline;' }

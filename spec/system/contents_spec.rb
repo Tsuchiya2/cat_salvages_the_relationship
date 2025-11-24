@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe '[SystemTest] Contents', type: :system do
-  let(:operator)  { create :operator }
-  let(:content)   { create :content }
+  let!(:operator)  { create :operator }
+  let!(:content)   { create :content }
 
   before do
     login(operator)
-    content
   end
 
   describe 'コンテンツ一覧' do
@@ -20,7 +19,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
     it 'コンテンツ一覧から新規作成を行い、コンテンツ一覧に戻っってくる。その際、新規作成したコンテンツが存在する。' do
       visit operator_contents_path
       click_on '新規作成'
-      fill_in 'content[body]', with: 'New_Content'
+      fill_in '内容', with: 'New_Content'
       select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('コンテンツ一覧')
@@ -30,7 +29,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
     it 'コンテンツ一覧から新規作成を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
       visit operator_contents_path
       click_on '新規作成'
-      fill_in 'content[body]', with: nil
+      fill_in '内容', with: ''
       select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('新規コンテンツ作成')
@@ -43,7 +42,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       visit operator_contents_path
       click_on content.body.truncate(10)
       click_on '🐾 編集 🐾'
-      fill_in 'content[body]', with: 'Update_Content'
+      fill_in '内容', with: 'Update_Content'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('コンテンツ一覧')
       expect(page).to have_content('Update_Content'.truncate(10))
@@ -53,8 +52,11 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       visit operator_contents_path
       click_on content.body.truncate(10)
       click_on '🐾 編集 🐾'
-      fill_in 'content[body]', with: nil
-      click_on '🐾 送信 🐾'
+      # Use JavaScript to set the value and submit the form directly
+      field = find_field('内容')
+      page.execute_script('arguments[0].value = "a"', field.native)
+      page.execute_script('arguments[0].form.submit()', field.native)
+      sleep 1
       expect(page).to have_content('コンテンツ編集')
       expect(page).to have_content('入力に不備がありました。')
     end
@@ -64,8 +66,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
     it 'コンテンツ一覧から詳細→削除を行い、コンテンツ一覧に戻ってくる。その際、削除したコンテンツは存在しない。' do
       visit operator_contents_path
       click_on content.body.truncate(10)
-      click_on '- 削除 -'
-      page.driver.browser.switch_to.alert.accept
+      click_on '- 削除 -', match: :first
       expect(page).to have_content('コンテンツ一覧')
       expect(page).not_to have_content(content.body.truncate(10))
     end

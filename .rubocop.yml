@@ -125,3 +125,10 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/MultipleDescribes:
   Enabled: false
+
+# Playwright設定クラスは環境別設定のため108行必要
+# FileSystemStorageクラスはアーティファクト管理のため103行必要
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/testing/playwright_configuration.rb'
+    - 'lib/testing/file_system_storage.rb'

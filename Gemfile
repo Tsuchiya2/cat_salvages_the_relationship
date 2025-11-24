@@ -76,8 +76,10 @@ end
 group :test do
   gem 'capybara'
   gem 'faker'
-  gem 'webdrivers'
+  gem 'selenium-webdriver'
   gem 'simplecov'
+  gem 'simplecov-console', require: false
+  gem 'rspec_junit_formatter'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

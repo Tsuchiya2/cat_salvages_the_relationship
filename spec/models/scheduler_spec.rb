@@ -14,8 +14,8 @@ RSpec.describe Scheduler, type: :model do
       allow(sampler).to receive(:sample).and_return(nil)
 
       messages = described_class.call_messages(sampler)
-      expect(messages[0][:text]).to eq(Scheduler::CALL_FALLBACK_CONTACT)
-      expect(messages[1][:text]).to eq(Scheduler::CALL_FALLBACK_TEXT)
+      expect(messages[0][:text]).to eq('管理者へ連絡お願いします。')
+      expect(messages[1][:text]).to eq('呼びかけメッセージを用意できなかったニャ…🐱')
     end
   end
 
@@ -41,9 +41,9 @@ RSpec.describe Scheduler, type: :model do
       allow(sampler).to receive(:sample).and_return(nil, nil, nil)
 
       messages = described_class.wait_messages(sampler)
-      expect(messages[0][:text]).to eq(Scheduler::WAIT_FALLBACK_CONTACT)
-      expect(messages[1][:text]).to eq(Scheduler::WAIT_FALLBACK_FREE)
-      expect(messages[2][:text]).to eq(Scheduler::WAIT_FALLBACK_TEXT)
+      expect(messages[0][:text]).to eq('いつでも声をかけてニャ！')
+      expect(messages[1][:text]).to eq('今日はどんな一日だった？')
+      expect(messages[2][:text]).to eq('もう少し仲良くなりたいニャ🐾')
     end
   end
 
@@ -51,12 +51,22 @@ RSpec.describe Scheduler, type: :model do
     let(:sampler) { instance_double(Line::ContentSampler) }
     let(:group) { create(:line_group) }
 
-    it 'raises when required content is missing' do
-      allow(sampler).to receive(:available?).and_return(false, true, true)
+    before do
+      # Mock Rails credentials to prevent ApplicationMailer initialization error
+      allow(Rails.application).to receive(:credentials).and_return(
+        double(operator: { email: 'test@example.com' })
+      )
+    end
 
-      expect do
-        described_class.scheduler(LineGroup.where(id: group.id), sampler, :wait)
-      end.to raise_error(StandardError, /コンテンツ未登録/)
+    it 'sends error email when required content is missing' do
+      allow(sampler).to receive(:available?).and_return(false, true, true)
+      allow(LineMailer).to receive(:error_email).and_return(double(deliver_later: true))
+      allow(PrometheusMetrics).to receive(:track_message_send)
+
+      described_class.scheduler(LineGroup.where(id: group.id), sampler, :wait)
+
+      expect(LineMailer).to have_received(:error_email).with(group.line_group_id, /コンテンツ未登録/)
+      expect(PrometheusMetrics).to have_received(:track_message_send).with('error')
     end
   end
 end
