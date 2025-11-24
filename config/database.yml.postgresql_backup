@@ -1,0 +1,31 @@
+# PostgreSQL Configuration Backup
+# This is a backup of the original PostgreSQL configuration
+# Used by rollback_to_postgresql.sh for rollback purposes
+#
+# DO NOT DELETE THIS FILE
+#
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "reline_development") %>
+  pool: 5
+
+test:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "reline_test") %>
+  pool: 5
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME") %>
+  pool: 10
+  timeout: 5000

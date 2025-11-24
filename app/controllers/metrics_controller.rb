@@ -29,6 +29,7 @@ class MetricsController < ApplicationController
   def index
     # Update gauge metrics before exporting
     PrometheusMetrics.update_group_count(LineGroup.count)
+    DatabaseMetrics.update_pool_metrics
 
     render plain: Prometheus::Client::Formats::Text.marshal(Prometheus::Client.registry),
            content_type: 'text/plain; version=0.0.4'

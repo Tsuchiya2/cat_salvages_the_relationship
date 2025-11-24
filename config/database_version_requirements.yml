@@ -1,0 +1,40 @@
+# Database Version Requirements Configuration
+# Defines minimum, recommended, and deprecated versions for supported databases
+
+mysql2:
+  minimum_version: '8.0.0'
+  recommended_version: '8.0.34'
+  maximum_tested_version: '8.0.40'
+  deprecated_below: '8.0.20'
+
+  version_specific_features:
+    '8.0.0':
+      - 'caching_sha2_password'
+      - 'utf8mb4_unicode_ci'
+      - 'Window functions'
+      - 'Common Table Expressions (CTE)'
+    '8.0.13':
+      - 'CHECK constraints'
+    '8.0.16':
+      - 'Multi-valued indexes'
+    '8.0.20':
+      - 'Improved query optimizer'
+      - 'Performance enhancements'
+
+postgresql:
+  minimum_version: '12.0'
+  recommended_version: '14.0'
+  maximum_tested_version: '15.0'
+  deprecated_below: '13.0'
+
+  version_specific_features:
+    '12.0':
+      - 'B-tree deduplication'
+      - 'Generated columns'
+      - 'JSON path queries'
+    '13.0':
+      - 'B-tree index improvements'
+      - 'Parallel vacuuming'
+    '14.0':
+      - 'Query performance improvements'
+      - 'JSON subscripting'

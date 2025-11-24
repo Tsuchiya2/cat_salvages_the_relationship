@@ -37,6 +37,10 @@ module CatSalvagesTheRelationship
     config.time_zone = 'Asia/Tokyo'
     config.active_record.default_timezone = :local
 
+    # Add maintenance middleware to the stack
+    require_relative '../app/middleware/maintenance_middleware'
+    config.middleware.use MaintenanceMiddleware
+
     # Don't generate system test files.
     config.generators.system_tests = nil
     config.generators do |g|

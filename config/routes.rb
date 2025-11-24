@@ -7,7 +7,13 @@ Rails.application.routes.draw do
   # Health check and monitoring endpoints
   get '/health',            to: 'health#check'
   get '/health/deep',       to: 'health#deep'
+  get '/health/migration',  to: 'health#migration'
   get '/metrics',           to: 'metrics#index'
+
+  # Admin migration status endpoint
+  namespace :admin do
+    get 'migration/status',  to: 'migration_status#show'
+  end
 
   namespace :operator do
     get    'cat_in',        to: 'operator_sessions#new'

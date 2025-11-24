@@ -1,56 +1,46 @@
-# MySQL. Versions 5.5.8 and up are supported.
+# MySQL 8.0+ Configuration
+# All environments now use MySQL 8.0+ with utf8mb4 encoding
 #
-# Install the MySQL driver
+# Install the MySQL driver:
 #   gem install mysql2
 #
-# Ensure the MySQL gem is defined in your Gemfile
-#   gem 'mysql2'
-#
-# And be sure to use new-style password hashing:
-#   https://dev.mysql.com/doc/refman/5.7/en/password-hashing.html
+# Ensure the MySQL gem is defined in your Gemfile:
+#   gem 'mysql2', '~> 0.5'
 #
 default: &default
   adapter: mysql2
   encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV.fetch("DB_USERNAME", "root") %>
-  password: <%= ENV.fetch("DB_PASSWORD", nil) %>
+  timeout: 5000
+  reconnect: true
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
   host: <%= ENV.fetch("DB_HOST", "localhost") %>
   port: <%= ENV.fetch("DB_PORT", 3306) %>
 
 development:
   <<: *default
-  database: reline_development
+  database: <%= ENV.fetch("DB_NAME", "reline_development") %>
+  pool: 5
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: reline_test
+  database: <%= ENV.fetch("DB_NAME", "reline_test") %>
+  pool: 5
 
-# As with config/credentials.yml, you never want to store sensitive information,
-# like your database password, in your source code. If your source code is
-# ever seen by anyone, they now have access to your database.
-#
-# Instead, provide the password or a full connection URL as an environment
-# variable when you boot the app. For example:
-#
-#   DATABASE_URL="mysql2://myuser:mypass@localhost/somedatabase"
-#
-# If the connection URL is provided in the special DATABASE_URL environment
-# variable, Rails will automatically merge its configuration values on top of
-# the values provided in this file. Alternatively, you can specify a connection
-# URL environment variable explicitly:
-#
-#   production:
-#     url: <%= ENV['MY_APP_DATABASE_URL'] %>
-#
-# Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
-# for a full overview on how database connection configuration can be specified.
-#
+# Production environment uses MySQL 8.0+ with SSL configuration
+# Ensure all credentials are provided via environment variables
 production:
   <<: *default
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
+  database: <%= ENV.fetch("DB_NAME") %>
+  pool: 10
+  timeout: 5000
+  reconnect: true
+  # SSL Configuration for secure production connections
+  sslca: <%= ENV.fetch("DB_SSL_CA", nil) %>
+  sslkey: <%= ENV.fetch("DB_SSL_KEY", nil) %>
+  sslcert: <%= ENV.fetch("DB_SSL_CERT", nil) %>

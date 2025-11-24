@@ -1,0 +1,197 @@
+# Prometheus Alerting Rules for MySQL 8 Migration
+#
+# This file defines alert rules for monitoring database performance and migration progress.
+# Load this file in your Prometheus configuration:
+#
+# prometheus.yml:
+#   rule_files:
+#     - 'alerting_rules.yml'
+
+groups:
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # Alert when database connection pool usage is high
+      - alert: HighDatabaseConnectionPoolUsage
+        expr: |
+          (database_pool_size - database_pool_available) / database_pool_size * 100 > 80
+        for: 2m
+        labels:
+          severity: warning
+          component: database
+          category: performance
+        annotations:
+          summary: "High database connection pool usage"
+          description: |
+            Database connection pool usage is {{ $value | humanizePercentage }} (threshold: 80%).
+            Current state:
+            - Pool size: {{ query "database_pool_size" | first | value }}
+            - Available: {{ query "database_pool_available" | first | value }}
+            - In use: {{ query "database_pool_size - database_pool_available" | first | value }}
+
+            Action required:
+            1. Check for connection leaks in application code
+            2. Review slow queries that hold connections
+            3. Consider increasing pool size in database.yml
+          runbook_url: "https://github.com/your-org/runbooks/database-pool-exhaustion"
+
+      # Alert when database queries are slow
+      - alert: SlowDatabaseQueries
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(database_query_duration_seconds_bucket[5m])) by (le, operation)
+          ) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+          category: performance
+        annotations:
+          summary: "Slow database queries detected"
+          description: |
+            Database queries at 95th percentile are slower than 200ms.
+            Current p95 latency: {{ $value | humanizeDuration }} (threshold: 200ms)
+            Operation type: {{ $labels.operation }}
+
+            Impact:
+            - Increased response times
+            - Potential user experience degradation
+            - Risk of timeout errors
+
+            Action required:
+            1. Identify slow queries in application logs
+            2. Run EXPLAIN on slow queries
+            3. Add or optimize database indexes
+            4. Review query optimization opportunities
+          runbook_url: "https://github.com/your-org/runbooks/slow-queries"
+
+      # Alert when migration errors occur
+      - alert: MigrationErrors
+        expr: |
+          increase(migration_errors_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          component: migration
+          category: reliability
+        annotations:
+          summary: "Database migration errors detected"
+          description: |
+            Database migration has encountered {{ $value }} errors in the last 5 minutes.
+            Error type: {{ $labels.error_type }}
+
+            Migration may be failing or producing incorrect results.
+
+            Action required:
+            1. Check migration logs: log/migration.log
+            2. Review error details and stack traces
+            3. Verify data integrity
+            4. Pause migration if critical errors continue
+            5. Fix root cause before resuming
+          runbook_url: "https://github.com/your-org/runbooks/migration-errors"
+
+      # Alert when database connection fails
+      - alert: DatabaseConnectionFailure
+        expr: |
+          up{job="rails_cat_salvages"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+          category: availability
+        annotations:
+          summary: "Database connection failure"
+          description: |
+            Unable to connect to database for more than 1 minute.
+
+            Application is likely down or experiencing severe issues.
+
+            Action required:
+            1. Check database server status
+            2. Verify network connectivity
+            3. Check database credentials
+            4. Review database server logs
+            5. Verify firewall rules
+            6. Check for resource exhaustion (CPU, memory, disk)
+          runbook_url: "https://github.com/your-org/runbooks/database-down"
+
+      # Alert when connection pool is completely exhausted
+      - alert: DatabaseConnectionPoolExhausted
+        expr: |
+          database_pool_available == 0 and database_pool_waiting > 0
+        for: 30s
+        labels:
+          severity: critical
+          component: database
+          category: performance
+        annotations:
+          summary: "Database connection pool exhausted"
+          description: |
+            All database connections are in use and {{ $value }} threads are waiting.
+
+            Application requests are being queued and may timeout.
+
+            Current state:
+            - Pool size: {{ query "database_pool_size" | first | value }}
+            - Available: 0
+            - Waiting: {{ query "database_pool_waiting" | first | value }}
+
+            Action required:
+            1. Immediately check for connection leaks
+            2. Review active database connections
+            3. Kill long-running queries if safe
+            4. Restart application if necessary
+            5. Increase pool size temporarily
+          runbook_url: "https://github.com/your-org/runbooks/pool-exhausted"
+
+      # Alert when migration is stalled
+      - alert: MigrationStalled
+        expr: |
+          changes(migration_progress_percent[10m]) == 0
+          and migration_progress_percent > 0
+          and migration_progress_percent < 100
+        for: 10m
+        labels:
+          severity: warning
+          component: migration
+          category: reliability
+        annotations:
+          summary: "Database migration appears stalled"
+          description: |
+            Migration progress has not changed in 10 minutes.
+            Current progress: {{ query "migration_progress_percent" | first | value }}%
+
+            Migration may be stuck or experiencing issues.
+
+            Action required:
+            1. Check application logs for errors
+            2. Verify migration process is still running
+            3. Check for blocking locks in database
+            4. Review system resources (CPU, memory, I/O)
+            5. Consider manual intervention if stuck
+          runbook_url: "https://github.com/your-org/runbooks/migration-stalled"
+
+  - name: database_performance
+    interval: 1m
+    rules:
+      # Track query rate for capacity planning
+      - record: job:database_query_rate:5m
+        expr: |
+          sum(rate(database_query_duration_seconds_count[5m])) by (operation)
+
+      # Track average query duration for trending
+      - record: job:database_query_duration_avg:5m
+        expr: |
+          sum(rate(database_query_duration_seconds_sum[5m])) by (operation)
+          /
+          sum(rate(database_query_duration_seconds_count[5m])) by (operation)
+
+      # Track pool utilization percentage
+      - record: job:database_pool_utilization:1m
+        expr: |
+          (database_pool_size - database_pool_available) / database_pool_size * 100
+
+      # Track error rate for SLI/SLO
+      - record: job:migration_error_rate:5m
+        expr: |
+          sum(rate(migration_errors_total[5m]))

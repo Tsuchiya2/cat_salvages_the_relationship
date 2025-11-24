@@ -1,0 +1,96 @@
+# Logging configuration for centralized log aggregation
+#
+# This file configures log rotation, retention, and file paths for the application.
+# It ensures logs don't consume unlimited disk space and are properly organized.
+
+# Log rotation settings
+rotation:
+  max_file_size_mb: 100    # Maximum size per log file before rotation
+  max_files: 10            # Maximum number of rotated files to keep
+  retention_days: 30       # Days to retain logs before cleanup
+
+# Log file paths
+log_paths:
+  production: log/production.log
+  development: log/development.log
+  test: log/test.log
+  migration: log/migration.log
+
+# Log levels by environment
+log_levels:
+  production: info
+  development: debug
+  test: warn
+
+# Separate migration log configuration
+migration_log:
+  enabled: true
+  file: log/migration.log
+  level: info
+  format: json
+  rotation:
+    max_file_size_mb: 100
+    max_files: 10
+
+# Application log configuration
+application_log:
+  format: json              # Use JSON format for structured logging
+  include_timestamp: true   # Include ISO8601 timestamp
+  include_severity: true    # Include log level
+  include_application: true # Include application name
+
+# Performance and debugging
+performance_log:
+  slow_query_threshold_ms: 200  # Log queries slower than this
+  log_query_plans: false        # Log EXPLAIN for slow queries (dev only)
+
+# Log filtering
+filter:
+  # Parameters to filter from logs (for security)
+  filtered_parameters:
+    - password
+    - password_confirmation
+    - secret
+    - token
+    - api_key
+    - channel_secret
+    - channel_token
+
+# Log destinations (where logs should be sent)
+destinations:
+  stdout: true              # Always log to STDOUT (for container environments)
+  file: true                # Also log to file
+  syslog: false             # Syslog integration (disabled by default)
+
+# Environment-specific overrides
+environments:
+  production:
+    destinations:
+      stdout: true
+      file: true
+      syslog: false
+    format: json
+    level: info
+
+  development:
+    destinations:
+      stdout: true
+      file: true
+    format: color           # Use colored output for better readability
+    level: debug
+
+  test:
+    destinations:
+      stdout: false         # Reduce test output noise
+      file: true
+    format: json
+    level: warn
+
+# Cleanup job configuration (for log maintenance)
+cleanup:
+  enabled: true
+  schedule: '0 2 * * *'     # Run daily at 2 AM
+  retention_days: 30         # Delete logs older than this
+  paths_to_clean:
+    - log/*.log
+    - log/*.log.*

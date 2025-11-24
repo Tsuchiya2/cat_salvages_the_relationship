@@ -14,4 +14,10 @@ class Operator < ApplicationRecord
   def mail_notice(access_ip)
     SessionMailer.notice(self, access_ip).deliver_later if lock_expires_at.present?
   end
+
+  # Check if operator has admin role
+  # @return [Boolean] true if operator role (admin equivalent)
+  def admin?
+    operator?
+  end
 end
