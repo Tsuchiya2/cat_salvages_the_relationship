@@ -28,7 +28,7 @@ RSpec.describe '[SystemTest] OperatorSessions', type: :system do
       click_button '🐾 キャットイン 🐾'
       expect(page).to have_content("Let's bring warmth to the world!!")
       # Visit logout path directly via DELETE request using rack test
-      page.driver.browser.navigate.to "about:blank"
+      page.driver.browser.navigate.to 'about:blank'
       Capybara.current_session.driver.submit :delete, operator_cat_out_path, {}
       visit operator_cat_in_path
       expect(page).to have_content('キャットアウトしました。')

@@ -1,0 +1,1077 @@
+# PATCH NOTES FOR rails8-authentication-migration.md
+
+This document contains all sections to be added or updated based on evaluator feedback.
+
+## UPDATE: Metadata (lines 12-22)
+Change iteration from 1 to 2:
+
+```yaml
+design_metadata:
+  feature_id: "FEAT-AUTH-001"
+  feature_name: "Rails 8 Authentication Migration"
+  created: "2025-11-24"
+  updated: "2025-11-24"
+  iteration: 2  # CHANGED FROM 1
+  migration_type: "authentication_framework"
+  criticality: "high"
+  estimated_effort: "large"
+```
+
+## INSERT AFTER SECTION 2.2 (after line 223): Add Future Extensions Requirements
+
+### 2.2.5 Future Authentication Extension Requirements
+
+**OAuth/Social Login Support (Planned)**:
+- FR-8: System must support pluggable authentication providers
+- FR-9: Database schema must accommodate OAuth credentials (provider, uid)
+- FR-10: Password must be optional for OAuth-only users
+
+**Multi-Factor Authentication Support (Planned)**:
+- FR-11: Database schema must include MFA fields (secret, enabled flag, method type)
+- FR-12: Authentication flow must support two-step verification
+- FR-13: MFA must support TOTP (Google Authenticator) and SMS
+
+**Authentication Provider Abstraction**:
+- FR-14: Authentication logic must be abstracted to support multiple providers
+- FR-15: Password provider must be one implementation of authentication interface
+- FR-16: New providers must be addable without modifying existing authentication concern
+
+## INSERT AFTER SECTION 3.3 (after line 365): Add Authentication Provider Architecture
+
+### 3.3.1 Authentication Provider Abstraction
+
+To support future authentication methods (OAuth, SAML, MFA, Passwordless), we introduce a provider abstraction pattern:
+
+```
+Authentication Architecture:
+┌──────────────────────────────────────────────────────────────┐
+│                  Authentication::Provider                     │
+│                    (Abstract Interface)                       │
+├──────────────────────────────────────────────────────────────┤
+│  + authenticate(credentials) -> AuthResult                    │
+│  + supports?(credential_type) -> Boolean                      │
+└──────────────────────────────────────────────────────────────┘
+                            ▲
+                            │
+         ┌──────────────────┴──────────────────┬────────────────┬─────────────┐
+         │                                     │                │             │
+┌────────┴────────┐              ┌─────────────┴──────┐  ┌──────┴──────┐  ┌──┴──────┐
+│PasswordProvider│              │  OAuthProvider     │  │ MFAProvider │  │  SAML   │
+│   (Rails 8)     │              │  (Future)          │  │  (Future)   │  │ (Future)│
+├─────────────────┤              ├────────────────────┤  ├─────────────┤  ├─────────┤
+│ authenticate()  │              │ authenticate()     │  │ verify()    │  │  ...    │
+│ - email         │              │ - provider         │  │ - totp_code │  │         │
+│ - password      │              │ - id_token         │  │ - sms_code  │  │         │
+└─────────────────┘              └────────────────────┘  └─────────────┘  └─────────┘
+
+Authentication Service Layer (Framework-Agnostic):
+┌──────────────────────────────────────────────────────────────┐
+│              AuthenticationService                            │
+├──────────────────────────────────────────────────────────────┤
+│  + authenticate(provider_type, **credentials) -> AuthResult   │
+│  + verify_mfa(operator, code) -> Boolean                      │
+└──────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌──────────────────────────────────────────────────────────────┐
+│                      AuthResult                               │
+├──────────────────────────────────────────────────────────────┤
+│  - status: :success | :failed                                 │
+│  - user: Operator | nil                                       │
+│  - reason: Symbol (e.g., :invalid_credentials, :account_locked│
+│  + success?() -> Boolean                                      │
+│  + failed?() -> Boolean                                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**Implementation:**
+
+```ruby
+# app/services/authentication/provider.rb (NEW)
+module Authentication
+  class Provider
+    def authenticate(credentials)
+      raise NotImplementedError, "#{self.class} must implement #authenticate"
+    end
+
+    def supports?(credential_type)
+      raise NotImplementedError, "#{self.class} must implement #supports?"
+    end
+  end
+end
+
+# app/services/authentication/password_provider.rb (NEW)
+module Authentication
+  class PasswordProvider < Provider
+    def authenticate(email:, password:)
+      operator = Operator.find_by(email: email.downcase)
+      return AuthResult.failed(:user_not_found) unless operator
+
+      if operator.locked?
+        return AuthResult.failed(:account_locked, user: operator)
+      end
+
+      if operator.authenticate(password)
+        operator.reset_failed_logins!
+        AuthResult.success(user: operator)
+      else
+        operator.increment_failed_logins!
+        AuthResult.failed(:invalid_credentials, user: operator)
+      end
+    end
+
+    def supports?(credential_type)
+      credential_type == :password
+    end
+  end
+end
+
+# app/services/authentication/oauth_provider.rb (FUTURE - Design Only)
+module Authentication
+  class OAuthProvider < Provider
+    def authenticate(provider:, id_token:)
+      auth_hash = verify_oauth_token(provider, id_token)
+
+      operator = Operator.find_or_create_by(
+        oauth_provider: provider,
+        oauth_uid: auth_hash['sub']
+      ) do |op|
+        op.email = auth_hash['email']
+        op.name = auth_hash['name']
+        op.skip_password_validation = true
+      end
+
+      AuthResult.success(user: operator)
+    rescue OAuthError => e
+      AuthResult.failed(:oauth_verification_failed, reason: e.message)
+    end
+
+    def supports?(credential_type)
+      credential_type == :oauth
+    end
+  end
+end
+
+# app/services/authentication_service.rb (NEW)
+class AuthenticationService
+  class << self
+    def authenticate(provider_type, ip_address: nil, **credentials)
+      provider = provider_for(provider_type)
+      result = provider.authenticate(**credentials)
+
+      if result.success? && result.user.respond_to?(:mfa_enabled?) && result.user.mfa_enabled?
+        # MFA required - return pending MFA state
+        return AuthResult.pending_mfa(user: result.user)
+      end
+
+      # Log authentication attempt
+      log_authentication_attempt(provider_type, result, ip_address)
+
+      result
+    end
+
+    def verify_mfa(operator, code:, method: :totp)
+      mfa_provider = MfaProvider.new(method)
+      mfa_provider.verify(operator, code)
+    end
+
+    private
+
+    def provider_for(type)
+      case type
+      when :password
+        Authentication::PasswordProvider.new
+      when :oauth
+        Authentication::OAuthProvider.new
+      when :saml
+        Authentication::SamlProvider.new
+      else
+        raise ArgumentError, "Unknown provider type: #{type}"
+      end
+    end
+
+    def log_authentication_attempt(provider_type, result, ip_address)
+      Rails.logger.info(
+        event: 'authentication_attempt',
+        provider: provider_type,
+        result: result.status,
+        reason: result.reason,
+        ip: ip_address,
+        request_id: RequestStore.store[:request_id],
+        timestamp: Time.current.iso8601
+      )
+    end
+  end
+end
+
+# app/services/auth_result.rb (NEW)
+class AuthResult
+  attr_reader :status, :user, :reason
+
+  def self.success(user:)
+    new(status: :success, user: user)
+  end
+
+  def self.failed(reason, user: nil)
+    new(status: :failed, reason: reason, user: user)
+  end
+
+  def self.pending_mfa(user:)
+    new(status: :pending_mfa, user: user)
+  end
+
+  def initialize(status:, user: nil, reason: nil)
+    @status = status
+    @user = user
+    @reason = reason
+  end
+
+  def success?
+    status == :success
+  end
+
+  def failed?
+    status == :failed
+  end
+
+  def pending_mfa?
+    status == :pending_mfa
+  end
+end
+```
+
+**Benefits of This Architecture:**
+- New authentication methods can be added without modifying existing code
+- Business logic separated from HTTP/framework concerns
+- Testable in isolation (unit tests without Rails controllers)
+- Supports CLI, API, background job contexts
+- Easy to add OAuth (Google, GitHub, Facebook) in the future
+- MFA can be layered on top of any authentication provider
+
+## INSERT AFTER SECTION 4.1.3 (after line 483): Add MFA Database Schema
+
+### 4.1.4 Migration 4: Add Multi-Factor Authentication Fields (Future)
+
+```ruby
+# db/migrate/20251124XXXXXX_add_mfa_to_operators.rb
+class AddMfaToOperators < ActiveRecord::Migration[8.1]
+  def change
+    add_column :operators, :mfa_enabled, :boolean, default: false, null: false
+    add_column :operators, :mfa_secret, :string # Encrypted TOTP secret
+    add_column :operators, :mfa_method, :string # 'totp', 'sms', 'email'
+    add_column :operators, :mfa_backup_codes, :text # JSON array of backup codes
+
+    add_index :operators, :mfa_enabled
+  end
+end
+```
+
+**Rationale:**
+- `mfa_enabled`: Feature flag per operator (gradual rollout)
+- `mfa_secret`: TOTP secret for Google Authenticator (encrypted at rest)
+- `mfa_method`: Supports multiple MFA methods (TOTP, SMS, Email)
+- `mfa_backup_codes`: Emergency recovery codes (hashed)
+
+**MFA Authentication Flow:**
+```
+1. User submits email + password
+2. PasswordProvider authenticates credentials
+3. If operator.mfa_enabled? → return AuthResult.pending_mfa
+4. Frontend prompts for MFA code
+5. User submits MFA code
+6. MfaProvider.verify(operator, code)
+7. If valid → create session
+8. If invalid → retry with limit (3 attempts)
+```
+
+### 4.1.5 Migration 5: Add OAuth Support Fields (Future)
+
+```ruby
+# db/migrate/20251124XXXXXX_add_oauth_to_operators.rb
+class AddOauthToOperators < ActiveRecord::Migration[8.1]
+  def change
+    add_column :operators, :oauth_provider, :string # 'google', 'github', 'facebook'
+    add_column :operators, :oauth_uid, :string # Unique ID from OAuth provider
+    add_column :operators, :oauth_token, :string # Encrypted access token
+    add_column :operators, :oauth_refresh_token, :string # Encrypted refresh token
+    add_column :operators, :oauth_expires_at, :datetime
+
+    add_index :operators, [:oauth_provider, :oauth_uid], unique: true
+
+    # Make password optional for OAuth-only users
+    change_column_null :operators, :password_digest, true
+  end
+end
+```
+
+**Rationale:**
+- Supports OAuth-only users (no password required)
+- Stores OAuth provider and unique ID for account linking
+- Stores encrypted tokens for API access (if needed)
+- Composite unique index prevents duplicate OAuth accounts
+
+## UPDATE SECTION 4.2 (lines 485-517): Update Final Schema to Include Future Fields
+
+### 4.2 Final Schema (with Future Extensions)
+
+```ruby
+create_table "operators", force: :cascade do |t|
+  # Authentication (Rails 8)
+  t.string "password_digest" # NULL allowed for OAuth-only users
+  t.string "email", null: false
+
+  # Profile
+  t.string "name", null: false
+  t.integer "role", default: 1, null: false
+
+  # Brute Force Protection
+  t.integer "failed_logins_count", default: 0
+  t.datetime "lock_expires_at"
+  t.string "unlock_token"
+
+  # Multi-Factor Authentication (Future)
+  t.boolean "mfa_enabled", default: false, null: false
+  t.string "mfa_secret" # Encrypted TOTP secret
+  t.string "mfa_method" # 'totp', 'sms', 'email'
+  t.text "mfa_backup_codes" # JSON array of hashed backup codes
+
+  # OAuth Support (Future)
+  t.string "oauth_provider" # 'google', 'github', 'facebook'
+  t.string "oauth_uid" # Provider's unique user ID
+  t.string "oauth_token" # Encrypted access token
+  t.string "oauth_refresh_token" # Encrypted refresh token
+  t.datetime "oauth_expires_at"
+
+  # Timestamps
+  t.datetime "created_at", null: false
+  t.datetime "updated_at", null: false
+
+  # Indexes
+  t.index ["email"], name: "index_operators_on_email", unique: true
+  t.index ["unlock_token"], name: "index_operators_on_unlock_token"
+  t.index ["mfa_enabled"], name: "index_operators_on_mfa_enabled"
+  t.index ["oauth_provider", "oauth_uid"], name: "index_operators_on_oauth", unique: true
+end
+```
+
+## INSERT AFTER SECTION 6.4 (after line 907): Add Section 6.5 Configuration Management
+
+### 6.5 Configuration Management
+
+All security-sensitive parameters must be configured via environment variables, not hardcoded constants.
+
+**Security Configuration (ENV Variables):**
+
+```ruby
+# config/initializers/authentication_config.rb
+Rails.application.config.authentication = {
+  # Brute Force Protection
+  login_retry_limit: ENV.fetch('LOGIN_RETRY_LIMIT', '5').to_i,
+  login_lock_duration: ENV.fetch('LOGIN_LOCK_DURATION', '45').to_i.minutes,
+
+  # Password Policy
+  password_min_length: ENV.fetch('PASSWORD_MIN_LENGTH', '8').to_i,
+  password_require_uppercase: ENV.fetch('PASSWORD_REQUIRE_UPPERCASE', 'false') == 'true',
+  password_require_number: ENV.fetch('PASSWORD_REQUIRE_NUMBER', 'false') == 'true',
+  password_require_special_char: ENV.fetch('PASSWORD_REQUIRE_SPECIAL', 'false') == 'true',
+
+  # Session Management
+  session_timeout: ENV.fetch('SESSION_TIMEOUT', '30').to_i.minutes,
+  session_absolute_timeout: ENV.fetch('SESSION_ABSOLUTE_TIMEOUT', '24').to_i.hours,
+
+  # Password Hashing
+  bcrypt_cost: ENV.fetch('BCRYPT_COST', Rails.env.test? ? '1' : '12').to_i,
+
+  # Feature Flags
+  oauth_enabled: ENV.fetch('AUTH_OAUTH_ENABLED', 'false') == 'true',
+  mfa_enabled: ENV.fetch('AUTH_MFA_ENABLED', 'false') == 'true',
+  passwordless_enabled: ENV.fetch('AUTH_PASSWORDLESS_ENABLED', 'false') == 'true',
+
+  # OAuth Providers
+  oauth_providers: ENV.fetch('OAUTH_PROVIDERS', '').split(',').map(&:strip),
+  google_client_id: ENV['GOOGLE_OAUTH_CLIENT_ID'],
+  google_client_secret: ENV['GOOGLE_OAUTH_CLIENT_SECRET'],
+  github_client_id: ENV['GITHUB_OAUTH_CLIENT_ID'],
+  github_client_secret: ENV['GITHUB_OAUTH_CLIENT_SECRET'],
+}
+```
+
+**Usage in BruteForceProtection Concern:**
+
+```ruby
+# app/models/concerns/brute_force_protection.rb
+module BruteForceProtection
+  extend ActiveSupport::Concern
+
+  def consecutive_login_retries_limit
+    Rails.configuration.authentication[:login_retry_limit]
+  end
+
+  def login_lock_time_period
+    Rails.configuration.authentication[:login_lock_duration]
+  end
+
+  # ... rest of methods
+end
+```
+
+**Benefits:**
+- Change security parameters without code deployment
+- Different settings per environment (dev, staging, production)
+- A/B testing different password policies
+- Instant rollback by changing ENV variable
+- Compliance-friendly (NIST, PCI-DSS requirements)
+
+## INSERT AFTER SECTION 8 (after line 1580): Add Section 8.7 Observability Testing
+
+### 8.7 Observability Testing
+
+**Test that logs are emitted correctly:**
+
+```ruby
+# spec/services/authentication_service_spec.rb
+RSpec.describe AuthenticationService do
+  describe '.authenticate' do
+    it 'logs successful authentication attempts' do
+      operator = create(:operator, email: 'test@example.com', password: 'password123')
+
+      expect(Rails.logger).to receive(:info).with(hash_including(
+        event: 'authentication_attempt',
+        provider: :password,
+        result: :success,
+        ip: '127.0.0.1'
+      ))
+
+      AuthenticationService.authenticate(:password, email: 'test@example.com', password: 'password123', ip_address: '127.0.0.1')
+    end
+
+    it 'logs failed authentication attempts with reason' do
+      expect(Rails.logger).to receive(:warn).with(hash_including(
+        event: 'authentication_attempt',
+        result: :failed,
+        reason: :invalid_credentials
+      ))
+
+      AuthenticationService.authenticate(:password, email: 'wrong@example.com', password: 'wrong')
+    end
+  end
+end
+```
+
+**Test that metrics are incremented:**
+
+```ruby
+# spec/services/authentication_service_spec.rb
+it 'increments authentication failure metric' do
+  allow(STATSD).to receive(:increment)
+
+  AuthenticationService.authenticate(:password, email: 'wrong@example.com', password: 'wrong')
+
+  expect(STATSD).to have_received(:increment).with('auth.failures', tags: ['reason:invalid_credentials'])
+end
+```
+
+## INSERT AFTER SECTION 9.5 (after line 1992): Add Section 9.6 Observability Setup
+
+### 9.6 Observability Setup
+
+#### 9.6.1 Structured Logging Configuration
+
+**Install Lograge:**
+
+```ruby
+# Gemfile
+gem 'lograge'
+```
+
+**Configure Lograge:**
+
+```ruby
+# config/initializers/lograge.rb
+Rails.application.configure do
+  config.lograge.enabled = true
+  config.lograge.formatter = Lograge::Formatters::Json.new
+
+  config.lograge.custom_options = lambda do |event|
+    {
+      request_id: event.payload[:request_id],
+      user_id: event.payload[:user_id],
+      user_email: event.payload[:user_email],
+      user_agent: event.payload[:user_agent],
+      remote_ip: event.payload[:remote_ip],
+      exception: event.payload[:exception],
+      exception_message: event.payload[:exception_object]&.message
+    }
+  end
+
+  # Add authentication-specific fields
+  config.lograge.ignore_actions = ['HealthController#index']
+end
+```
+
+**Add Request ID to all logs:**
+
+```ruby
+# app/controllers/concerns/authentication.rb
+def authenticate_operator(email, password)
+  request_id = request.request_id
+
+  Rails.logger.tagged(request_id) do
+    context = {
+      event: 'authentication_attempt',
+      email: email,
+      ip: request.remote_ip,
+      request_id: request_id,
+      user_agent: request.user_agent,
+      timestamp: Time.current.iso8601
+    }
+
+    # ... authentication logic
+  end
+end
+```
+
+#### 9.6.2 Metrics Instrumentation
+
+**Install StatsD client:**
+
+```ruby
+# Gemfile
+gem 'statsd-instrument'
+```
+
+**Configure StatsD:**
+
+```ruby
+# config/initializers/statsd.rb
+require 'statsd-instrument'
+
+StatsD.backend = StatsD::Instrument::Backends::UDPBackend.new(
+  ENV.fetch('STATSD_HOST', 'localhost'),
+  ENV.fetch('STATSD_PORT', '8125').to_i
+)
+
+StatsD.prefix = 'cat_salvages.authentication'
+StatsD.default_sample_rate = ENV.fetch('STATSD_SAMPLE_RATE', '1.0').to_f
+```
+
+**Instrument Authentication Service:**
+
+```ruby
+# app/services/authentication_service.rb
+class AuthenticationService
+  extend StatsD::Instrument
+
+  def self.authenticate(provider_type, **credentials)
+    start_time = Time.current
+    result = nil
+
+    statsd_measure('authenticate.duration', tags: ["provider:#{provider_type}"]) do
+      provider = provider_for(provider_type)
+      result = provider.authenticate(**credentials)
+    end
+
+    statsd_increment('authenticate.attempts', tags: [
+      "provider:#{provider_type}",
+      "result:#{result.status}"
+    ])
+
+    if result.failed?
+      statsd_increment('authenticate.failures', tags: ["reason:#{result.reason}"])
+    end
+
+    result
+  end
+
+  statsd_measure :authenticate, 'authenticate.duration'
+  statsd_count :authenticate, 'authenticate.attempts'
+end
+```
+
+#### 9.6.3 Distributed Tracing (Request Correlation)
+
+**Propagate Request ID to background jobs:**
+
+```ruby
+# app/mailers/session_mailer.rb
+class SessionMailer < ApplicationMailer
+  def notice(operator, access_ip)
+    @operator = operator
+    @access_ip = access_ip
+    @request_id = RequestStore.store[:request_id]
+
+    Rails.logger.info(
+      event: 'email_notification_queued',
+      operator_id: operator.id,
+      email_type: 'account_locked',
+      request_id: @request_id
+    )
+
+    mail(
+      to: operator.email,
+      subject: I18n.t('mailers.session_mailer.notice.subject'),
+      headers: { 'X-Request-ID' => @request_id }
+    )
+  end
+end
+```
+
+**Add Request ID middleware:**
+
+```ruby
+# config/application.rb
+config.middleware.insert_before(
+  Rails::Rack::Logger,
+  RequestStore::Middleware
+)
+```
+
+#### 9.6.4 Prometheus Metrics Endpoint (Future)
+
+```ruby
+# Gemfile
+gem 'prometheus_exporter'
+```
+
+```ruby
+# config/initializers/prometheus.rb
+require 'prometheus_exporter/middleware'
+
+Rails.application.middleware.unshift PrometheusExporter::Middleware
+```
+
+```ruby
+# config/routes.rb
+get '/metrics', to: 'metrics#index'
+
+# app/controllers/metrics_controller.rb
+class MetricsController < ApplicationController
+  skip_before_action :require_authentication
+  before_action :verify_metrics_token
+
+  def index
+    render plain: PrometheusExporter::Server::Runner.prometheus.metrics
+  end
+
+  private
+
+  def verify_metrics_token
+    authenticate_or_request_with_http_token do |token, options|
+      ActiveSupport::SecurityUtils.secure_compare(
+        token,
+        ENV.fetch('METRICS_TOKEN')
+      )
+    end
+  end
+end
+```
+
+#### 9.6.5 Log Aggregation Strategy
+
+**Option 1: CloudWatch Logs (AWS)**
+
+```ruby
+# Gemfile
+gem 'aws-sdk-cloudwatchlogs'
+```
+
+```ruby
+# config/initializers/cloudwatch_logs.rb
+if Rails.env.production?
+  require 'aws-sdk-cloudwatchlogs'
+
+  client = Aws::CloudWatchLogs::Client.new(
+    region: ENV.fetch('AWS_REGION'),
+    credentials: Aws::ECSCredentials.new
+  )
+
+  log_group = ENV.fetch('CLOUDWATCH_LOG_GROUP')
+  log_stream = "authentication-#{ENV.fetch('HOSTNAME', 'unknown')}"
+
+  # Configure Rails logger to send to CloudWatch
+  # (Implementation details omitted for brevity)
+end
+```
+
+**Option 2: Papertrail**
+
+```ruby
+# Gemfile
+gem 'remote_syslog_logger'
+```
+
+```ruby
+# config/environments/production.rb
+require 'remote_syslog_logger'
+
+config.logger = RemoteSyslogLogger.new(
+  ENV.fetch('PAPERTRAIL_HOST'),
+  ENV.fetch('PAPERTRAIL_PORT').to_i,
+  program: 'cat-salvages-auth'
+)
+```
+
+**Log Retention Policy:**
+- Development: 7 days
+- Staging: 30 days
+- Production: 90 days (compliance requirement)
+- Archive to S3 after 90 days for 7 years
+
+#### 9.6.6 Monitoring Dashboards
+
+**Grafana Dashboard Configuration:**
+
+Metrics to display:
+- Authentication success rate (gauge)
+- Authentication attempts per minute (graph)
+- Failed authentication attempts by reason (pie chart)
+- Account lock rate (gauge)
+- p50/p95/p99 authentication latency (graph)
+- Active sessions count (gauge)
+
+**Alert Thresholds:**
+- Authentication failure rate > 5% for 10 minutes → Page on-call engineer
+- Account lock rate > 10% → Alert ops team via Slack
+- p95 latency > 1000ms → Alert ops team
+- Error rate > 2% → Alert ops team
+
+## INSERT AFTER SECTION 11 (after line 2242): Add Section 11.5 Observability Metrics
+
+### 11.5 Observability Metrics
+
+**Logging Metrics:**
+- LM-1: 100% of authentication attempts logged with request_id
+- LM-2: 100% of account locks logged with reason and IP
+- LM-3: 100% of email notifications logged with correlation ID
+- LM-4: All logs in structured JSON format (parseable by log aggregation tools)
+- LM-5: Request ID propagated to all async operations (emails, jobs)
+
+**Performance Metrics:**
+- PM-1: Authentication request → log emission < 10ms
+- PM-2: Metrics emission does not add > 5ms overhead
+- PM-3: Log aggregation delay < 30 seconds (CloudWatch/Papertrail)
+
+**Monitoring Coverage:**
+- MC-1: Authentication success/failure rates tracked in real-time
+- MC-2: Dashboards updated every 1 minute (not every 5 minutes via DB polling)
+- MC-3: Alerts trigger within 1 minute of threshold breach
+- MC-4: Health check endpoint responds < 100ms
+
+## INSERT NEW SECTION 13: Add Reusability Guidelines
+
+## 13. Reusability Guidelines
+
+### 13.1 Reusable Components
+
+The following components are designed for reuse across different models and contexts:
+
+#### 13.1.1 Authentication Service (Framework-Agnostic)
+
+**Purpose:** Authenticate users via any provider (password, OAuth, SAML, MFA)
+
+**Reusable for:**
+- Admin model authentication
+- Customer model authentication
+- API authentication (token-based)
+- CLI tools
+- Background jobs
+
+**Usage:**
+
+```ruby
+# For Operator model
+result = AuthenticationService.authenticate(:password, email: 'op@example.com', password: 'secret')
+
+# For Admin model (future)
+result = AuthenticationService.authenticate(:password, email: 'admin@example.com', password: 'secret')
+
+# For OAuth (future)
+result = AuthenticationService.authenticate(:oauth, provider: 'google', id_token: token)
+```
+
+#### 13.1.2 BruteForceProtection Concern (Parameterized)
+
+**Purpose:** Protect any user model from brute force attacks
+
+**Reusable for:**
+- Operator model
+- Admin model
+- Customer model
+- Any model with authentication
+
+**Configuration:**
+
+```ruby
+# app/models/operator.rb
+class Operator < ApplicationRecord
+  include BruteForceProtection
+
+  self.lock_retry_limit = 5
+  self.lock_duration = 45.minutes
+  self.lock_notifier = ->(operator, ip) { SessionMailer.notice(operator, ip).deliver_later }
+end
+
+# app/models/admin.rb (future)
+class Admin < ApplicationRecord
+  include BruteForceProtection
+
+  self.lock_retry_limit = 3 # Stricter for admins
+  self.lock_duration = 60.minutes
+  self.lock_notifier = ->(admin, ip) { AdminMailer.account_locked(admin, ip).deliver_later }
+end
+```
+
+#### 13.1.3 Shared Utilities
+
+**EmailValidator:**
+
+```ruby
+# lib/validators/email_validator.rb
+module Validators
+  class EmailValidator
+    EMAIL_FORMAT = /\A[a-z0-9_-]+@[a-z0-9_-]+\.[a-z0-9_-]+\z/
+
+    def self.valid?(email)
+      email.present? && email.match?(EMAIL_FORMAT)
+    end
+
+    def self.normalize(email)
+      email&.downcase&.strip
+    end
+  end
+end
+
+# Usage in any model:
+validates :email, format: { with: Validators::EmailValidator::EMAIL_FORMAT }
+before_validation { self.email = Validators::EmailValidator.normalize(email) }
+```
+
+**SessionManager:**
+
+```ruby
+# app/services/session_manager.rb
+class SessionManager
+  def initialize(session, user_key: :user_id, user_type_key: :user_type)
+    @session = session
+    @user_key = user_key
+    @user_type_key = user_type_key
+  end
+
+  def login(user)
+    reset
+    @session[@user_key] = user.id
+    @session[@user_type_key] = user.class.name
+    @session[:last_seen_at] = Time.current
+  end
+
+  def logout
+    reset
+  end
+
+  def current_user
+    return nil unless @session[@user_key]
+
+    user_class = @session[@user_type_key].constantize
+    user_class.find_by(id: @session[@user_key])
+  end
+
+  def reset
+    @session.clear
+  end
+
+  def expired?
+    return false unless @session[:last_seen_at]
+    @session[:last_seen_at] < Rails.configuration.authentication[:session_timeout].ago
+  end
+end
+
+# Usage in any controller:
+def session_manager
+  @session_manager ||= SessionManager.new(session, user_key: :operator_id)
+end
+```
+
+### 13.2 I18n Extraction
+
+All user-facing messages must use I18n keys, not hardcoded Japanese strings.
+
+**Before (Hardcoded):**
+
+```ruby
+flash[:success] = "🐾 キャットイン 🐾"
+flash[:alert] = "ログインに失敗しました"
+```
+
+**After (I18n):**
+
+```ruby
+flash[:success] = t('operator.sessions.login_success')
+flash[:alert] = t('operator.sessions.login_failure')
+```
+
+**Locale File:**
+
+```yaml
+# config/locales/ja.yml
+ja:
+  operator:
+    sessions:
+      login_success: "🐾 キャットイン 🐾"
+      login_failure: "ログインに失敗しました"
+      account_locked: "アカウントがロックされています。45分後に再試行してください。"
+      logout_success: "🐾 キャットアウト 🐾"
+  authentication:
+    errors:
+      invalid_credentials: "メールアドレスまたはパスワードが正しくありません"
+      account_locked: "アカウントがロックされています"
+      user_not_found: "ユーザーが見つかりません"
+      mfa_required: "多要素認証コードを入力してください"
+      mfa_invalid: "認証コードが正しくありません"
+
+# config/locales/en.yml
+en:
+  operator:
+    sessions:
+      login_success: "🐾 Login Successful 🐾"
+      login_failure: "Login failed"
+      account_locked: "Account is locked. Please try again in 45 minutes."
+      logout_success: "🐾 Logged Out 🐾"
+  authentication:
+    errors:
+      invalid_credentials: "Invalid email or password"
+      account_locked: "Account is locked"
+      user_not_found: "User not found"
+      mfa_required: "Please enter your MFA code"
+      mfa_invalid: "Invalid MFA code"
+```
+
+### 13.3 Multi-Model Authentication Pattern
+
+**Generic Authentication Concern:**
+
+```ruby
+# app/controllers/concerns/authenticatable.rb
+module Authenticatable
+  extend ActiveSupport::Concern
+
+  included do
+    class_attribute :authenticatable_model, :authenticatable_path_prefix
+    before_action :set_current_user
+    helper_method :current_user, :user_signed_in?
+  end
+
+  class_methods do
+    def authenticates_with(model:, path_prefix: nil)
+      self.authenticatable_model = model
+      self.authenticatable_path_prefix = path_prefix || model.model_name.route_key
+    end
+  end
+
+  def authenticate_user(email, password)
+    result = AuthenticationService.authenticate(
+      :password,
+      email: email,
+      password: password,
+      ip_address: request.remote_ip
+    )
+
+    result.user if result.success?
+  end
+
+  def login(user)
+    session_manager.login(user)
+    @current_user = user
+  end
+
+  def logout
+    session_manager.logout
+    @current_user = nil
+  end
+
+  def current_user
+    @current_user ||= session_manager.current_user
+  end
+
+  def user_signed_in?
+    current_user.present?
+  end
+
+  def require_authentication
+    unless user_signed_in?
+      redirect_to root_path, alert: t('authentication.errors.login_required')
+    end
+  end
+
+  private
+
+  def set_current_user
+    if session_manager.expired?
+      logout
+      redirect_to root_path, alert: t('authentication.errors.session_expired')
+    else
+      current_user
+      session[:last_seen_at] = Time.current if user_signed_in?
+    end
+  end
+
+  def session_manager
+    @session_manager ||= SessionManager.new(
+      session,
+      user_key: "#{authenticatable_path_prefix}_id".to_sym
+    )
+  end
+end
+```
+
+**Usage in Operator Controllers:**
+
+```ruby
+# app/controllers/operator/base_controller.rb
+class Operator::BaseController < ApplicationController
+  include Authenticatable
+  authenticates_with model: Operator, path_prefix: 'operator'
+
+  before_action :require_authentication
+
+  # current_user, login, logout methods now available
+end
+```
+
+**Usage for future Admin Controllers:**
+
+```ruby
+# app/controllers/admin/base_controller.rb (future)
+class Admin::BaseController < ApplicationController
+  include Authenticatable
+  authenticates_with model: Admin, path_prefix: 'admin'
+
+  before_action :require_authentication
+
+  # Same interface, different model!
+end
+```
+
+### 13.4 Porting Guide
+
+**To reuse authentication for Customer model:**
+
+1. Add password_digest to customers table
+2. Include `BruteForceProtection` concern in Customer model
+3. Configure lock settings and notifier
+4. Create CustomerSessionsController
+5. Include `Authenticatable` concern
+6. Call `authenticates_with model: Customer`
+
+**Estimated effort:** 2-3 hours
+
+**To add OAuth provider:**
+
+1. Implement `Authentication::GoogleOAuthProvider` (inherit from `Authentication::Provider`)
+2. Add OAuth fields to operators table (migration already designed)
+3. Configure OAuth credentials in ENV
+4. Add OAuth callback route
+5. Update UI with "Sign in with Google" button
+6. Set feature flag `AUTH_OAUTH_ENABLED=true`
+
+**Estimated effort:** 1-2 days
+

@@ -40,7 +40,8 @@ RSpec.describe '[SystemTest] LineGroups', type: :system do
     end
 
     context 'destroyアクション' do
-      xit 'showから削除を行い、グループ一覧に戻ってくる。' do
+      it 'showから削除を行い、グループ一覧に戻ってくる。' do
+        skip 'Requires implementation of delete functionality'
         visit operator_line_group_path(line_group)
         click_button '- 削除 -'
         expect(page).to have_content('LINEグループ情報を削除しました。')
