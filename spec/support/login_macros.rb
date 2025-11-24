@@ -6,3 +6,7 @@ module LoginMacros
     click_button '🐾 キャットイン 🐾'
   end
 end
+
+RSpec.configure do |config|
+  config.include LoginMacros, type: :system
+end
