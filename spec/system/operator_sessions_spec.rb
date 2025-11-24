@@ -27,12 +27,8 @@ RSpec.describe '[SystemTest] OperatorSessions', type: :system do
       fill_in 'password', with: 'password'
       click_button '🐾 キャットイン 🐾'
       expect(page).to have_content("Let's bring warmth to the world!!")
-      # Wait for Turbo to be fully loaded
-      sleep 2
-      # Find and click logout link using JavaScript
-      logout_link = find('a', text: 'キャットアウト')
-      page.execute_script('arguments[0].click();', logout_link)
-      expect(page).to have_content('キャットアウトしました。', wait: 10)
+      click_button 'キャットアウト'
+      expect(page).to have_content('キャットアウトしました。')
       expect(page).to have_content('メールアドレス')
     end
   end

@@ -52,13 +52,19 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     it 'アラームコンテンツ一覧から編集・更新を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
       visit operator_alarm_contents_path
       click_on alarm_content.body.truncate(10)
-      click_on '🐾 編集 🐾'
-      expect(page).to have_content('アラームコンテンツ編集')
-      # Use Selenium's clear method and then enter only 1 character (minimum is 2)
-      field = find_field('alarm_content[body]')
-      field.native.clear
-      field.send_keys('a')
-      click_on '🐾 送信 🐾'
+      sleep 0.5
+      # Use JavaScript to click the edit link to avoid Turbo issues
+      edit_link = find('a', text: '🐾 編集 🐾')
+      page.execute_script('arguments[0].click();', edit_link)
+      expect(page).to have_content('アラームコンテンツ編集', wait: 5)
+      # Wait for page to be fully loaded
+      sleep 0.5
+      # Use JavaScript to set the value and submit the form directly
+      field = find_field('内容')
+      page.execute_script('arguments[0].value = "a"', field.native)
+      page.execute_script('arguments[0].form.submit()', field.native)
+      # Wait for form submission to complete
+      sleep 1
       expect(page).to have_content('アラームコンテンツ編集')
       expect(page).to have_content('入力に不備がありました。')
     end

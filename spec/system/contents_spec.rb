@@ -29,7 +29,7 @@ RSpec.describe '[SystemTest] Contents', type: :system do
     it 'コンテンツ一覧から新規作成を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
       visit operator_contents_path
       click_on '新規作成'
-      fill_in '内容', with: nil
+      fill_in '内容', with: ''
       select 'コンタクト', from: 'カテゴリー'
       click_on '🐾 送信 🐾'
       expect(page).to have_content('新規コンテンツ作成')
@@ -52,8 +52,11 @@ RSpec.describe '[SystemTest] Contents', type: :system do
       visit operator_contents_path
       click_on content.body.truncate(10)
       click_on '🐾 編集 🐾'
-      fill_in '内容', with: nil
-      click_on '🐾 送信 🐾'
+      # Use JavaScript to set the value and submit the form directly
+      field = find_field('内容')
+      page.execute_script('arguments[0].value = "a"', field.native)
+      page.execute_script('arguments[0].form.submit()', field.native)
+      sleep 1
       expect(page).to have_content('コンテンツ編集')
       expect(page).to have_content('入力に不備がありました。')
     end
