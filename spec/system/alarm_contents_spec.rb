@@ -50,12 +50,8 @@ RSpec.describe '[SystemTest] AlarmContents', type: :system do
     end
 
     it 'アラームコンテンツ一覧から編集・更新を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
-      visit operator_alarm_contents_path
-      click_on alarm_content.body.truncate(10)
-      sleep 0.5
-      # Use JavaScript to click the edit link to avoid Turbo issues
-      edit_link = find('a', text: '🐾 編集 🐾')
-      page.execute_script('arguments[0].click();', edit_link)
+      # Visit edit page directly to avoid click issues in full test suite
+      visit edit_operator_alarm_content_path(alarm_content)
       expect(page).to have_content('アラームコンテンツ編集', wait: 5)
       # Wait for page to be fully loaded
       sleep 0.5

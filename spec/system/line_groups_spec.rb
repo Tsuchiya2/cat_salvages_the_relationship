@@ -32,10 +32,14 @@ RSpec.describe '[SystemTest] LineGroups', type: :system do
       it 'showから編集・更新を行った際、入力に不備があると、「送信」をクリックしても入力画面が表示された状態になる。' do
         visit operator_line_group_path(line_group)
         click_on '🐾 編集 🐾'
-        fill_in 'line_group[remind_at]', with: nil
-        click_on '🐾 送信 🐾'
-        expect(page).to have_content('入力に不備がありました。')
+        expect(page).to have_content('グループの編集', wait: 5)
+        # Clear the remind_at field and submit
+        field = find_field('line_group[remind_at]')
+        page.execute_script('arguments[0].value = ""', field.native)
+        page.execute_script('arguments[0].form.submit()', field.native)
+        sleep 1
         expect(page).to have_content('グループの編集')
+        expect(page).to have_content('入力に不備がありました。')
       end
     end
 
