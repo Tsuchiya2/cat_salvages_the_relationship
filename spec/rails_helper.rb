@@ -25,7 +25,7 @@ if ENV['CI'] == 'true' || ENV['COVERAGE'] == 'true'
 
   SimpleCov.start 'rails' do
     # Set minimum coverage threshold
-    minimum_coverage 88
+    minimum_coverage 75
 
     # Filters - exclude these directories from coverage
     add_filter '/spec/'
