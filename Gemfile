@@ -77,8 +77,6 @@ group :test do
   gem 'capybara'
   gem 'faker'
   gem 'selenium-webdriver'
-  # Replace Selenium with Playwright
-  gem 'playwright-ruby-client', '~> 1.45'
   gem 'simplecov'
   gem 'simplecov-console', require: false
 end
