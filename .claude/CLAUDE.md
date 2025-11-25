@@ -284,7 +284,7 @@ All evaluators should:
 **Backend:**
 - Framework: Ruby on Rails 6.1.4
 - Ruby Version: 3.0.2
-- Database: MySQL2 (dev/test), PostgreSQL (production)
+- Database: MySQL 8.0+ (all environments)
 - ORM: ActiveRecord
 - Authentication: Sorcery
 - Authorization: Pundit

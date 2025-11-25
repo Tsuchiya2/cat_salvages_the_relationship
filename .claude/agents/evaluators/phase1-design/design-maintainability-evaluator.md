@@ -39,7 +39,7 @@ You evaluate **maintainability** in design documents:
 - Can modules be updated independently?
 
 **Examples**:
-- ✅ Good: "ProfileService depends on IUserRepository (interface), not concrete PostgresRepository"
+- ✅ Good: "ProfileService depends on IUserRepository (interface), not concrete MySQLRepository"
 - ❌ Bad: "Module A calls Module B, Module B calls Module A (circular dependency)"
 
 **Questions to Ask**:
@@ -103,7 +103,7 @@ You evaluate **maintainability** in design documents:
 
 **Examples**:
 - ✅ Good: "ProfileService accepts IUserRepository via constructor injection (mockable for testing)"
-- ❌ Bad: "ProfileService directly instantiates PostgresRepository (cannot mock)"
+- ❌ Bad: "ProfileService directly instantiates MySQLRepository (cannot mock)"
 
 **Scoring**:
 - 5.0: All modules easily testable, dependencies injectable

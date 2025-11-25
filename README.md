@@ -56,8 +56,7 @@
 |------------|---------|---------|
 | ![Ruby](https://img.shields.io/badge/Ruby-3.4.6-CC342D?style=flat&logo=ruby&logoColor=white) | 3.4.6 | Core language |
 | ![Rails](https://img.shields.io/badge/Rails-8.1.1-CC0000?style=flat&logo=ruby-on-rails&logoColor=white) | 8.1.1 | Web framework |
-| ![MySQL](https://img.shields.io/badge/MySQL-5.7-4479A1?style=flat&logo=mysql&logoColor=white) | 0.5.x | Development database |
-| ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue?style=flat&logo=postgresql&logoColor=white) | Latest | Production database |
+| ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white) | 8.0+ | Database (all environments) |
 | ![LINE](https://img.shields.io/badge/LINE_Bot_API-2.0-00C300?style=flat&logo=line&logoColor=white) | 2.0 | Messaging integration |
 
 #### Core Gems
@@ -147,7 +146,7 @@ For detailed testing documentation, see [TESTING.md](TESTING.md).
 - Ruby 3.4.6
 - Rails 8.1.1
 - Node.js 20+ and npm
-- MySQL 5.7+ (development) or PostgreSQL (production)
+- MySQL 8.0+
 - LINE Developer Account ([Create one here](https://developers.line.biz/))
 
 ### Installation

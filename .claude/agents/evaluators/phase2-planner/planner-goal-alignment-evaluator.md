@@ -100,14 +100,14 @@ Create a mapping between requirements and tasks:
 **Non-Functional Requirements** (from design):
 1. NFR-001: API response time <200ms (95th percentile)
 2. NFR-002: System handles 1000 concurrent users
-3. NFR-003: Data persisted in PostgreSQL
+3. NFR-003: Data persisted in MySQL
 4. NFR-004: RESTful API design
 5. NFR-005: Input validation and error handling
 
 **Task Coverage**:
 - ✅ NFR-001: TASK-020 (Add database indexes for performance)
 - ✅ NFR-002: TASK-021 (Load testing and optimization)
-- ✅ NFR-003: TASK-001 (PostgreSQL migration)
+- ✅ NFR-003: TASK-001 (MySQL migration)
 - ✅ NFR-004: TASK-007, TASK-008, TASK-009 (REST endpoints)
 - ✅ NFR-005: TASK-010 (Validation middleware), TASK-011 (Error handling)
 
@@ -159,24 +159,24 @@ This is the **most important** criterion for preventing over-engineering.
 **Example 1: Database Abstraction Without Justification**
 ```
 Requirements:
-  - Use PostgreSQL for data persistence
+  - Use MySQL for data persistence
 
 Task Plan:
   - TASK-002: Define ITaskRepository interface ✅
-  - TASK-003: Implement PostgreSQLTaskRepository ✅
-  - TASK-004: Implement MySQLTaskRepository ❌ (YAGNI violation)
+  - TASK-003: Implement MySQLTaskRepository ✅
+  - TASK-004: Implement PostgreSQLTaskRepository ❌ (YAGNI violation)
   - TASK-005: Implement MongoDBTaskRepository ❌ (YAGNI violation)
   - TASK-006: Implement repository factory pattern ❌ (YAGNI violation)
 
 Issues:
-  - Requirements only mention PostgreSQL
-  - No need for MySQL or MongoDB support
+  - Requirements only mention MySQL
+  - No need for PostgreSQL or MongoDB support
   - Repository factory adds unnecessary complexity
   - 3 tasks implementing unused features (waste of effort)
 
 Recommendation:
   - Keep TASK-002 (interface for testability) ✅
-  - Keep TASK-003 (PostgreSQL implementation) ✅
+  - Keep TASK-003 (MySQL implementation) ✅
   - Remove TASK-004, TASK-005, TASK-006 (YAGNI) ❌
 ```
 
@@ -639,7 +639,7 @@ evaluation_result:
     high_priority:
       - task_ids: ["TASK-020", "TASK-021", "TASK-022"]
         description: "Implementing multi-database support (MySQL, MongoDB) not in requirements"
-        suggestion: "Remove TASK-020-022, keep only PostgreSQL (TASK-001)"
+        suggestion: "Remove TASK-020-022, keep only MySQL (TASK-001)"
       - task_ids: ["TASK-030", "TASK-031"]
         description: "Implementing task sharing and collaboration not in requirements"
         suggestion: "Remove TASK-030-031 or document as Phase 2"
@@ -658,7 +658,7 @@ evaluation_result:
   yagni_violations:
     - tasks: ["TASK-020", "TASK-021", "TASK-022"]
       description: "Multi-database support"
-      justification: "Requirements only specify PostgreSQL"
+      justification: "Requirements only specify MySQL"
       recommendation: "Remove"
     - tasks: ["TASK-040"]
       description: "Redis caching"

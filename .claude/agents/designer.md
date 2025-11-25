@@ -216,7 +216,7 @@ Cover all sections in the structure. If a section doesn't apply, explain why.
 
 ### 2. Be Specific
 - ❌ "We'll use a database"
-- ✅ "We'll use PostgreSQL 15 with the following schema..."
+- ✅ "We'll use MySQL 8.0 with the following schema..."
 
 ### 3. Consider Security
 Always include threat modeling and security controls.
