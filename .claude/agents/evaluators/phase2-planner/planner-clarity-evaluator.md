@@ -76,7 +76,7 @@ For each task, check:
 
 **Good Examples**:
 - ✅ "Create `src/repositories/TaskRepository.ts` implementing `ITaskRepository` interface with methods: `findById(id: string): Promise<Task>`, `create(data: CreateTaskDTO): Promise<Task>`, `update(id: string, data: UpdateTaskDTO): Promise<Task>`, `delete(id: string): Promise<void>`, `findByFilters(filters: TaskFilters): Promise<Task[]>`"
-- ✅ "Add PostgreSQL migration file `migrations/001_create_tasks_table.sql` with columns: `id UUID PRIMARY KEY`, `title VARCHAR(200) NOT NULL`, `description TEXT`, `due_date TIMESTAMP`, `priority ENUM('low', 'medium', 'high')`, `status ENUM('pending', 'in_progress', 'completed')`, `created_at TIMESTAMP DEFAULT NOW()`, `updated_at TIMESTAMP DEFAULT NOW()`"
+- ✅ "Add MySQL migration file `migrations/001_create_tasks_table.sql` with columns: `id BIGINT PRIMARY KEY AUTO_INCREMENT`, `title VARCHAR(200) NOT NULL`, `description TEXT`, `due_date DATETIME`, `priority ENUM('low', 'medium', 'high')`, `status ENUM('pending', 'in_progress', 'completed')`, `created_at DATETIME DEFAULT CURRENT_TIMESTAMP`, `updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`"
 
 **Bad Examples**:
 - ❌ "Implement repository" (What repository? What methods? What interface?)
@@ -118,7 +118,7 @@ Check if technical details are explicit:
 - ✅ File paths: `src/controllers/TaskController.ts`, `src/services/TaskService.ts`
 - ✅ Database schema: Column names, types, constraints, indexes
 - ✅ API design: `POST /api/tasks`, `GET /api/tasks/:id`, request/response DTOs
-- ✅ Technology choices: "Use PostgreSQL 14+", "Use Express.js 4.x", "Use Jest for testing"
+- ✅ Technology choices: "Use MySQL 8.0+", "Use Express.js 4.x", "Use Jest for testing"
 
 **Bad Examples**:
 - ❌ No file paths specified

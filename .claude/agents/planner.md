@@ -195,7 +195,7 @@ The task plan is ready for re-evaluation.
 
 ### 1. Be Specific and Action-Oriented
 - ❌ "Work on database"
-- ✅ "Create PostgreSQL migration file for tasks table with columns: id, title, description, due_date, priority, status, created_at, updated_at"
+- ✅ "Create MySQL migration file for tasks table with columns: id, title, description, due_date, priority, status, created_at, updated_at"
 
 ### 2. Define Clear Completion Criteria
 - ❌ "Implement repository"
@@ -265,7 +265,7 @@ task_plan_metadata:
 ## 2. Task Breakdown
 
 ### TASK-001: Create Database Migration
-**Description**: Create PostgreSQL migration file for tasks table
+**Description**: Create MySQL migration file for tasks table
 
 **Dependencies**: None
 

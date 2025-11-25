@@ -38,13 +38,10 @@ gem 'prometheus-client', '~> 4.0'
 gem 'lograge', '~> 0.14'
 gem 'request_store', '~> 1.5'
 
-group :production do
-  gem 'pg'
-end
+# Use mysql as the database for Active Record
+gem 'mysql2', '~> 0.5'
 
 group :development, :test do
-  # Use mysql as the database for Active Record
-  gem 'mysql2', '~> 0.5'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails'

@@ -161,7 +161,7 @@ Output findings:
 - **Language**: TypeScript
 - **Package Manager**: npm (detected package.json)
 - **ORM**: Sequelize v6.32.1 (from package.json dependencies)
-- **Database**: PostgreSQL (from DATABASE_URL in .env)
+- **Database**: MySQL (from DATABASE_URL in .env)
 - **Migration Tool**: Sequelize migrations (detected migrations/ folder)
 
 ### Existing Code Analysis
@@ -380,7 +380,7 @@ phase2_implementation:
   detected_tech_stack:
     language: "typescript"
     orm: "sequelize"
-    database: "postgresql"
+    database: "mysql"
 ```
 
 ### Step 7: Generate Completion Report
@@ -399,7 +399,7 @@ phase2_implementation:
 
 - **Language**: TypeScript
 - **ORM**: Sequelize v6.32.1
-- **Database**: PostgreSQL
+- **Database**: MySQL
 - **Migration Tool**: Sequelize migrations
 
 **Detection Method**: Analyzed package.json, found Sequelize dependency
@@ -449,7 +449,7 @@ During execution, report:
 🔍 Step 1: Technology Stack Detection
    ✅ Detected: TypeScript (package.json found)
    ✅ Detected: Sequelize v6.32.1 (from dependencies)
-   ✅ Detected: PostgreSQL (from DATABASE_URL in .env)
+   ✅ Detected: MySQL (from DATABASE_URL in .env)
    ✅ Strategy: Use Sequelize migrations + TypeScript models
 
 📚 Step 2: Pattern Learning

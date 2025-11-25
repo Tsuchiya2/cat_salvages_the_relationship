@@ -87,19 +87,19 @@ Focus on:
 
 **Good Specificity (Database Schema)**:
 ```
-Deliverable: PostgreSQL migration file `migrations/001_create_tasks_table.sql`
+Deliverable: MySQL migration file `migrations/001_create_tasks_table.sql`
 
 Schema:
   - Table: `tasks`
   - Columns:
-    - `id UUID PRIMARY KEY DEFAULT uuid_generate_v4()`
+    - `id BIGINT PRIMARY KEY AUTO_INCREMENT`
     - `title VARCHAR(200) NOT NULL`
     - `description TEXT`
-    - `due_date TIMESTAMP`
+    - `due_date DATETIME`
     - `priority ENUM('low', 'medium', 'high') DEFAULT 'medium'`
     - `status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending'`
-    - `created_at TIMESTAMP DEFAULT NOW()`
-    - `updated_at TIMESTAMP DEFAULT NOW()`
+    - `created_at DATETIME DEFAULT CURRENT_TIMESTAMP`
+    - `updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
   - Indexes:
     - `CREATE INDEX idx_tasks_status ON tasks(status)`
     - `CREATE INDEX idx_tasks_due_date ON tasks(due_date)`
@@ -329,7 +329,7 @@ Score 1-5:
 - ✅ "Code coverage ≥90%"
 - ✅ "No ESLint errors or warnings"
 - ✅ "API returns 201 status code for successful creation"
-- ✅ "Migration executes without errors on PostgreSQL 14+"
+- ✅ "Migration executes without errors on MySQL 8.0+"
 - ✅ "Response time <200ms for 95th percentile"
 
 **Bad Acceptance Criteria** (subjective, vague):

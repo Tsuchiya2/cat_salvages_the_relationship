@@ -107,7 +107,7 @@ You evaluate **goal alignment** in design documents:
 - Are we optimizing prematurely?
 
 **Examples**:
-- ✅ Good: RESTful API with PostgreSQL for CRUD operations
+- ✅ Good: RESTful API with MySQL for CRUD operations
 - ❌ Bad: Event sourcing + CQRS + microservices for simple CRUD
 
 **Questions to Ask**:
@@ -443,7 +443,7 @@ Monolithic API:
 - S3Service (image storage)
 - Background jobs (email notifications)
 
-PostgreSQL database
+MySQL database
 Simple audit log table for history
 ```
 

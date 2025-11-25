@@ -176,16 +176,16 @@ export interface ITaskRepository {
   // ...
 }
 
-TASK-002: Implement PostgreSQLTaskRepository implements ITaskRepository
+TASK-002: Implement MySQLTaskRepository implements ITaskRepository
 TASK-003: Implement TaskService(repository: ITaskRepository)
   - Service depends on interface, not concrete implementation
-  - Can swap PostgreSQL → MySQL → MongoDB without changing service
+  - Can swap MySQL → PostgreSQL → MongoDB without changing service
 ```
 
 **Bad Abstraction**:
 ```
 TASK-003: Implement TaskService
-  - Directly uses PostgreSQL client (hardcoded dependency) ❌
+  - Directly uses MySQL client (hardcoded dependency) ❌
   - No abstraction, cannot swap database
 ```
 
