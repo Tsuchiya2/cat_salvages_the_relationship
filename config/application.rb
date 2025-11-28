@@ -49,9 +49,7 @@ module CatSalvagesTheRelationship
 
     # Request correlation middleware for observability
     # Only add if RequestCorrelation middleware is defined (TASK-019)
-    if defined?(RequestCorrelation)
-      config.middleware.insert_before Rails::Rack::Logger, RequestCorrelation
-    end
+    config.middleware.insert_before Rails::Rack::Logger, RequestCorrelation if defined?(RequestCorrelation)
 
     # Enable Rack::Attack for rate limiting and brute force protection
     config.middleware.use Rack::Attack

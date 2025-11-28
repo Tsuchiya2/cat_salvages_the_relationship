@@ -18,12 +18,12 @@ class Operator < ApplicationRecord
   validates :password,                presence: true, on: :create
   validates :password,                length: { minimum: 8 }, if: -> { password.present? }
   validates :password,                format: {
-                                        with: PASSWORD_COMPLEXITY_REGEX,
-                                        message: I18n.t(
-                                          'activerecord.errors.models.operator.attributes.password.complexity',
-                                          default: 'must include at least one lowercase letter, one uppercase letter, and one digit'
-                                        )
-                                      }, if: -> { password.present? }
+    with: PASSWORD_COMPLEXITY_REGEX,
+    message: I18n.t(
+      'activerecord.errors.models.operator.attributes.password.complexity',
+      default: 'must include at least one lowercase letter, one uppercase letter, and one digit'
+    )
+  }, if: -> { password.present? }
   validates :password,                confirmation: true, if: -> { password.present? }
   validates :password_confirmation,   presence: true, if: -> { password.present? }
   validates :role,                    presence: true

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe AuthResult do
-  let(:user) { instance_double('User', id: 1, email: 'test@example.com') }
+  let(:user) { instance_double(Operator, id: 1, email: 'test@example.com') }
 
   describe '.success' do
     subject(:result) { described_class.success(user: user) }

@@ -53,7 +53,8 @@ class PasswordMigrator
       return false if user.crypted_password.blank?
       return true if user.password_digest.present? # Already migrated
 
-      user.update_column(:password_digest, user.crypted_password)
+      user.password_digest = user.crypted_password
+      user.save(validate: false)
     end
 
     # Migrate a batch of users

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # NOTE: These tests are for the migration tool that was used to migrate from Sorcery to Rails 8 authentication.
 # Since the migration is complete and crypted_password column has been removed, these tests are now skipped.
-RSpec.describe DataMigrationValidator, :skip do
+RSpec.describe DataMigrationValidator, skip: 'Migration complete - crypted_password column removed' do
   describe '.generate_checksum' do
     before do
       # Clean up any existing operators to prevent email uniqueness conflicts
@@ -41,9 +41,7 @@ RSpec.describe DataMigrationValidator, :skip do
     it 'generates SHA256 checksums' do
       checksums = described_class.generate_checksum(Operator)
 
-      checksums.each do |checksum|
-        expect(checksum).to match(/\A[a-f0-9]{64}\z/)
-      end
+      expect(checksums).to all(match(/\A[a-f0-9]{64}\z/))
     end
 
     it 'generates consistent checksums for same data' do
@@ -56,7 +54,7 @@ RSpec.describe DataMigrationValidator, :skip do
     it 'generates different checksums when data changes' do
       checksums_before = described_class.generate_checksum(Operator)
 
-      operator1.update_columns(crypted_password: 'new_password_hash')
+      operator1.update!(crypted_password: 'new_password_hash')
 
       checksums_after = described_class.generate_checksum(Operator)
 
@@ -65,8 +63,8 @@ RSpec.describe DataMigrationValidator, :skip do
   end
 
   describe '.validate_migration' do
-    let(:checksums1) { ['abc123', 'def456', 'ghi789'] }
-    let(:checksums2) { ['abc123', 'def456', 'ghi789'] }
+    let(:checksums1) { %w[abc123 def456 ghi789] }
+    let(:checksums2) { %w[abc123 def456 ghi789] }
 
     context 'when checksums match' do
       it 'returns true' do
@@ -77,7 +75,7 @@ RSpec.describe DataMigrationValidator, :skip do
     end
 
     context 'when records are lost' do
-      let(:checksums_after) { ['abc123', 'def456'] }
+      let(:checksums_after) { %w[abc123 def456] }
 
       it 'raises error with missing count' do
         expect { described_class.validate_migration(checksums1, checksums_after) }
@@ -86,7 +84,7 @@ RSpec.describe DataMigrationValidator, :skip do
     end
 
     context 'when unexpected records are added' do
-      let(:checksums_after) { ['abc123', 'def456', 'ghi789', 'jkl012'] }
+      let(:checksums_after) { %w[abc123 def456 ghi789 jkl012] }
 
       it 'raises error with added count' do
         expect { described_class.validate_migration(checksums1, checksums_after) }
@@ -95,7 +93,7 @@ RSpec.describe DataMigrationValidator, :skip do
     end
 
     context 'when records are modified' do
-      let(:checksums_after) { ['abc123', 'def456', 'xyz999'] }
+      let(:checksums_after) { %w[abc123 def456 xyz999] }
 
       it 'raises error about modified records' do
         expect { described_class.validate_migration(checksums1, checksums_after) }
@@ -104,7 +102,7 @@ RSpec.describe DataMigrationValidator, :skip do
     end
 
     context 'when order changes but data is same' do
-      let(:checksums_after) { ['ghi789', 'abc123', 'def456'] }
+      let(:checksums_after) { %w[ghi789 abc123 def456] }
 
       it 'returns true' do
         result = described_class.validate_migration(checksums1, checksums_after)
@@ -152,7 +150,7 @@ RSpec.describe DataMigrationValidator, :skip do
       end
 
       before do
-        operator.update_columns(crypted_password: nil, password_digest: nil)
+        operator.update!(crypted_password: nil, password_digest: nil)
       end
 
       it 'reports missing authentication data' do
@@ -176,7 +174,7 @@ RSpec.describe DataMigrationValidator, :skip do
 
       before do
         # Simulate having both authentication methods
-        operator.update_columns(
+        operator.update!(
           crypted_password: 'old_password_hash',
           password_digest: operator.crypted_password
         )
@@ -210,7 +208,7 @@ RSpec.describe DataMigrationValidator, :skip do
 
       before do
         # Simulate fully migrated state (password_digest set, crypted_password cleared)
-        operator.update_columns(
+        operator.update!(
           password_digest: BCrypt::Password.create('password123'),
           crypted_password: nil
         )
@@ -236,7 +234,7 @@ RSpec.describe DataMigrationValidator, :skip do
 
       before do
         # Simulate old Sorcery format (crypted_password only)
-        operator.update_columns(
+        operator.update!(
           crypted_password: 'old_password_hash',
           password_digest: nil
         )
@@ -261,7 +259,7 @@ RSpec.describe DataMigrationValidator, :skip do
 
       before do
         # Simulate fully migrated state (password_digest only)
-        operator.update_columns(crypted_password: nil)
+        operator.update!(crypted_password: nil)
       end
 
       it 'returns true' do

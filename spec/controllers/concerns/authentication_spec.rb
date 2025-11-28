@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Test controller to include the Authentication concern
-class TestAuthenticationController < ActionController::Base
+class TestAuthenticationController < ApplicationController
   include Authentication
 
   # Test actions
@@ -101,20 +101,20 @@ RSpec.describe Authentication, type: :controller do
         expect(operator).to receive(:mail_notice).with(request_ip)
         controller.authenticate_operator('test@example.com', 'password123')
       end
+    end
 
-      context 'when user is nil' do
-        let(:auth_result_locked_no_user) { AuthResult.failed(:account_locked) }
+    context 'when account is locked and user is nil' do
+      let(:auth_result_locked_no_user) { AuthResult.failed(:account_locked) }
 
-        before do
-          allow(AuthenticationService).to receive(:authenticate)
-            .and_return(auth_result_locked_no_user)
-        end
+      before do
+        allow(AuthenticationService).to receive(:authenticate)
+          .and_return(auth_result_locked_no_user)
+      end
 
-        it 'does not raise error' do
-          expect do
-            controller.authenticate_operator('test@example.com', 'password123')
-          end.not_to raise_error
-        end
+      it 'does not raise error' do
+        expect do
+          controller.authenticate_operator('test@example.com', 'password123')
+        end.not_to raise_error
       end
     end
   end
@@ -282,7 +282,7 @@ RSpec.describe Authentication, type: :controller do
 
     context 'when operator_id is invalid' do
       before do
-        controller.session[:operator_id] = 99999
+        controller.session[:operator_id] = 99_999
       end
 
       it 'resets session' do
@@ -327,7 +327,7 @@ RSpec.describe Authentication, type: :controller do
     it 'prevents session fixation on login' do
       # Set up a session with some data
       controller.session[:malicious_data] = 'hacker_value'
-      original_session_id = controller.session.id
+      controller.session.id
 
       # Login should reset the session
       controller.login(operator)

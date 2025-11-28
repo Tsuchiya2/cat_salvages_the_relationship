@@ -2,98 +2,98 @@
 
 require 'rails_helper'
 
-RSpec.describe EmailValidator, type: :validator do
-  # Test model for validator integration testing
-  class TestModel
-    include ActiveModel::Validations
+# Test model for validator integration testing (defined outside spec block)
+class EmailValidatorTestModel
+  include ActiveModel::Validations
 
-    attr_accessor :email
+  attr_accessor :email
 
-    validates :email, email: true
+  validates :email, email: true
 
-    def initialize(email = nil)
-      @email = email
-    end
+  def initialize(email = nil)
+    @email = email
   end
+end
 
+RSpec.describe EmailValidator, type: :validator do
   describe 'ActiveModel統合テスト' do
     context '正常系テスト' do
       it '有効なメールアドレスの場合、バリデーションを通過する。' do
-        model = TestModel.new('user@example.com')
+        model = EmailValidatorTestModel.new('user@example.com')
         expect(model).to be_valid
       end
 
       it '数字を含むメールアドレスの場合、バリデーションを通過する。' do
-        model = TestModel.new('user123@example456.com')
+        model = EmailValidatorTestModel.new('user123@example456.com')
         expect(model).to be_valid
       end
 
       it 'アンダースコアを含むメールアドレスの場合、バリデーションを通過する。' do
-        model = TestModel.new('user_name@example.com')
+        model = EmailValidatorTestModel.new('user_name@example.com')
         expect(model).to be_valid
       end
 
       it 'ハイフンを含むメールアドレスの場合、バリデーションを通過する。' do
-        model = TestModel.new('user-name@example.com')
+        model = EmailValidatorTestModel.new('user-name@example.com')
         expect(model).to be_valid
       end
 
       it '空白の場合、バリデーションを通過する。（presence: trueと併用を想定）' do
-        model = TestModel.new('')
+        model = EmailValidatorTestModel.new('')
         expect(model).to be_valid
       end
 
       it 'nilの場合、バリデーションを通過する。（presence: trueと併用を想定）' do
-        model = TestModel.new(nil)
+        model = EmailValidatorTestModel.new(nil)
         expect(model).to be_valid
       end
     end
 
     context '異常系テスト' do
       it '@マークがない場合、バリデーションエラーになる。' do
-        model = TestModel.new('userexample.com')
+        model = EmailValidatorTestModel.new('userexample.com')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it '@マークの前が空の場合、バリデーションエラーになる。' do
-        model = TestModel.new('@example.com')
+        model = EmailValidatorTestModel.new('@example.com')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it '@マークの後ろが空の場合、バリデーションエラーになる。' do
-        model = TestModel.new('user@')
+        model = EmailValidatorTestModel.new('user@')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it 'ドメイン部分にドットがない場合、バリデーションエラーになる。' do
-        model = TestModel.new('user@example')
+        model = EmailValidatorTestModel.new('user@example')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it 'ドメインのドット後が空の場合、バリデーションエラーになる。' do
-        model = TestModel.new('user@example.')
+        model = EmailValidatorTestModel.new('user@example.')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it '大文字を含む場合、バリデーションエラーになる。' do
-        model = TestModel.new('USER@EXAMPLE.COM')
+        model = EmailValidatorTestModel.new('USER@EXAMPLE.COM')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it 'スペースを含む場合、バリデーションエラーになる。' do
-        model = TestModel.new('user @example.com')
+        model = EmailValidatorTestModel.new('user @example.com')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
 
       it '特殊文字を含む場合、バリデーションエラーになる。' do
-        model = TestModel.new('user+tag@example.com')
+        model = EmailValidatorTestModel.new('user+tag@example.com')
         expect(model).not_to be_valid
         expect(model.errors[:email]).to be_present
       end
@@ -118,8 +118,8 @@ RSpec.describe EmailValidator, type: :validator do
         expect(described_class.valid_format?('user-name@example.com')).to be true
       end
 
-      it 'ドメインとTLDの組み合わせの場合、trueを返す。' do
-        expect(described_class.valid_format?('user@example.com')).to be true
+      it 'ドット区切りの有効なTLDの場合、trueを返す。' do
+        expect(described_class.valid_format?('user@example.jp')).to be true
       end
     end
 

@@ -59,9 +59,7 @@ class DataMigrationValidator
     after_set = after_checksums.to_set
 
     missing_checksums = before_set - after_set
-    if missing_checksums.any?
-      raise "Migration validation failed: #{missing_checksums.size} records modified or corrupted"
-    end
+    raise "Migration validation failed: #{missing_checksums.size} records modified or corrupted" if missing_checksums.any?
 
     true
   end
@@ -86,18 +84,14 @@ class DataMigrationValidator
       'crypted_password IS NULL AND password_digest IS NULL'
     ).count
 
-    if missing_auth.positive?
-      issues << "#{missing_auth} records missing authentication data"
-    end
+    issues << "#{missing_auth} records missing authentication data" if missing_auth.positive?
 
     # Check for records with duplicate authentication methods
     duplicate_auth = model_class.where(
       'crypted_password IS NOT NULL AND password_digest IS NOT NULL'
     ).count
 
-    if duplicate_auth.positive?
-      issues << "#{duplicate_auth} records have both crypted_password and password_digest"
-    end
+    issues << "#{duplicate_auth} records have both crypted_password and password_digest" if duplicate_auth.positive?
 
     {
       valid: issues.empty?,
@@ -119,9 +113,7 @@ class DataMigrationValidator
   def self.validate_password_migration
     missing = Operator.where(password_digest: nil).where.not(crypted_password: nil).count
 
-    if missing.positive?
-      raise "Migration incomplete: #{missing} operators missing password_digest"
-    end
+    raise "Migration incomplete: #{missing} operators missing password_digest" if missing.positive?
 
     true
   end

@@ -167,87 +167,85 @@ RSpec.describe SessionManager do
   end
 
   describe '.valid_session?' do
-    context 'when session creation timestamp exists' do
-      context 'when session is within timeout period' do
-        before do
-          session[:session_created_at] = 20.minutes.ago
-        end
+    context 'when session is within timeout period (20 min ago)' do
+      before do
+        session[:session_created_at] = 20.minutes.ago
+      end
 
-        it 'returns true with default timeout (30 minutes)' do
-          result = described_class.valid_session?(session)
+      it 'returns true with default timeout (30 minutes)' do
+        result = described_class.valid_session?(session)
 
-          expect(result).to be true
-        end
+        expect(result).to be true
+      end
 
-        it 'returns true with custom timeout' do
-          result = described_class.valid_session?(session, timeout: 1.hour)
+      it 'returns true with custom timeout' do
+        result = described_class.valid_session?(session, timeout: 1.hour)
 
-          expect(result).to be true
+        expect(result).to be true
+      end
+    end
+
+    context 'when session has exceeded timeout period (40 min ago)' do
+      before do
+        session[:session_created_at] = 40.minutes.ago
+      end
+
+      it 'returns false with default timeout (30 minutes)' do
+        result = described_class.valid_session?(session)
+
+        expect(result).to be false
+      end
+
+      it 'returns true with longer custom timeout' do
+        result = described_class.valid_session?(session, timeout: 1.hour)
+
+        expect(result).to be true
+      end
+
+      it 'returns false with shorter custom timeout' do
+        result = described_class.valid_session?(session, timeout: 15.minutes)
+
+        expect(result).to be false
+      end
+    end
+
+    context 'when session is exactly at timeout boundary (30 min ago)' do
+      before do
+        session[:session_created_at] = 30.minutes.ago
+      end
+
+      it 'returns false (not greater than timeout.ago)' do
+        result = described_class.valid_session?(session)
+
+        expect(result).to be false
+      end
+    end
+
+    context 'with Time object stored in session' do
+      before do
+        freeze_time do
+          session[:session_created_at] = Time.current
         end
       end
 
-      context 'when session has exceeded timeout period' do
-        before do
-          session[:session_created_at] = 40.minutes.ago
-        end
+      it 'handles Time objects correctly' do
+        travel 10.minutes
 
-        it 'returns false with default timeout (30 minutes)' do
-          result = described_class.valid_session?(session)
+        result = described_class.valid_session?(session)
 
-          expect(result).to be false
-        end
+        expect(result).to be true
+      end
+    end
 
-        it 'returns true with longer custom timeout' do
-          result = described_class.valid_session?(session, timeout: 1.hour)
-
-          expect(result).to be true
-        end
-
-        it 'returns false with shorter custom timeout' do
-          result = described_class.valid_session?(session, timeout: 15.minutes)
-
-          expect(result).to be false
-        end
+    context 'with string timestamp stored in session' do
+      before do
+        session[:session_created_at] = 15.minutes.ago.to_s
       end
 
-      context 'when session is exactly at timeout boundary' do
-        before do
-          session[:session_created_at] = 30.minutes.ago
-        end
+      it 'parses string timestamp correctly' do
+        result = described_class.valid_session?(session)
 
-        it 'returns false (not greater than timeout.ago)' do
-          result = described_class.valid_session?(session)
-
-          expect(result).to be false
-        end
-      end
-
-      context 'with Time object stored in session' do
-        before do
-          freeze_time do
-            session[:session_created_at] = Time.current
-          end
-        end
-
-        it 'handles Time objects correctly' do
-          travel 10.minutes
-
-          result = described_class.valid_session?(session)
-
-          expect(result).to be true
-        end
-      end
-
-      context 'with string timestamp stored in session' do
-        before do
-          session[:session_created_at] = 15.minutes.ago.to_s
-        end
-
-        it 'parses string timestamp correctly' do
-          result = described_class.valid_session?(session)
-
-          expect(result).to be true
-        end
+        expect(result).to be true
       end
     end
 

@@ -29,9 +29,9 @@ class EmailValidator < ActiveModel::EachValidator
 
     format = options[:format] || DEFAULT_FORMAT
 
-    unless value.match?(format)
-      record.errors.add(attribute, options[:message] || :invalid)
-    end
+    return if value.match?(format)
+
+    record.errors.add(attribute, options[:message] || :invalid)
   end
 
   class << self

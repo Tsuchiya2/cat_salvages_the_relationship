@@ -2,13 +2,13 @@
 
 require 'rails_helper'
 
-RSpec.describe PasswordMigrator do
-  # Create a test model class with both crypted_password and password_digest
-  # This simulates the migration state where both columns exist
-  before(:all) do
+# Create the test table once when the file is loaded
+# This is more efficient than creating/dropping for each test
+RSpec.configure do |config|
+  config.before(:suite) do
     ActiveRecord::Migration.verbose = false
     ActiveRecord::Schema.define do
-      create_table :test_users, force: true do |t|
+      create_table :password_migrator_test_users, force: true do |t|
         t.string :email, null: false
         t.string :name, null: false
         t.string :crypted_password
@@ -18,23 +18,26 @@ RSpec.describe PasswordMigrator do
     end
   end
 
-  after(:all) do
+  config.after(:suite) do
     ActiveRecord::Migration.verbose = false
     ActiveRecord::Schema.define do
-      drop_table :test_users, if_exists: true
+      drop_table :password_migrator_test_users, if_exists: true
     end
   end
+end
 
+RSpec.describe PasswordMigrator do
   # Define temporary model for testing
   let(:test_user_class) do
-    Class.new(ActiveRecord::Base) do
-      self.table_name = 'test_users'
+    Class.new(ApplicationRecord) do
+      self.table_name = 'password_migrator_test_users'
     end
   end
 
   # Stub the constant for the tests
   before do
     stub_const('TestUser', test_user_class)
+    TestUser.delete_all
   end
 
   describe '.migrate_single' do
@@ -50,7 +53,7 @@ RSpec.describe PasswordMigrator do
     context 'when user has crypted_password but no password_digest' do
       before do
         # Simulate old Sorcery format
-        user.update_columns(
+        user.update!(
           crypted_password: 'old_sorcery_hash',
           password_digest: nil
         )
@@ -76,7 +79,7 @@ RSpec.describe PasswordMigrator do
     context 'when user already has password_digest' do
       before do
         # Simulate already migrated user
-        user.update_columns(
+        user.update!(
           crypted_password: 'old_sorcery_hash',
           password_digest: 'already_migrated_hash'
         )
@@ -102,7 +105,7 @@ RSpec.describe PasswordMigrator do
     context 'when user has no crypted_password' do
       before do
         # Simulate user with no password
-        user.update_columns(
+        user.update!(
           crypted_password: nil,
           password_digest: nil
         )
@@ -124,7 +127,7 @@ RSpec.describe PasswordMigrator do
 
     context 'when user has blank crypted_password' do
       before do
-        user.update_columns(
+        user.update!(
           crypted_password: '',
           password_digest: nil
         )
@@ -240,7 +243,7 @@ RSpec.describe PasswordMigrator do
 
     context 'when migration is successful' do
       before do
-        user.update_columns(
+        user.update!(
           crypted_password: 'test_hash',
           password_digest: 'test_hash'
         )
@@ -255,7 +258,7 @@ RSpec.describe PasswordMigrator do
 
     context 'when password_digest is missing' do
       before do
-        user.update_columns(
+        user.update!(
           crypted_password: 'test_hash',
           password_digest: nil
         )
@@ -270,7 +273,7 @@ RSpec.describe PasswordMigrator do
 
     context 'when password_digest does not match crypted_password' do
       before do
-        user.update_columns(
+        user.update!(
           crypted_password: 'hash1',
           password_digest: 'hash2'
         )
@@ -285,7 +288,7 @@ RSpec.describe PasswordMigrator do
 
     context 'when both fields are blank' do
       before do
-        user.update_columns(
+        user.update!(
           crypted_password: nil,
           password_digest: nil
         )
@@ -300,7 +303,7 @@ RSpec.describe PasswordMigrator do
 
     context 'when password_digest is present but crypted_password is blank' do
       before do
-        user.update_columns(
+        user.update!(
           crypted_password: nil,
           password_digest: 'some_hash'
         )
@@ -335,11 +338,11 @@ RSpec.describe PasswordMigrator do
 
     context 'when all users have been migrated' do
       before do
-        user1.update_columns(
+        user1.update!(
           crypted_password: 'hash1',
           password_digest: 'hash1'
         )
-        user2.update_columns(
+        user2.update!(
           crypted_password: 'hash2',
           password_digest: 'hash2'
         )
@@ -354,11 +357,11 @@ RSpec.describe PasswordMigrator do
 
     context 'when some users have not been migrated' do
       before do
-        user1.update_columns(
+        user1.update!(
           crypted_password: 'hash1',
           password_digest: nil
         ) # Not migrated
-        user2.update_columns(
+        user2.update!(
           crypted_password: 'hash2',
           password_digest: 'hash2'
         ) # Migrated
@@ -373,11 +376,11 @@ RSpec.describe PasswordMigrator do
 
     context 'when users have no crypted_password' do
       before do
-        user1.update_columns(
+        user1.update!(
           crypted_password: nil,
           password_digest: nil
         )
-        user2.update_columns(
+        user2.update!(
           crypted_password: nil,
           password_digest: 'some_hash'
         )
@@ -405,11 +408,11 @@ RSpec.describe PasswordMigrator do
 
     context 'when mixed migration states' do
       before do
-        user1.update_columns(
+        user1.update!(
           crypted_password: 'hash1',
           password_digest: 'hash1'
         ) # Migrated
-        user2.update_columns(
+        user2.update!(
           crypted_password: 'hash2',
           password_digest: nil
         ) # Not migrated

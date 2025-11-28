@@ -33,7 +33,7 @@ class RequestCorrelation
 
     # Store in RequestStore for propagation
     RequestStore.store[:request_id] = request_id
-    RequestStore.store[:correlation_id] = request_id  # Alias for LINE webhook compatibility
+    RequestStore.store[:correlation_id] = request_id # Alias for LINE webhook compatibility
 
     @app.call(env)
   ensure

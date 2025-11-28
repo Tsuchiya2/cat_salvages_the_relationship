@@ -26,7 +26,7 @@ RSpec.describe Authentication::PasswordProvider do
       end
 
       it 'resets failed login counter' do
-        operator.update_columns(failed_logins_count: 3)
+        operator.update!(failed_logins_count: 3)
 
         provider.authenticate(email: email, password: password)
 
@@ -115,7 +115,7 @@ RSpec.describe Authentication::PasswordProvider do
 
       it 'locks account after reaching retry limit' do
         # Set failed logins to one less than limit
-        operator.update_columns(failed_logins_count: operator.lock_retry_limit - 1)
+        operator.update!(failed_logins_count: operator.lock_retry_limit - 1)
 
         provider.authenticate(email: email, password: 'wrong_password')
 
