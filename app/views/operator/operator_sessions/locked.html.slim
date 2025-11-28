@@ -1,0 +1,18 @@
+.container.mt-5
+  .row.justify-content-center
+    .col-md-6
+      .card.border-warning
+        .card-header.bg-warning.text-dark
+          h4.mb-0
+            i.fas.fa-lock.me-2
+            = t('authentication.messages.account_locked')
+        .card-body
+          .alert.alert-warning
+            p.mb-3
+              = t('authentication.errors.account_locked', minutes: @lockout_minutes || 30)
+            p.mb-0
+              | 複数回のログイン失敗により、セキュリティのためアカウントがロックされました。
+          .text-center.mt-4
+            = link_to operator_cat_in_path, class: 'btn btn-secondary rounded-pill' do
+              i.fas.fa-arrow-left.me-2
+              | ログインページに戻る

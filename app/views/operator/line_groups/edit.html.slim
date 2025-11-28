@@ -1,6 +1,6 @@
 h1.mt-5
   | グループの編集
-- if current_user.operator?
+- if current_operator.operator?
   = form_with model: @line_group, url: operator_line_group_path(@line_group), data: { turbo: false } do |f|
     .form-group.my-5.offset-2.col-8
       = f.label :remind_at

@@ -2,10 +2,10 @@ h1.my-5
   | ReLINE
 = form_with url: operator_cat_in_path, local: true do |f|
   .form-group.my-5.offset-2.col-8
-    = f.label :email, Operator.human_attribute_name(:email)
-    = f.text_field :email, class: 'form-control rounded-pill'
+    = f.label :email, t('authentication.labels.email')
+    = f.email_field :email, class: 'form-control rounded-pill', autofocus: true, required: true
   .form-group.my-5.offset-2.col-8
-    = f.label :password, Operator.human_attribute_name(:password)
-    = f.password_field :password, class: 'form-control rounded-pill'
+    = f.label :password, t('authentication.labels.password')
+    = f.password_field :password, class: 'form-control rounded-pill', required: true
   .form-group.my-5
     = f.submit '🐾 キャットイン 🐾', class: 'btn btn-secondary rounded-pill font-monospace'

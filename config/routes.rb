@@ -5,14 +5,16 @@ Rails.application.routes.draw do
   resources :feedbacks,     only: %i[new create]
 
   # Health check and monitoring endpoints
-  get '/health',            to: 'health#check'
+  get '/health',            to: 'health#show'
   get '/health/deep',       to: 'health#deep'
+  get '/health/ready',      to: 'health#ready'
   get '/metrics',           to: 'metrics#index'
 
   namespace :operator do
     get    'cat_in',        to: 'operator_sessions#new'
     post   'cat_in',        to: 'operator_sessions#create'
     delete 'cat_out',       to: 'operator_sessions#destroy'
+    get    'locked',        to: 'operator_sessions#locked'
     resources :operates,    only: %i[index]
     resources :contents
     resources :alarm_contents

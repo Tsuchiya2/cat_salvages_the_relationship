@@ -1,6 +1,8 @@
 # Only load for system tests
 return unless RSpec.configuration.files_to_run.any? { |f| f.include?('spec/system') }
 
+require 'selenium-webdriver'
+
 Capybara.default_max_wait_time = 5
 Capybara.server = :puma, { Silent: true }
 

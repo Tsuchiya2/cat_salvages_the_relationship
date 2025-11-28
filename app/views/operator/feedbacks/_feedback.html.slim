@@ -2,7 +2,7 @@ tr
   td
     = feedback.id
   td
-    - if current_user.operator?
+    - if current_operator.operator?
       = link_to feedback.text.truncate(10), operator_feedback_path(feedback), class: 'link-dark text-decoration-none'
     - else
       = feedback.text.truncate(10)

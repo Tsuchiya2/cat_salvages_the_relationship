@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2021_11_14_025759) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_25_142050) do
   create_table "alarm_contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "body", null: false
     t.integer "category", default: 0, null: false
@@ -47,16 +47,16 @@ ActiveRecord::Schema[8.1].define(version: 2021_11_14_025759) do
 
   create_table "operators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "crypted_password"
     t.string "email", null: false
     t.integer "failed_logins_count", default: 0
-    t.datetime "lock_expires_at", precision: nil
+    t.datetime "lock_expires_at"
     t.string "name", null: false
+    t.string "password_digest"
     t.integer "role", default: 1, null: false
-    t.string "salt"
     t.string "unlock_token"
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_operators_on_email", unique: true
+    t.index ["password_digest"], name: "index_operators_on_password_digest"
     t.index ["unlock_token"], name: "index_operators_on_unlock_token"
   end
 end

@@ -22,7 +22,7 @@ gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -30,7 +30,8 @@ gem 'jbuilder'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 gem 'slim-rails'
-gem 'sorcery'
+# gem 'sorcery'  # Deprecated: Migrated to Rails 8 has_secure_password
+gem 'rack-attack', '~> 6.7'  # Rate limiting for login protection
 gem 'enum_help'
 gem 'line-bot-api', '~> 2.0'
 gem 'pundit'

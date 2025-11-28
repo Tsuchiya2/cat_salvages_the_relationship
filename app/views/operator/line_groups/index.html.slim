@@ -1,6 +1,6 @@
 h1.mt-5
   | グループ一覧
-- if current_user.operator?
+- if current_operator.operator?
   h3.mt-5
     | 総交流数：
     = @sum_post_count

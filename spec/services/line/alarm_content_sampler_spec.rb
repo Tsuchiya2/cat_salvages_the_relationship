@@ -7,6 +7,11 @@ RSpec.describe Line::AlarmContentSampler do
 
   let(:sampler) { described_class.new }
 
+  # Clean up any existing alarm content before tests
+  before do
+    AlarmContent.delete_all
+  end
+
   # Create test data
   let!(:contact_content_1) { create(:alarm_content, category: :contact, body: 'Contact alarm 1') }
   let!(:contact_content_2) { create(:alarm_content, category: :contact, body: 'Contact alarm 2') }

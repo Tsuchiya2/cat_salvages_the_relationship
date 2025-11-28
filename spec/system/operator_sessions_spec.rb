@@ -7,7 +7,7 @@ RSpec.describe '[SystemTest] OperatorSessions', type: :system do
     it 'キャットインを行い、operator_operates_pathにリダイレクトされる。' do
       visit operator_cat_in_path
       fill_in 'email', with: guest.email
-      fill_in 'password', with: 'password'
+      fill_in 'password', with: 'Password123'
       click_button '🐾 キャットイン 🐾'
       expect(page).to have_content("Let's bring warmth to the world!!")
     end
@@ -24,7 +24,7 @@ RSpec.describe '[SystemTest] OperatorSessions', type: :system do
     it 'キャットアウトを行い、operator_cat_in_pathにリダイレクトされる。' do
       visit operator_cat_in_path
       fill_in 'email', with: guest.email
-      fill_in 'password', with: 'password'
+      fill_in 'password', with: 'Password123'
       click_button '🐾 キャットイン 🐾'
       expect(page).to have_content("Let's bring warmth to the world!!")
       click_button 'キャットアウト'

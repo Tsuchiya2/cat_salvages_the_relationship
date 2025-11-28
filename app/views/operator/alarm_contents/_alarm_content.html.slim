@@ -2,7 +2,7 @@ tr
   td
     = alarm_content.id
   td
-    - if current_user.operator?
+    - if current_operator.operator?
       = link_to alarm_content.body.truncate(10), operator_alarm_content_path(alarm_content), class: 'link-dark text-decoration-none'
     - else
       = alarm_content.body.truncate(10)
