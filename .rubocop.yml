@@ -52,6 +52,7 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
     - 'config/environments/*'
+    - 'config/routes.rb'
 
 Style/GlobalStdStream:
   Exclude:
@@ -125,6 +126,19 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/MultipleDescribes:
   Enabled: false
+
+# PWAテストはネストが深くなるため許容
+RSpec/NestedGroups:
+  Max: 4
+
+# PWAテストで類似テストの繰り返しは許容
+RSpec/RepeatedExample:
+  Enabled: false
+
+# PWAヘルパーモジュールは機能が多いため許容
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/support/pwa_helpers.rb'
 
 # Playwright設定クラスは環境別設定のため108行必要
 # FileSystemStorageクラスはアーティファクト管理のため103行必要

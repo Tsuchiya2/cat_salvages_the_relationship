@@ -157,7 +157,7 @@ RSpec.describe 'Manifest', type: :request do
         end
 
         it 'uses development theme color' do
-          # Note: This test depends on actual Rails.env, may need to be adjusted
+          # NOTE: This test depends on actual Rails.env, may need to be adjusted
           expect(manifest['theme_color']).to be_present
         end
       end

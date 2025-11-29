@@ -231,7 +231,7 @@ RSpec.describe 'Api::Pwa::Configs', type: :request do
         config = JSON.parse(response.body)
 
         # Verify all cache strategies have required fields
-        config['cache'].each do |_cache_type, settings|
+        config['cache'].each_value do |settings|
           expect(settings).to have_key('strategy')
           expect(settings).to have_key('patterns')
           expect(settings['patterns']).to be_an(Array)
@@ -267,7 +267,7 @@ RSpec.describe 'Api::Pwa::Configs', type: :request do
 
       it 'has valid strategy values' do
         valid_strategies = %w[cache-first network-first network-only stale-while-revalidate]
-        config['cache'].each do |_type, settings|
+        config['cache'].each_value do |settings|
           expect(valid_strategies).to include(settings['strategy'])
         end
       end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true do
+RSpec.describe '[SystemTest] PWA Offline Functionality', :js, type: :system do
   before do
     # Use PWA-enabled driver
     driven_by :headless_chrome_pwa
@@ -9,9 +9,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     visit root_path
 
     # Check if browser supports service workers
-    unless service_worker_supported?
-      skip 'Service Worker not supported in this browser'
-    end
+    skip 'Service Worker not supported in this browser' unless service_worker_supported?
 
     unregister_service_workers
     clear_caches
@@ -31,9 +29,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
       visit root_path
 
       # Manually trigger registration if not automatically registered
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
 
       # Wait for service worker registration
       expect(wait_for_service_worker_registration(timeout: 10)).to be true
@@ -47,9 +43,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
       visit root_path
 
       # Manually trigger registration if needed
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
 
       # Wait for service worker to be active
       expect(wait_for_service_worker_active(timeout: 15)).to be true
@@ -63,9 +57,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
       visit root_path
 
       # Manually trigger registration if needed
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
 
       # Wait for service worker to be active
       wait_for_service_worker_active(timeout: 15)
@@ -80,9 +72,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
 
   describe 'Offline Page Display', skip: !ENV['PWA_TEST_OFFLINE'] do
     before do
-      unless can_use_cdp?
-        skip 'Chrome DevTools Protocol not available - required for offline simulation'
-      end
+      skip 'Chrome DevTools Protocol not available - required for offline simulation' unless can_use_cdp?
     end
 
     it 'displays offline page when navigating to uncached page while offline' do
@@ -157,7 +147,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     end
 
     it 'sets up beforeinstallprompt event listener', skip: 'Browser-dependent feature' do
-      # Note: This test is skipped because beforeinstallprompt is only fired
+      # NOTE: This test is skipped because beforeinstallprompt is only fired
       # in certain conditions (e.g., site meets PWA criteria, user hasn't installed yet)
       # In a real browser environment with proper PWA setup, this would work
 
@@ -193,9 +183,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     it 'replaces old service worker with new version' do
       # Visit page to register service worker
       visit root_path
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
       expect(wait_for_service_worker_active(timeout: 15)).to be true
 
       # Get initial registration
@@ -230,9 +218,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     it 'handles service worker message events' do
       # Visit page and wait for service worker
       visit root_path
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
       expect(wait_for_service_worker_active(timeout: 15)).to be true
 
       # Send message to service worker
@@ -259,9 +245,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     it 'creates static cache after service worker activation' do
       # Visit page to register service worker
       visit root_path
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
       expect(wait_for_service_worker_active(timeout: 15)).to be true
       sleep 2 # Wait for caching to complete
 
@@ -281,9 +265,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     it 'caches root path during installation' do
       # Visit page to trigger service worker installation
       visit root_path
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
       expect(wait_for_service_worker_active(timeout: 15)).to be true
       sleep 2
 
@@ -295,9 +277,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     it 'retrieves cached URLs from static cache' do
       # Visit page and wait for caching
       visit root_path
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
       expect(wait_for_service_worker_active(timeout: 15)).to be true
       sleep 2
 
@@ -334,9 +314,7 @@ RSpec.describe '[SystemTest] PWA Offline Functionality', type: :system, js: true
     it 'handles cache errors without breaking the app' do
       # Visit page normally
       visit root_path
-      unless service_worker_registered?
-        trigger_service_worker_registration
-      end
+      trigger_service_worker_registration unless service_worker_registered?
       wait_for_service_worker_active(timeout: 15)
 
       # Try to delete cache while service worker is active

@@ -6,9 +6,9 @@ module PwaHelpers
   # @param timeout [Integer] Maximum wait time in seconds (default: 5)
   # @return [Boolean] true if registration successful
   def wait_for_service_worker_registration(timeout: 5)
-    start_time = Time.now
+    start_time = Time.zone.now
     loop do
-      break if Time.now - start_time > timeout
+      break if Time.zone.now - start_time > timeout
 
       registered = page.evaluate_script(<<~JAVASCRIPT)
         (async () => {
@@ -32,9 +32,9 @@ module PwaHelpers
   # @param timeout [Integer] Maximum wait time in seconds (default: 10)
   # @return [Boolean] true if service worker is active
   def wait_for_service_worker_active(timeout: 10)
-    start_time = Time.now
+    start_time = Time.zone.now
     loop do
-      break if Time.now - start_time > timeout
+      break if Time.zone.now - start_time > timeout
 
       active = page.evaluate_script(<<~JAVASCRIPT)
         (async () => {

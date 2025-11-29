@@ -96,7 +96,7 @@ RSpec.describe 'Api::Metrics', type: :request do
       end
 
       it 'accepts metrics with value as 0 (missing value becomes 0)' do
-        # Note: Missing value is converted to 0 by .to_d
+        # NOTE: Missing value is converted to 0 by .to_d
         metrics = { metrics: [{ name: 'test' }] }
         post '/api/metrics', params: metrics, as: :json
         expect(response).to have_http_status(:created)
@@ -226,10 +226,10 @@ RSpec.describe 'Api::Metrics', type: :request do
         post '/api/metrics', params: metrics, as: :json
         metric = Metric.last
         expect(metric.tags).to eq({
-          'strategy' => 'cache-first',
-          'resource' => 'image',
-          'size' => 'large'
-        })
+                                    'strategy' => 'cache-first',
+                                    'resource' => 'image',
+                                    'size' => 'large'
+                                  })
       end
 
       it 'handles empty tags object' do
