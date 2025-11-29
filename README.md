@@ -9,7 +9,7 @@
 
 **Keep your LINE groups alive with our friendly cat companion!**
 
-[🌐 Visit Website](https://www.cat-reline.com/) | [📖 Documentation](https://qiita.com/Tsuchiy_2/items/4e8c038f58c23b57b0be) | [🚀 Getting Started](#-getting-started)
+[🚀 Getting Started](#-getting-started)
 
 ![Cat Mascot](/readme-images/cat.webp)
 
