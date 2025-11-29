@@ -31,12 +31,12 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', '>= 1.4.4', require: false
 gem 'slim-rails'
 # gem 'sorcery'  # Deprecated: Migrated to Rails 8 has_secure_password
-gem 'rack-attack', '~> 6.7'  # Rate limiting for login protection
 gem 'enum_help'
 gem 'line-bot-api', '~> 2.0'
-gem 'pundit'
-gem 'prometheus-client', '~> 4.0'
 gem 'lograge', '~> 0.14'
+gem 'prometheus-client', '~> 4.0'
+gem 'pundit'
+gem 'rack-attack', '~> 6.7' # Rate limiting for login protection
 gem 'request_store', '~> 1.5'
 
 # Use mysql as the database for Active Record
@@ -44,14 +44,14 @@ gem 'mysql2', '~> 0.5'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug', platforms: %i[mri windows]
   gem 'factory_bot_rails'
+  gem 'pry-byebug'
   gem 'rspec-rails'
   gem 'rubocop'
-  gem 'rubocop-rails'
   gem 'rubocop-performance'
+  gem 'rubocop-rails'
   gem 'rubocop-rspec'
-  gem 'pry-byebug'
   # Security scanners
   gem 'brakeman', require: false
   gem 'bundler-audit', require: false
@@ -65,20 +65,20 @@ group :development do
   gem 'rack-mini-profiler'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   # Note: Spring is deprecated in Rails 8, consider removing if not needed
+  gem 'better_errors'
+  gem 'bullet'
   gem 'letter_opener_web'
   gem 'traceroute'
-  gem 'bullet'
-  gem 'better_errors'
 end
 
 group :test do
   gem 'capybara'
   gem 'faker'
+  gem 'rspec_junit_formatter'
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'simplecov-console', require: false
-  gem 'rspec_junit_formatter'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[windows jruby]

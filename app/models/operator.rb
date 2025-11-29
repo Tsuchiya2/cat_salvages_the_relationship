@@ -10,7 +10,8 @@ class Operator < ApplicationRecord
   self.lock_notifier = ->(record, ip) { SessionMailer.notice(record, ip).deliver_later }
 
   # Password complexity regex: at least one lowercase, one uppercase, one digit
-  PASSWORD_COMPLEXITY_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/
+  # Uses \A and \z anchors for secure validation (prevents regex bypass attacks)
+  PASSWORD_COMPLEXITY_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+\z/
 
   validates :name,                    presence: true, length: { in: 2..255 }
   validates :email,                   presence: true, uniqueness: true
