@@ -4,6 +4,19 @@ Rails.application.routes.draw do
   get 'privacy_policy',     to: 'customers#privacy_policy'
   resources :feedbacks,     only: %i[new create]
 
+  # PWA manifest
+  get 'manifest.json',      to: 'manifests#show', as: :manifest
+
+  # PWA API endpoints
+  namespace :api do
+    resources :client_logs, only: [:create]
+    resources :metrics, only: [:create]
+
+    namespace :pwa do
+      get 'config', to: 'configs#show'
+    end
+  end
+
   # Health check and monitoring endpoints
   get '/health',            to: 'health#show'
   get '/health/deep',       to: 'health#deep'

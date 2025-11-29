@@ -10,13 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_25_142050) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_29_105920) do
   create_table "alarm_contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "body", null: false
     t.integer "category", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["body"], name: "index_alarm_contents_on_body", unique: true
+  end
+
+  create_table "client_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.json "context"
+    t.timestamp "created_at", null: false
+    t.string "level", null: false
+    t.text "message", null: false
+    t.string "trace_id"
+    t.text "url"
+    t.text "user_agent"
+    t.index ["created_at"], name: "index_client_logs_on_created_at"
+    t.index ["level", "created_at"], name: "index_client_logs_on_level_and_created_at"
+    t.index ["level"], name: "index_client_logs_on_level"
+    t.index ["trace_id"], name: "index_client_logs_on_trace_id"
   end
 
   create_table "contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -43,6 +57,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_25_142050) do
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["line_group_id"], name: "index_line_groups_on_line_group_id", unique: true
+  end
+
+  create_table "metrics", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.timestamp "created_at", null: false
+    t.string "name", null: false
+    t.json "tags"
+    t.string "trace_id"
+    t.string "unit"
+    t.decimal "value", precision: 15, scale: 4, null: false
+    t.index ["created_at"], name: "index_metrics_on_created_at"
+    t.index ["name", "created_at"], name: "index_metrics_on_name_and_created_at"
+    t.index ["name"], name: "index_metrics_on_name"
+    t.index ["trace_id"], name: "index_metrics_on_trace_id"
   end
 
   create_table "operators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

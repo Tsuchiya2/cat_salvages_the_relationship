@@ -1,0 +1,151 @@
+# PWA Configuration
+# Environment-specific settings for Progressive Web App features
+#
+# This file configures caching strategies, manifest properties, and feature flags
+# for different environments (development, staging, production).
+
+# Default configuration (shared across all environments)
+defaults: &defaults
+  # Version identifier for cache management
+  version: "v1"
+
+  # Caching strategies for different resource types
+  cache:
+    # Static assets (CSS, JS, fonts)
+    static:
+      # Strategy: Serve from cache first, fallback to network if not cached
+      strategy: "cache-first"
+      # Regex patterns to match static asset requests
+      patterns:
+        - "\\.(css|js|woff2?)$"
+      # Cache duration: 24 hours (in seconds)
+      max_age: 86400
+
+    # Image assets (all common formats)
+    images:
+      # Strategy: Serve from cache first, fallback to network if not cached
+      strategy: "cache-first"
+      # Regex patterns to match image requests
+      patterns:
+        - "\\.(png|jpg|jpeg|gif|webp|svg|ico)$"
+      # Cache duration: 7 days (in seconds)
+      max_age: 604800
+
+    # HTML pages (landing pages, static pages)
+    pages:
+      # Strategy: Try network first, fallback to cache if offline/timeout
+      strategy: "network-first"
+      # Paths to cache (homepage, terms, privacy)
+      patterns:
+        - "^/$"
+        - "^/terms$"
+        - "^/privacy_policy$"
+      # Network timeout before falling back to cache (in milliseconds)
+      timeout: 3000
+
+    # API endpoints (always fetch fresh data)
+    api:
+      # Strategy: Always use network, never serve from cache
+      strategy: "network-only"
+      # API paths that should never be cached
+      patterns:
+        - "^/api/"
+        - "^/operator/"
+
+  # Network configuration
+  network:
+    # Default network timeout for all requests (in milliseconds)
+    timeout: 3000
+    # Number of retry attempts for failed network requests
+    retries: 1
+
+  # Web App Manifest properties
+  manifest:
+    # Theme color (browser UI color) - Bootstrap primary blue
+    theme_color: "#0d6efd"
+    # Background color shown while app is loading
+    background_color: "#ffffff"
+    # Display mode: standalone (app-like), fullscreen, minimal-ui, browser
+    display: "standalone"
+    # Screen orientation lock (portrait, landscape, any)
+    orientation: "portrait"
+    # App categories for app stores
+    categories:
+      - "productivity"
+      - "social"
+
+  # PWA feature flags
+  features:
+    # Enable install prompt (Add to Home Screen)
+    install_prompt: true
+    # Disable push notifications (not implemented yet)
+    push_notifications: false
+    # Disable background sync (not implemented yet)
+    background_sync: false
+
+  # Observability and monitoring configuration
+  observability:
+    # Logger settings
+    logger:
+      # Maximum number of log entries to buffer before flushing
+      buffer_size: 50
+      # Interval to flush logs to server (in seconds)
+      flush_interval_seconds: 30
+    # Metrics settings
+    metrics:
+      # Maximum number of metric entries to buffer before flushing
+      buffer_size: 100
+      # Interval to flush metrics to server (in seconds)
+      flush_interval_seconds: 60
+
+# Development environment overrides
+development:
+  <<: *defaults
+  manifest:
+    # Red theme color for visual distinction in development
+    theme_color: "#dc3545"
+    background_color: "#ffffff"
+    display: "standalone"
+    orientation: "portrait"
+    categories:
+      - "productivity"
+      - "social"
+
+# Staging environment overrides
+staging:
+  <<: *defaults
+  manifest:
+    # Yellow theme color for visual distinction in staging
+    theme_color: "#ffc107"
+    background_color: "#ffffff"
+    display: "standalone"
+    orientation: "portrait"
+    categories:
+      - "productivity"
+      - "social"
+
+# Test environment overrides
+test:
+  <<: *defaults
+  manifest:
+    # Green theme color for visual distinction in test
+    theme_color: "#28a745"
+    background_color: "#ffffff"
+    display: "standalone"
+    orientation: "portrait"
+    categories:
+      - "productivity"
+      - "social"
+
+# Production environment overrides
+production:
+  <<: *defaults
+  manifest:
+    # Bootstrap primary blue for production
+    theme_color: "#0d6efd"
+    background_color: "#ffffff"
+    display: "standalone"
+    orientation: "portrait"
+    categories:
+      - "productivity"
+      - "social"
