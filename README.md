@@ -11,7 +11,7 @@
 
 [🌐 Visit Website](https://www.cat-reline.com/) | [📖 Documentation](https://qiita.com/Tsuchiy_2/items/4e8c038f58c23b57b0be) | [🚀 Getting Started](#-getting-started)
 
-![Cat Mascot](/readme-images/cat.jpg)
+![Cat Mascot](/readme-images/cat.webp)
 
 </div>
 
@@ -33,7 +33,7 @@
 
 ## 🎬 How It Works
 
-![Usage Example](/readme-images/example.jpg)
+![Usage Example](/readme-images/example.webp)
 
 <div align="center">
 
@@ -43,7 +43,7 @@
 
 | Web Landing Page | QR Code Screen | LINE App Integration |
 |:---:|:---:|:---:|
-| ![Web Top Page](/readme-images/web-top-page.jpg) | ![QR Code](/readme-images/qr-code.jpg) | ![LINE Page](/readme-images/line-page.jpg) |
+| ![Web Top Page](/readme-images/web-top-page.webp) | ![QR Code](/readme-images/qr-code.webp) | ![LINE Page](/readme-images/line-page.webp) |
 | Main landing page with mascot and "Add Friend" button | QR code display for desktop users | Mobile app integration view |
 
 ---
@@ -98,15 +98,15 @@
 
 ### Database Schema
 
-![ER Diagram](/readme-images/reline-er.jpg)
+![ER Diagram](/readme-images/reline-er.webp)
 
 ### Infrastructure
 
-![Infrastructure Diagram](/readme-images/reline-infra.jpg)
+![Infrastructure Diagram](/readme-images/reline-infra.webp)
 
 ### Event Processing Architecture
 
-![LINE Bot Reaction Flow](/readme-images/line-bot-reaction.jpg)
+![LINE Bot Reaction Flow](/readme-images/line-bot-reaction.webp)
 
 Our event processing system elegantly handles multiple LINE Messaging API events through a single endpoint, utilizing:
 
@@ -119,7 +119,7 @@ Our event processing system elegantly handles multiple LINE Messaging API events
 
 ## 📊 Test Coverage
 
-![Test Coverage](/readme-images/coverage.jpg)
+![Test Coverage](/readme-images/coverage.webp)
 
 - **Model Specs** - Comprehensive unit tests for business logic
 - **System Specs** - End-to-end integration testing with **Playwright**
