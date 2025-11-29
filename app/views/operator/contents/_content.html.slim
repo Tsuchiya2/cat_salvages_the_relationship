@@ -2,7 +2,7 @@ tr
   td
     = content.id
   td
-    - if current_user.operator?
+    - if current_operator.operator?
       = link_to content.body.truncate(10), operator_content_path(content), class: 'link-dark text-decoration-none'
     - else
       = content.body.truncate(10)

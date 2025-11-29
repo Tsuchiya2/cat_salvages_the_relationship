@@ -1,113 +1,82 @@
-# Health check controller for monitoring
-#
-# Provides two endpoints:
-# - GET /health - Shallow health check (fast, returns basic status)
-# - GET /health/deep - Deep health check (slower, checks all dependencies)
-class HealthController < ApplicationController
-  skip_before_action :verify_authenticity_token
-  before_action :authenticate_monitor!, only: :deep, if: -> { Rails.env.production? }
+# frozen_string_literal: true
 
-  # Shallow health check
-  #
-  # Returns basic application status without checking dependencies.
-  # This endpoint should be fast and suitable for load balancer health checks.
-  #
-  # @example Response
-  #   {
-  #     "status": "ok",
-  #     "version": "2.0.0",
-  #     "timestamp": "2025-11-17T10:30:00Z"
-  #   }
-  def check
+# Health check controller for Kubernetes liveness/readiness probes
+# and load balancer health checks
+class HealthController < ActionController::API
+  # GET /health
+  # Basic liveness check - returns 200 if the app is running
+  def show
     render json: {
       status: 'ok',
-      version: '2.0.0',
-      timestamp: Time.current.iso8601
+      timestamp: Time.current.iso8601,
+      version: Rails.application.class.module_parent_name
     }
   end
 
-  # Deep health check
-  #
-  # Performs comprehensive health checks including:
-  # - Database connectivity and latency
-  # - LINE credentials validation
-  #
-  # Returns 200 OK if all checks pass, 503 Service Unavailable otherwise.
-  #
-  # @example Healthy Response (200 OK)
-  #   {
-  #     "status": "healthy",
-  #     "checks": {
-  #       "database": { "status": "healthy", "latency_ms": 5.23 },
-  #       "line_credentials": { "status": "healthy" }
-  #     },
-  #     "timestamp": "2025-11-17T10:30:00Z"
-  #   }
-  #
-  # @example Unhealthy Response (503 Service Unavailable)
-  #   {
-  #     "status": "unhealthy",
-  #     "checks": {
-  #       "database": { "status": "unhealthy", "error": "Connection refused" },
-  #       "line_credentials": { "status": "healthy" }
-  #     },
-  #     "timestamp": "2025-11-17T10:30:00Z"
-  #   }
+  # GET /health/deep
+  # Deep health check - verifies database connectivity and other dependencies
   def deep
     checks = {
       database: check_database,
-      line_credentials: check_line_credentials
+      disk_space: check_disk_space
     }
 
-    all_healthy = checks.values.all? { |c| c[:status] == 'healthy' }
-    status_code = all_healthy ? :ok : :service_unavailable
+    status = checks.values.all? { |c| c[:status] == 'ok' } ? :ok : :service_unavailable
 
     render json: {
-      status: all_healthy ? 'healthy' : 'unhealthy',
-      checks: checks,
-      timestamp: Time.current.iso8601
-    }, status: status_code
+      status: status == :ok ? 'ok' : 'degraded',
+      timestamp: Time.current.iso8601,
+      checks: checks
+    }, status: status
+  end
+
+  # GET /health/ready
+  # Readiness check - returns 200 if the app is ready to receive traffic
+  def ready
+    if database_connected?
+      render json: { status: 'ready', timestamp: Time.current.iso8601 }
+    else
+      render json: { status: 'not_ready', reason: 'database_unavailable' }, status: :service_unavailable
+    end
   end
 
   private
 
-  # Check database connectivity
-  #
-  # @return [Hash] Health check result with status and latency
   def check_database
-    start_time = Time.current
-    ActiveRecord::Base.connection.execute('SELECT 1')
-    latency_ms = ((Time.current - start_time) * 1000).round(2)
-
-    { status: 'healthy', latency_ms: latency_ms }
-  rescue StandardError => e
-    { status: 'unhealthy', error: e.message }
-  end
-
-  # Check LINE credentials availability
-  #
-  # @return [Hash] Health check result with status
-  def check_line_credentials
-    required = %i[channel_id channel_secret channel_token]
-    present = required.all? { |key| Rails.application.credentials.send(key).present? }
-
-    if present
-      { status: 'healthy' }
+    if database_connected?
+      { status: 'ok', response_time_ms: measure_database_response_time }
     else
-      { status: 'unhealthy', error: 'Missing LINE credentials' }
+      { status: 'error', message: 'Database connection failed' }
     end
   rescue StandardError => e
-    { status: 'unhealthy', error: e.message }
+    { status: 'error', message: e.message }
   end
 
-  def authenticate_monitor!
-    username = ENV['MONITOR_USERNAME']
-    password = ENV['MONITOR_PASSWORD']
-    return head :forbidden if username.blank? || password.blank?
+  def check_disk_space
+    # Check if disk space is above 10% free
+    stat = `df -h / | tail -1`.split
+    usage_percent = stat[4].to_i
 
-    authenticate_or_request_with_http_basic('Monitoring') do |user, pass|
-      ActiveSupport::SecurityUtils.secure_compare(user, username) &&
-        ActiveSupport::SecurityUtils.secure_compare(pass, password)
+    if usage_percent < 90
+      { status: 'ok', usage_percent: usage_percent }
+    else
+      { status: 'warning', usage_percent: usage_percent, message: 'Disk space low' }
     end
+  rescue StandardError => e
+    { status: 'error', message: e.message }
+  end
+
+  def database_connected?
+    ActiveRecord::Base.connection.execute('SELECT 1')
+    true
+  rescue StandardError
+    false
+  end
+
+  def measure_database_response_time
+    start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    ActiveRecord::Base.connection.execute('SELECT 1')
+    end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    ((end_time - start_time) * 1000).round(2)
   end
 end

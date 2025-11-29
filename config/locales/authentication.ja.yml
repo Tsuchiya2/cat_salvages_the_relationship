@@ -1,0 +1,26 @@
+ja:
+  authentication:
+    messages:
+      login_success: "キャットイン"
+      logout_success: "キャットアウトしました。"
+      account_locked: "アカウントがロックされました"
+      account_unlocked: "アカウントのロックが解除されました"
+    errors:
+      invalid_credentials: "メールアドレスまたはパスワードが正しくありません"
+      account_locked: "アカウントがロックされています。%{minutes}分後に再試行してください。"
+      session_expired: "セッションが切れました。再度ログインしてください。"
+      not_authenticated: "ログインが必要です"
+    labels:
+      email: "メールアドレス"
+      password: "パスワード"
+      password_confirmation: "パスワード（確認）"
+      remember_me: "ログイン状態を保持する"
+      login: "ログイン"
+      logout: "ログアウト"
+  activerecord:
+    errors:
+      models:
+        operator:
+          attributes:
+            password:
+              complexity: "は小文字、大文字、数字をそれぞれ1文字以上含める必要があります"

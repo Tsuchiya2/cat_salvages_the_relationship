@@ -4,7 +4,7 @@ nav.navbar.navbar-expand-xl.navbar-dark.bg-secondary.fixed-top
     span.navbar-toggler-icon
   .collapse.navbar-collapse id='navbarSupportedContent'
     ul.navbar-nav.ps-3
-      - if logged_in?
+      - if operator_signed_in?
         li.nav-item
           = link_to operator_operates_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
             icon.fas.fa-paw.me-2
@@ -15,7 +15,7 @@ nav.navbar.navbar-expand-xl.navbar-dark.bg-secondary.fixed-top
             icon.fas.fa-comments.me-2
             .guide-text
               | フィードバック
-        - if current_user.operator?
+        - if current_operator.operator?
           li.nav-item
             = link_to operator_line_groups_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
               icon.fas.fa-info-circle.me-2
@@ -46,4 +46,4 @@ nav.navbar.navbar-expand-xl.navbar-dark.bg-secondary.fixed-top
           = link_to operator_cat_in_path, class: 'nav-link my-1 mx-1 d-inline-flex align-items-center' do
             icon.fas.fa-cat.me-2
             .guide-text
-              | キャットイン
+              | #{t('authentication.labels.login')}

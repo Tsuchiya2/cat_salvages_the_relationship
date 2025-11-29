@@ -13,6 +13,6 @@ h1.mt-5
     tbody
       = render @alarm_contents if @alarm_contents
 
-- if current_user.operator?
+- if current_operator.operator?
   .my-5
     = link_to '新規作成', new_operator_alarm_content_path, class: 'btn btn-secondary rounded-pill font-monospace'

@@ -46,5 +46,12 @@ module CatSalvagesTheRelationship
       g.test_framework false
       g.skip_routes true
     end
+
+    # Request correlation middleware for observability
+    # Only add if RequestCorrelation middleware is defined (TASK-019)
+    config.middleware.insert_before Rails::Rack::Logger, RequestCorrelation if defined?(RequestCorrelation)
+
+    # Enable Rack::Attack for rate limiting and brute force protection
+    config.middleware.use Rack::Attack
   end
 end

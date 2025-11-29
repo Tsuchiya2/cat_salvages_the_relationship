@@ -1,22 +1,24 @@
 class Operator::OperatorSessionsController < Operator::BaseController
-  skip_before_action :require_login, only: %i[new create]
+  skip_before_action :require_authentication, only: %i[new create]
 
-  def new; end
+  def new
+    redirect_to operator_operates_path if operator_signed_in?
+  end
 
   def create
-    @operator = login(params[:email], params[:password])
+    operator = authenticate_operator(params[:email], params[:password])
 
-    if @operator
-      redirect_to operator_operates_path, success: 'キャットインしました。'
+    if operator
+      login(operator)
+      redirect_to operator_operates_path, notice: I18n.t('authentication.messages.login_success', default: 'キャットイン')
     else
-      render :new
-      accessed_acount = Operator.find_by(email: params[:email])
-      accessed_acount&.mail_notice(request.remote_ip)
+      flash.now[:alert] = I18n.t('authentication.errors.invalid_credentials', default: 'メールアドレスまたはパスワードが正しくありません')
+      render :new, status: :unprocessable_entity
     end
   end
 
   def destroy
     logout
-    redirect_to operator_cat_in_path, success: 'キャットアウトしました。'
+    redirect_to operator_cat_in_path, notice: I18n.t('authentication.messages.logout_success', default: 'キャットアウト')
   end
 end

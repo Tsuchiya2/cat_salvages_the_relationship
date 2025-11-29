@@ -61,8 +61,9 @@
 
 #### Core Gems
 
-- **Authentication** - `sorcery` - Secure admin login system
+- **Authentication** - Rails 8 `has_secure_password` - Secure admin login with bcrypt
 - **Authorization** - `pundit` - Policy-based access control
+- **Rate Limiting** - `rack-attack` - Brute force protection and request throttling
 - **Messaging** - `line-bot-api` - LINE Messaging API integration
 - **Monitoring** - `prometheus-client` - Metrics collection and monitoring
 - **Logging** - `lograge` - Structured logging for production

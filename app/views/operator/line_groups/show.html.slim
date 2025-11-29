@@ -1,6 +1,6 @@
 h1.mt-5
   | グループ詳細
-- if current_user.operator?
+- if current_operator.operator?
   h3.mt-5.text-break
     | - LINE_Group_ID -
     = @line_group.line_group_id

@@ -31,8 +31,9 @@ RSpec.describe Operator, type: :model do
     end
 
     context 'password' do
-      it '8つ以上の文字列が入力された場合、保存できる。' do
-        operator = build(:operator, password: 'a' * 8, password_confirmation: 'a' * 8)
+      it '8つ以上の文字列が入力され、複雑性要件を満たす場合、保存できる。' do
+        # Password must include lowercase, uppercase, and digit
+        operator = build(:operator, password: 'Abcd1234', password_confirmation: 'Abcd1234')
         expect(operator).to be_valid
       end
     end

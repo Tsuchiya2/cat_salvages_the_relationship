@@ -42,3 +42,8 @@ coverage
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Environment files (contain secrets)
+.env
+.env.*
+!.env.example

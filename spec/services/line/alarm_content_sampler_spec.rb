@@ -7,10 +7,17 @@ RSpec.describe Line::AlarmContentSampler do
 
   let(:sampler) { described_class.new }
 
-  # Create test data
+  # Clean up any existing alarm content before tests
+  before do
+    AlarmContent.delete_all
+  end
+
+  # Create test data - must be after the before block that cleans up
+  # rubocop:disable RSpec/ScatteredLet
   let!(:contact_content_1) { create(:alarm_content, category: :contact, body: 'Contact alarm 1') }
   let!(:contact_content_2) { create(:alarm_content, category: :contact, body: 'Contact alarm 2') }
   let!(:text_content) { create(:alarm_content, category: :text, body: 'Text alarm') }
+  # rubocop:enable RSpec/ScatteredLet
 
   describe '#sample' do
     context 'without preloading' do

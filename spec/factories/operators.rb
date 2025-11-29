@@ -1,17 +1,26 @@
 FactoryBot.define do
   factory :operator do
-    sequence(:name) { |n| "operator_#{n}" }
-    sequence(:email) { |n| "operator#{n}@exampl.com" }
-    password { 'password' }
-    password_confirmation { 'password' }
+    sequence(:email) { |n| "operator#{n}@example.com" }
+    sequence(:name) { |n| "Operator #{n}" }
+    # Password must meet complexity requirements: lowercase, uppercase, digit
+    password { 'Password123' }
+    password_confirmation { 'Password123' }
     role { :operator }
 
     trait :guest do
-      name { 'guest' }
-      email { 'guest@example.com' }
-      password { 'password' }
-      password_confirmation { 'password' }
       role { :guest }
+    end
+
+    trait :locked do
+      failed_logins_count { 5 }
+      lock_expires_at { 45.minutes.from_now }
+      unlock_token { SecureRandom.urlsafe_base64(32) }
+    end
+
+    trait :unlocked do
+      failed_logins_count { 0 }
+      lock_expires_at { nil }
+      unlock_token { nil }
     end
   end
 end
