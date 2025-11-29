@@ -1,0 +1,5 @@
+en:
+  pwa:
+    name: "ReLINE - Cat Relationship Manager"
+    short_name: "ReLINE"
+    description: "LINE bot service for maintaining relationships"

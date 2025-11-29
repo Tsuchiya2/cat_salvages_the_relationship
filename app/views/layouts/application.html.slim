@@ -4,6 +4,15 @@ html
     = favicon_link_tag asset_path('favicon.ico')
     title
       | ReLINE
+    / PWA Manifest
+    link[rel="manifest" href="/manifest.json"]
+    / PWA Theme Color
+    meta[name="theme-color" content="#0d6efd"]
+    / Apple PWA Support
+    meta[name="apple-mobile-web-app-capable" content="yes"]
+    meta[name="apple-mobile-web-app-status-bar-style" content="default"]
+    meta[name="apple-mobile-web-app-title" content="ReLINE"]
+    link[rel="apple-touch-icon" href="/pwa/icon-192.png"]
     meta[name="viewport" content="width=device-width,initial-scale=1"]
     = csrf_meta_tags
     = csp_meta_tag
