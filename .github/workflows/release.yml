@@ -1,0 +1,95 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          # Get the latest tag, default to v0.0.0 if none exists
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest tag: $LATEST_TAG"
+
+      - name: Calculate next version
+        id: next_version
+        run: |
+          LATEST_TAG=${{ steps.get_tag.outputs.latest_tag }}
+
+          # Remove 'v' prefix and split version
+          VERSION=${LATEST_TAG#v}
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+
+          # Increment patch version
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+      - name: Get merged PR info
+        id: pr_info
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the PR number from the merge commit
+          PR_NUMBER=$(gh pr list --state merged --base main --limit 1 --json number --jq '.[0].number' 2>/dev/null || echo "")
+
+          if [ -n "$PR_NUMBER" ]; then
+            PR_TITLE=$(gh pr view $PR_NUMBER --json title --jq '.title')
+            PR_BODY=$(gh pr view $PR_NUMBER --json body --jq '.body')
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+            echo "Found PR #$PR_NUMBER: $PR_TITLE"
+          else
+            echo "pr_number=" >> $GITHUB_OUTPUT
+            echo "pr_title=" >> $GITHUB_OUTPUT
+            echo "No merged PR found"
+          fi
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION=${{ steps.next_version.outputs.new_version }}
+          PR_NUMBER=${{ steps.pr_info.outputs.pr_number }}
+          PR_TITLE="${{ steps.pr_info.outputs.pr_title }}"
+
+          # Build release notes
+          if [ -n "$PR_NUMBER" ]; then
+            RELEASE_NOTES="## What's Changed
+
+          * ${PR_TITLE} (#${PR_NUMBER})
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.get_tag.outputs.latest_tag }}...${NEW_VERSION}"
+          else
+            RELEASE_NOTES="## What's Changed
+
+          * ${{ github.event.head_commit.message }}
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.get_tag.outputs.latest_tag }}...${NEW_VERSION}"
+          fi
+
+          # Create tag and release
+          gh release create "$NEW_VERSION" \
+            --title "$NEW_VERSION" \
+            --notes "$RELEASE_NOTES" \
+            --target main
+
+          echo "✅ Released $NEW_VERSION"
