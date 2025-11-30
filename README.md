@@ -71,7 +71,7 @@
 #### Development & Testing
 
 - **Testing Framework** - `rspec-rails` - Comprehensive test suite
-- **Browser Automation** - `playwright-ruby-client` - Modern system testing with Playwright
+- **Browser Automation** - `selenium-webdriver` - System testing with headless Chrome
 - **Code Quality** - `rubocop` with Rails, Performance, and RSpec extensions
 - **Test Data** - `factory_bot_rails`, `faker` - Factory and fixture generation
 - **Security** - `brakeman`, `bundler-audit` - Security vulnerability scanning
@@ -81,7 +81,7 @@
 
 | Technology | Purpose |
 |------------|---------|
-| ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.1.3-7952B3?style=flat&logo=bootstrap&logoColor=white) | Responsive UI framework |
+| ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.8-7952B3?style=flat&logo=bootstrap&logoColor=white) | Responsive UI framework |
 | ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black) | Client-side interactivity |
 | ![Stimulus](https://img.shields.io/badge/Stimulus-Hotwire-FF6600?style=flat) | JavaScript framework |
 | ![Turbo](https://img.shields.io/badge/Turbo-Hotwire-FF6600?style=flat) | SPA-like navigation |
@@ -122,19 +122,18 @@ Our event processing system elegantly handles multiple LINE Messaging API events
 ![Test Coverage](/readme-images/coverage.webp)
 
 - **Model Specs** - Comprehensive unit tests for business logic
-- **System Specs** - End-to-end integration testing with **Playwright**
+- **System Specs** - End-to-end integration testing with **Selenium**
 - **RSpec** - Primary testing framework
 - **SimpleCov** - Coverage reporting (88% threshold)
-- **Playwright** - Modern browser automation (25-36% faster than Selenium)
+- **Selenium** - Browser automation with headless Chrome
 
 ### Testing Infrastructure
 
-Our testing infrastructure uses Playwright for system tests, providing:
-- 🚀 **Faster Execution** - 25-36% faster than traditional Selenium tests
+Our testing infrastructure uses Selenium with headless Chrome for system tests, providing:
+- 🚀 **Headless Chrome** - Fast execution in CI/CD environments
 - 📸 **Automatic Screenshots** - Captured on test failures
-- 🎬 **Browser Traces** - Full interaction recording for debugging
-- 🔄 **Smart Retries** - Exponential backoff for transient failures
-- 🌐 **Multi-Browser** - Supports Chromium, Firefox, and WebKit
+- 🔄 **Capybara Integration** - Seamless Rails integration
+- 🌐 **Cross-Platform** - Consistent behavior across environments
 
 For detailed testing documentation, see [TESTING.md](TESTING.md).
 
@@ -164,9 +163,6 @@ cd cat_salvages_the_relationship
 ```bash
 bundle install
 npm install
-
-# Install Playwright browsers (for system testing)
-npx playwright install chromium --with-deps
 ```
 
 3. **Configure environment variables**
